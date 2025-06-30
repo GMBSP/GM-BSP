@@ -1,59 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ringing...</title>
   <style>
-  body {
-    background-color: #000;
-    color: #fff;
-    margin: 0;
-    padding: 0;
-    font-family: monospace;
-    height: 100vh;
-    overflow: hidden;
-  }
-  #container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-  #dialogue {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    max-width: 300px;
-    font-size: 16px;
-    white-space: pre-wrap;
-  }
-  .shake-red {
-    animation: shake 0.2s infinite;
-    font-weight: bold;
-    color: red;
-    display: inline-block;
-    font-size: 22px;
-  }
-  .shake-yellow {
-    animation: shake 0.2s infinite;
-    font-weight: bold;
-    color: yellow;
-    display: inline-block;
-    font-size: 22px;
-  }
-  @keyframes shake {
-    0% { transform: translate(1px, 0); }
-    25% { transform: translate(-1px, 0); }
-    50% { transform: translate(1px, 0); }
-    75% { transform: translate(-1px, 0); }
-    100% { transform: translate(1px, 0); }
-  }
-  img {
-    max-width: 300px;
-    cursor: pointer;
-  }
-</style>
+    body {
+      background-color: #000;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      font-family: monospace;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #dialogue {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      max-width: 300px;
+      font-size: 16px;
+      white-space: pre-wrap;
+    }
+    .shake-red {
+      animation: shake 0.2s infinite;
+      font-weight: bold;
+      color: red;
+      display: inline-block;
+      font-size: 22px;
+    }
+    .shake-yellow {
+      animation: shake 0.2s infinite;
+      font-weight: bold;
+      color: yellow;
+      display: inline-block;
+      font-size: 22px;
+    }
+    @keyframes shake {
+      0% { transform: translate(1px, 0); }
+      25% { transform: translate(-1px, 0); }
+      50% { transform: translate(1px, 0); }
+      75% { transform: translate(-1px, 0); }
+      100% { transform: translate(1px, 0); }
+    }
+    img {
+      max-width: 300px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <div id="dialogue"></div>
@@ -65,7 +65,6 @@
     const phoneImage = document.getElementById('phoneImage');
     let stage = 0;
 
-    // Change image after 20 seconds (20000 ms) for testing
     setTimeout(() => {
       phoneImage.src = 'ring.gif';
       stage = 1;
@@ -80,59 +79,66 @@
     };
 
     const lines = [
-  "- Didn't think I'd see you here. Took you long enough to answer the ",
-  "- You know, they're still looking out for ya!",
-  "- They might call you. Listen, look out.",
-  "- AND PICK THE PHONE."
-];
+      "- Didn't think I'd see you here. Took you long enough to answer the DAMN phone.",
+      "- You know, they're still looking out for ya!",
+      "- They might call you. Listen, look out.",
+      "- AND PICK THE PHONE."
+    ];
 
-    let dialogue = document.getElementById('dialogue');
+    const dialogue = document.getElementById('dialogue');
 
     function startDialogue() {
       let i = 0;
+
       function typeLine(line, index, callback) {
         let charIndex = 0;
-        let span;
+        let span = null;
+
         if (index === lines.length - 1) {
-  span = document.createElement('span');
-  span.classList.add('shake-red');
-  dialogue.appendChild(span);
-} else if (index === 0) {
-  span = document.createElement('span');
-  span.classList.add('shake-yellow');
-  dialogue.innerHTML += "- Didn't think I'd see you here. Took you long enough to answer the ";
-  const boldWord = document.createElement('span');
-  boldWord.textContent = 'DAMN';
-  boldWord.classList.add('shake-yellow');
-  dialogue.appendChild(boldWord);
-  dialogue.innerHTML += " phone.
-";
-  setTimeout(callback, 600);
-  return;
-}
+          span = document.createElement('span');
+          span.classList.add('shake-red');
+          dialogue.appendChild(span);
+        }
+
         function typeChar() {
-          if (charIndex < line.length) {
-            const char = line.charAt(charIndex);
-            if (index === lines.length - 1) {
-              span.textContent += char;
-            } else {
-              dialogue.innerHTML += char;
-            }
-            charIndex++;
-            setTimeout(typeChar, 100); // slower typing speed
-          } else {
+          if (charIndex >= line.length) {
+            dialogue.innerHTML += "\n";
             if (index !== lines.length - 1) {
-              dialogue.innerHTML += "\n";
               setTimeout(callback, 600);
             } else {
               phoneImage.src = 'phone2.gif';
-              dialogue.innerHTML += "\n";
               setTimeout(() => {
                 window.location.href = 'index.html';
               }, 1000);
             }
+            return;
           }
+
+      if (line.slice(charIndex, charIndex + 4) === "DAMN") {
+  const link = document.createElement('a');
+  link.href = "steven.html";
+  link.classList.add('shake-yellow');
+  link.style.color = "yellow";
+  link.style.textDecoration = "none";
+  link.textContent = "DAMN";
+  dialogue.appendChild(link);
+  charIndex += 4;
+  setTimeout(typeChar, 100);
+  return;
+}
+
+
+          const char = line.charAt(charIndex);
+          if (index === lines.length - 1) {
+            span.textContent += char;
+          } else {
+            dialogue.innerHTML += char;
+          }
+
+          charIndex++;
+          setTimeout(typeChar, 100);
         }
+
         typeChar();
       }
 
@@ -142,6 +148,7 @@
           i++;
         }
       }
+
       nextLine();
     }
   </script>
