@@ -126,31 +126,3 @@
   setTimeout(typeChar, 100);
   return;
 }
-
-
-          const char = line.charAt(charIndex);
-          if (index === lines.length - 1) {
-            span.textContent += char;
-          } else {
-            dialogue.innerHTML += char;
-          }
-
-          charIndex++;
-          setTimeout(typeChar, 100);
-        }
-
-        typeChar();
-      }
-
-      function nextLine() {
-        if (i < lines.length) {
-          typeLine(lines[i], i, nextLine);
-          i++;
-        }
-      }
-
-      nextLine();
-    }
-  </script>
-</body>
-</html>
