@@ -1,22 +1,9 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GodModeration
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>God Moderation</title>
+    <title>GM</title>
     <style>
         /* Reset and Base Styles */
         * {
@@ -432,8 +419,22 @@
 
         <!-- Image Gallery -->
         <div class="gallery">
+            <div class="gallery-grid">
+                <div class="gallery-item" onclick="openLightbox('ToyBox.png')">
+                    <div class="gallery-frame">
+                        <img src="ToyBox.png" alt="ToyBox" class="gallery-image">
+                        <div class="gallery-overlay">
+                            <span>View</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Gallery -->
+        <div class="gallery">
             <div class="gallery-grid" id="gallery">
-                <!-- Images will be added here dynamically -->
+                <!-- Additional images will be added here dynamically -->
             </div>
         </div>
 
@@ -454,8 +455,6 @@
     </div>
 
     <script>
-        // Logo is already set in the HTML img tag with base64 data
-
         // Image gallery functionality
         const gallery = document.getElementById('gallery');
         const lightbox = document.getElementById('lightbox');
