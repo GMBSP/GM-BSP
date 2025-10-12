@@ -419,8 +419,22 @@
 
         <!-- Image Gallery -->
         <div class="gallery">
+            <div class="gallery-grid">
+                <div class="gallery-item" onclick="openLightbox('ToyBox.png')">
+                    <div class="gallery-frame">
+                        <img src="ToyBox.png" alt="ToyBox" class="gallery-image">
+                        <div class="gallery-overlay">
+                            <span>View</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Gallery -->
+        <div class="gallery">
             <div class="gallery-grid" id="gallery">
-                <!-- Images will be added here dynamically -->
+                <!-- Additional images will be added here dynamically -->
             </div>
         </div>
 
@@ -447,7 +461,7 @@
         const lightboxImage = document.getElementById('lightboxImage');
         const closeLightbox = document.getElementById('closeLightbox');
         
-        let uploadedImages = ['ToyBox.png'];
+        let uploadedImages = [];
 
         // Handle image upload (you can add an upload button if needed)
         function handleImageUpload(files) {
@@ -498,9 +512,6 @@
                 closeLightboxFunc();
             }
         };
-
-        // Initialize gallery with ToyBox.png
-        renderGallery();
 
         // You can add drag-and-drop or file input for image upload
         // Example: document.getElementById('fileInput').onchange = (e) => handleImageUpload(e.target.files);
