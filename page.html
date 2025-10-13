@@ -193,29 +193,81 @@
             margin: 0;
         }
 
-        /* Gallery */
-        .gallery {
-            width: 100%;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
+        /* Gallery Section */
+        .gallery-section {
+            margin-bottom: 3rem;
         }
 
         .gallery-container {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 2rem;
-            align-items: flex-start;
-            flex-wrap: wrap;
+            align-items: start;
         }
 
-        .gallery-image-section {
-            flex: 1;
-            min-width: 300px;
+        @media (min-width: 768px) {
+            .gallery-container {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
-        .gallery-text-section {
-            flex: 1;
-            min-width: 300px;
+        .gallery-item {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .gallery-frame {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            background: linear-gradient(to bottom right, #581c87, #000000);
+            padding: 4px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: auto;
+            min-height: 300px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            transition: transform 0.3s;
+        }
+
+        .gallery-item:hover .gallery-image {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 1rem;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-overlay span {
+            color: white;
+            font-weight: bold;
+            font-size: 1.125rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .log-panel {
             padding: 1.5rem;
             border-radius: 0.75rem;
             background: linear-gradient(to bottom right, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 0.9));
@@ -249,79 +301,6 @@
             color: #93c5fd;
             font-style: italic;
             opacity: 0.8;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .gallery-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .gallery-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-
-        .gallery-item {
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .gallery-item:hover {
-            transform: scale(1.05);
-            z-index: 10;
-        }
-
-        .gallery-frame {
-            position: relative;
-            overflow: hidden;
-            border-radius: 0.5rem;
-            background: linear-gradient(to bottom right, #581c87, #000000);
-            padding: 4px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
-        .gallery-image {
-            width: 100%;
-            height: 12rem;
-            object-fit: cover;
-            border-radius: 0.5rem;
-            transition: transform 0.3s;
-        }
-
-        .gallery-item:hover .gallery-image {
-            transform: scale(1.1);
-        }
-
-        .gallery-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-            opacity: 0;
-            transition: opacity 0.3s;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            padding-bottom: 1rem;
-        }
-
-        .gallery-item:hover .gallery-overlay {
-            opacity: 1;
-        }
-
-        .gallery-overlay span {
-            color: white;
-            font-weight: bold;
-            font-size: 1.125rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         /* Lightbox */
@@ -469,36 +448,27 @@
             </div>
         </div>
 
-        <!-- Image Gallery -->
-        <div class="gallery">
+        <!-- Gallery Section with Log -->
+        <div class="gallery-section">
             <div class="gallery-container">
-                <div class="gallery-image-section">
-                    <div class="gallery-grid">
-                        <div class="gallery-item" onclick="openLightbox('ToyBox.png')">
-                            <div class="gallery-frame">
-                                <img src="ToyBox.png" alt="ToyBox" class="gallery-image">
-                                <div class="gallery-overlay">
-                                    <span>View</span>
-                                </div>
-                            </div>
+                <!-- Image -->
+                <div class="gallery-item" onclick="openLightbox('ToyBox.png')">
+                    <div class="gallery-frame">
+                        <img src="ToyBox.png" alt="ToyBox" class="gallery-image">
+                        <div class="gallery-overlay">
+                            <span>View</span>
                         </div>
                     </div>
                 </div>
                 
-                <div class="gallery-text-section">
+                <!-- Log Text -->
+                <div class="log-panel">
                     <h3 class="log-title">[LOG-012]</h3>
                     <p class="log-content">
                         The situation is getting worse. These <strong>hackers</strong> are causing everything to descend into chaos. We've lost hundreds of bases. We don't know what caused the leak, but we are certain it was someone from the Admins.
                     </p>
                     <p class="log-end">- end of LOG-012</p>
                 </div>
-            </div>
-        </div>
-
-        <!-- Dynamic Gallery -->
-        <div class="gallery">
-            <div class="gallery-grid" id="gallery">
-                <!-- Additional images will be added here dynamically -->
             </div>
         </div>
 
@@ -519,48 +489,11 @@
     </div>
 
     <script>
-        // Image gallery functionality
-        const gallery = document.getElementById('gallery');
+        // Lightbox functionality
         const lightbox = document.getElementById('lightbox');
         const lightboxImage = document.getElementById('lightboxImage');
         const closeLightbox = document.getElementById('closeLightbox');
-        
-        let uploadedImages = [];
 
-        // Handle image upload (you can add an upload button if needed)
-        function handleImageUpload(files) {
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    uploadedImages.push(e.target.result);
-                    renderGallery();
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-
-        // Render gallery
-        function renderGallery() {
-            gallery.innerHTML = '';
-            uploadedImages.forEach((image, index) => {
-                const item = document.createElement('div');
-                item.className = 'gallery-item';
-                item.onclick = () => openLightbox(image);
-                
-                item.innerHTML = `
-                    <div class="gallery-frame">
-                        <img src="${image}" alt="Gallery ${index + 1}" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <span>View</span>
-                        </div>
-                    </div>
-                `;
-                
-                gallery.appendChild(item);
-            });
-        }
-
-        // Lightbox functions
         function openLightbox(imageSrc) {
             lightboxImage.src = imageSrc;
             lightbox.classList.add('active');
@@ -576,9 +509,6 @@
                 closeLightboxFunc();
             }
         };
-
-        // You can add drag-and-drop or file input for image upload
-        // Example: document.getElementById('fileInput').onchange = (e) => handleImageUpload(e.target.files);
     </script>
 </body>
 </html>
