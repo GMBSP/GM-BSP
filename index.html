@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GM</title>
+    <title>GM:BSP</title>
     <link rel="icon" type="image/png" href="GodModeration.png">
     <link rel="shortcut icon" type="image/png" href="GodModeration.png">
     <style>
@@ -20,6 +20,13 @@
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
+        }
+
+        @media (min-width: 1600px) {
+            body {
+                padding-left: 0;
+                padding-right: 480px;
+            }
         }
 
         /* Background Pattern */
@@ -52,6 +59,16 @@
             margin: 0 auto;
             padding: 0 1rem;
         }
+
+        @media (min-width: 1600px) {
+            .container {
+                margin-left: 2rem;
+                margin-right: 500px;
+                max-width: none;
+            }
+        }
+
+
 
         /* Header */
         header {
@@ -327,6 +344,7 @@
             max-height: 90vh;
             border-radius: 0.75rem;
             overflow: hidden;
+            box-shadow: 0 0 50px rgba(147, 51, 234, 0.5), 0 0 100px rgba(147, 51, 234, 0.3);
         }
 
         .lightbox-image {
