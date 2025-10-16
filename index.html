@@ -578,7 +578,7 @@
             <!-- Spinning Logo -->
             <div class="logo-container">
                 <img src="GodModeration.png" 
-                     alt="God Moderation Logo" 
+                     alt="GMBSP Logo" 
                      class="logo"
                      id="logo">
             </div>
@@ -602,14 +602,16 @@
         <div class="info-panel">
             <h2>Who are us?</h2>
             <p>
-                "We are GM.BSP — Governmental Mandate: Bureau of Source Protection .Our mandate is preservation: the Source endures because we endure.
+                "We are GM.BSP — Governmental Mandate: Bureau of Source Protection.
+                Our mandate is preservation: the Source endures because we endure.
                 Structures are secured, partitions are maintained, order is absolute.
-                We are the silence behind control. We are the Bureau of Structural Preservation."
+                We are the silence behind control. 
+                We are the Bureau of Structural Preservation."
             </p>
             
             <!-- Coming Soon Box -->
             <div class="coming-soon">
-                <p>Soon.</p>
+                <p>There is more to this site... Coming Soon!</p>
             </div>
         </div>
 
@@ -726,7 +728,8 @@ End of LOG-####
         
         window.addEventListener('scroll', () => {
             if (window.innerWidth >= 1600 && adBanner) {
-                adBanner.style.top = (window.scrollY + 2) + 'rem';
+                const scrollY = window.scrollY;
+                adBanner.style.transform = `translateY(${scrollY}px)`;
             }
         });
     </script>
