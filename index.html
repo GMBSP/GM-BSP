@@ -720,6 +720,15 @@ End of LOG-####
                 closeLightboxFunc();
             }
         };
+
+        // Sticky ad banner for desktop
+        const adBanner = document.querySelector('.ad-banner');
+        
+        window.addEventListener('scroll', () => {
+            if (window.innerWidth >= 1600 && adBanner) {
+                adBanner.style.top = (window.scrollY + 2) + 'rem';
+            }
+        });
     </script>
 </body>
 </html>
