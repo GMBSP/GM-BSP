@@ -535,6 +535,18 @@
             white-space: pre-wrap;
         }
 
+        .log-text .log-number {
+            cursor: pointer;
+            color: #60a5fa;
+            transition: all 0.2s;
+            text-decoration: underline;
+        }
+
+        .log-text .log-number:hover {
+            color: #93c5fd;
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
         .homepage-button {
             padding: 1rem 2rem;
             background: linear-gradient(to bottom, #1f2937, #111827);
@@ -578,7 +590,7 @@
             <!-- Spinning Logo -->
             <div class="logo-container">
                 <img src="GodModeration.png" 
-                     alt="GMBSP Logo" 
+                     alt="God Moderation Logo" 
                      class="logo"
                      id="logo">
             </div>
@@ -592,7 +604,7 @@
         <nav>
             <div class="nav-buttons">
                 <button class="nav-button">Home</button>
-                <button class="nav-button logs">Logs</button>
+                <button class="nav-button logs">LOGs</button>
                 <button class="nav-button error">ERROR</button>
                 <button class="nav-button error">ERROR</button>
             </div>
@@ -611,7 +623,7 @@
             
             <!-- Coming Soon Box -->
             <div class="coming-soon">
-                <p>There is more to this site... Coming Soon!</p>
+                <p>ERROR</p>
             </div>
         </div>
 
@@ -668,7 +680,7 @@
     <div class="log-page" id="logPage">
         <div class="log-box">
             <div class="log-text">---
-[LOG-####]
+<span class="log-number" onclick="openLightbox('Tweakers.png')">[LOG-####]</span>
 We are losing hundreds of our personnel. We have decided to proceed with automated systems to manage the remaining situation and deal with these ########. We are losing ground.
 
 End of LOG-####
