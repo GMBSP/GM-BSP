@@ -156,6 +156,10 @@
             color: #22c55e;
         }
 
+        .nav-button.logs2 {
+            color: #22c55e;
+        }
+
         /* Info Panel */
         .info-panel {
             margin-bottom: 3rem;
@@ -639,12 +643,12 @@
     <div class="container">
         <!-- Header -->
         <header>
-            <h1>Governmental Mandate: Bureau of Source Protection</h1>
+            <h1>God Moderation</h1>
             
             <!-- Spinning Logo -->
             <div class="logo-container">
                 <img src="GodModeration.png" 
-                     alt="God Moderation Logo" 
+                     alt="GMBSP" 
                      class="logo"
                      id="logo">
             </div>
@@ -659,25 +663,25 @@
             <div class="nav-buttons">
                 <button class="nav-button">Home</button>
                 <button class="nav-button logs">LOGs</button>
-                <button class="nav-button error">ERROR</button>
+                <button class="nav-button logs2">LOG-0023</button>
                 <button class="nav-button error">ERROR</button>
             </div>
         </nav>
 
         <!-- Info Panel -->
         <div class="info-panel">
-            <h2>Who are us?</h2>
+            <h2>What are we?</h2>
             <p>
-                "We are GM.BSP — Governmental Mandate: Bureau of Source Protection.
-                Our mandate is preservation: the Source endures because we endure.
-                Structures are secured, partitions are maintained, order is absolute.
+                We are GM.BSP — Governmental Mandate: Bureau of Source Protection. 
+                Our mandate is preservation: the Source endures because we endure. 
+                Structures are secured, partitions are maintained, order is absolute. 
                 We are the silence behind control. 
-                We are the Bureau of Structural Preservation."
+                We are the Bureau of Structural Preservation.
             </p>
             
             <!-- Coming Soon Box -->
             <div class="coming-soon">
-                <p>ERROR.</p>
+                <p>incoming attack</p>
             </div>
         </div>
 
@@ -734,7 +738,7 @@
     <div class="log-page" id="logPage">
         <div class="log-box">
             <div class="log-text">---
-<span class="log-number" onclick="openLightbox('Tweakers.png')">[LOG-####]</span>
+<span class="log-number" onclick="openTweakers()">[LOG-####]</span>
 We are losing hundreds of our personnel. We have decided to proceed with automated systems to manage the remaining situation and deal with these ########. We are losing ground.
 
 End of LOG-####
@@ -743,12 +747,50 @@ End of LOG-####
         </div>
     </div>
 
+    <!-- Tweakers Page -->
+    <div class="tweakers-page" id="tweakersPage">
+        <div class="tweakers-content">
+            <img src="Tweakers.png" alt="Tweakers" class="tweakers-image">
+            <button class="tweakers-close" onclick="closeTweakers()">✕</button>
+        </div>
+    </div>
+
+    <!-- Log 2 Page -->
+    <div class="log-page" id="log2Page">
+        <div class="log-box">
+            <div class="log-text">---
+<span class="log-number" onclick="openMingetank()">[LOG-0023]</span>
+<span class="log-subtitle">Log subtitle: INTERVIEW</span>
+
+"So, what exactly did you hear?"
+"It was a scream..."
+"What do you think caused it?"
+"It was a scream, but..."
+"But?"
+"-It wasn't human."
+
+End of LOG-0023
+---</div>
+            <button class="homepage-button" onclick="closeLog2Page()">Close</button>
+        </div>
+    </div>
+
+    <!-- Mingetank Page -->
+    <div class="tweakers-page" id="mingetankPage">
+        <div class="tweakers-content">
+            <img src="mingetank.png" alt="Mingetank" class="tweakers-image">
+            <button class="tweakers-close" onclick="closeMingetank()">✕</button>
+        </div>
+    </div>
+
     <script>
         // Error page functionality
         const errorPage = document.getElementById('errorPage');
         const logPage = document.getElementById('logPage');
+        const log2Page = document.getElementById('log2Page');
         const errorButtons = document.querySelectorAll('.nav-button.error');
         const logsButton = document.querySelector('.nav-button.logs');
+        const logs2Button = document.querySelector('.nav-button.logs2');
 
         errorButtons.forEach(button => {
             button.onclick = () => {
@@ -760,12 +802,42 @@ End of LOG-####
             logPage.classList.add('active');
         };
 
+        logs2Button.onclick = () => {
+            log2Page.classList.add('active');
+        };
+
         function closeErrorPage() {
             errorPage.classList.remove('active');
         }
 
         function closeLogPage() {
             logPage.classList.remove('active');
+        }
+
+        function closeLog2Page() {
+            log2Page.classList.remove('active');
+        }
+
+        function openTweakers() {
+            const tweakersPage = document.getElementById('tweakersPage');
+            logPage.classList.remove('active');
+            tweakersPage.classList.add('active');
+        }
+
+        function closeTweakers() {
+            const tweakersPage = document.getElementById('tweakersPage');
+            tweakersPage.classList.remove('active');
+        }
+
+        function openMingetank() {
+            const mingetankPage = document.getElementById('mingetankPage');
+            log2Page.classList.remove('active');
+            mingetankPage.classList.add('active');
+        }
+
+        function closeMingetank() {
+            const mingetankPage = document.getElementById('mingetankPage');
+            mingetankPage.classList.remove('active');
         }
 
         // Lightbox functionality
