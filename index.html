@@ -100,7 +100,7 @@
         .redirect-text {
             position: fixed;
             top: 20px;
-            right: 20px;
+            left: 20px;
             background: rgba(0, 0, 0, 0.85);
             color: #ff9933;
             padding: 8px 15px;
@@ -120,10 +120,26 @@
         .redirect-text.active {
             opacity: 1;
         }
+        .video-fade {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s;
+        }
+        .video-fade.active {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <div class="redirect-overlay" id="redirectOverlay"></div>
+    <div class="video-fade" id="videoFade"></div>
     <div class="redirect-text" id="redirectText">REDIRECTING</div>
     <div class="counter" onclick="window.open('https://discord.gg/2MaeHsZ5GC', '_blank')">
         <div class="counter-label">ACTIVE USERS</div>
@@ -202,8 +218,21 @@
         const audioBtn = document.getElementById('audioBtn');
         const redirectOverlay = document.getElementById('redirectOverlay');
         const redirectText = document.getElementById('redirectText');
+        const videoFade = document.getElementById('videoFade');
         let audioStarted = false;
         let hasRedirected = false;
+
+        // Preload videos to avoid pauses
+        const video1 = document.createElement('video');
+        video1.src = 'water1.mp4';
+        video1.preload = 'auto';
+        video1.muted = true;
+        
+        const video2 = document.createElement('video');
+        video2.src = 'water2.mp4';
+        video2.preload = 'auto';
+        video2.muted = true;
+        video2.loop = true;
 
         // Trigger redirect sequence when first video ends
         mainVideo.addEventListener('ended', () => {
@@ -229,19 +258,34 @@
                 redirectText.classList.remove('active');
                 redirectOverlay.classList.remove('active');
                 
-                // Change video source to water1.mp4
-                mainVideo.innerHTML = '<source src="water1.mp4" type="video/mp4">';
+                // Resume background audio
+                if (audioStarted) {
+                    audioElement.play();
+                }
+                
+                // Change to preloaded water1 video
+                mainVideo.srcObject = null;
+                mainVideo.src = 'water1.mp4';
                 mainVideo.load();
                 mainVideo.muted = true;
                 mainVideo.play();
                 
-                // When water1 ends, switch to water2 (looping)
+                // When water1 ends, fade to water2
                 mainVideo.addEventListener('ended', () => {
-                    mainVideo.innerHTML = '<source src="water2.mp4" type="video/mp4">';
-                    mainVideo.load();
-                    mainVideo.loop = true;
-                    mainVideo.muted = true;
-                    mainVideo.play();
+                    // Fade out
+                    videoFade.classList.add('active');
+                    
+                    setTimeout(() => {
+                        // Switch to water2
+                        mainVideo.src = 'water2.mp4';
+                        mainVideo.load();
+                        mainVideo.loop = true;
+                        mainVideo.muted = true;
+                        mainVideo.play();
+                        
+                        // Fade in
+                        videoFade.classList.remove('active');
+                    }, 1000);
                 }, { once: true });
             }, 5000);
         }
