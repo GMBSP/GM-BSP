@@ -196,6 +196,29 @@
             margin-bottom: 5px;
             line-height: 1.4;
             word-wrap: break-word;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .console-message.deleted {
+            color: #ff4444;
+        }
+        .console-message .message-content {
+            flex: 1;
+        }
+        .console-message .delete-btn {
+            color: #ff4444;
+            cursor: pointer;
+            padding: 0 8px;
+            font-size: 14px;
+            display: none;
+            transition: color 0.2s;
+        }
+        .console-message .delete-btn:hover {
+            color: #ff6666;
+        }
+        .console-message:hover .delete-btn {
+            display: inline;
         }
         .console-message .timestamp {
             color: #888;
@@ -442,33 +465,61 @@
         // Listen for chat messages
         const messagesRef = ref(database, 'messages');
         let isFirstLoad = true;
+        let messageCount = 0;
+        
         onValue(messagesRef, (snapshot) => {
             const messages = snapshot.val();
             const messagesDiv = document.getElementById('consoleMessages');
             messagesDiv.innerHTML = '';
             
             if (messages) {
-                const messageArray = Object.values(messages);
-                messageArray.forEach(msg => {
+                const messageArray = Object.entries(messages);
+                messageArray.forEach(([msgId, msg]) => {
                     const msgDiv = document.createElement('div');
-                    msgDiv.className = 'console-message';
+                    msgDiv.className = 'console-message' + (msg.deleted ? ' deleted' : '');
                     const time = new Date(msg.timestamp).toLocaleTimeString();
-                    msgDiv.innerHTML = `<span class="timestamp">[${time}]</span><span class="username">${msg.username}:</span>${msg.text}`;
+                    
+                    if (msg.deleted) {
+                        msgDiv.innerHTML = `<div class="message-content"><span class="timestamp">[${time}]</span><span style="color: #ff4444;">ERROR</span></div>`;
+                    } else {
+                        msgDiv.innerHTML = `
+                            <div class="message-content">
+                                <span class="timestamp">[${time}]</span><span class="username">${msg.username}:</span>${msg.text}
+                            </div>
+                            ${window.isAdmin ? `<span class="delete-btn" onclick="deleteMessage('${msgId}')">✕</span>` : ''}
+                        `;
+                    }
                     messagesDiv.appendChild(msgDiv);
                 });
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
                 
                 // Play alert sound for new messages (skip on first load)
-                if (!isFirstLoad && messageArray.length > 0) {
+                const currentCount = messageArray.length;
+                if (!isFirstLoad && currentCount > messageCount) {
                     const alertSound = document.getElementById('alertAudio');
                     if (alertSound) {
                         alertSound.currentTime = 0;
                         alertSound.play().catch(e => console.log('Alert sound failed:', e));
                     }
                 }
+                messageCount = currentCount;
                 isFirstLoad = false;
             }
         });
+        
+        // Make deleteMessage available globally
+        window.deleteMessage = async function(msgId) {
+            if (!window.isAdmin) return;
+            
+            const { ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+            const msgRef = ref(window.firebaseDB, 'messages/' + msgId);
+            
+            await update(msgRef, {
+                deleted: true,
+                text: '',
+                username: ''
+            });
+        };
     </script>
 
     <script>
