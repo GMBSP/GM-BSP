@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WORLD</title>
+    <title>Video</title>
     <style>
         * {
             margin: 0;
@@ -23,9 +23,41 @@
             height: 100%;
             object-fit: cover;
         }
+
+        .counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 18px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+        }
+
+        .counter-label {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+
+        .counter-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff00;
+        }
     </style>
 </head>
 <body>
+    <div class="counter">
+        <div class="counter-label">ACTIVE USERS</div>
+        <div class="counter-number" id="userCount">1</div>
+    </div>
+
     <video autoplay loop muted playsinline>
         <source src="water.mp4" type="video/mp4">
         Your browser does not support the video tag.
@@ -35,5 +67,45 @@
         <source src="water01.mp3" type="audio/mpeg">
         Your browser does not support the audio tag.
     </audio>
+
+    <script>
+        const STORAGE_KEY = 'active-users';
+        const counterElement = document.getElementById('userCount');
+        
+        async function updateCounter() {
+            try {
+                // Get current count
+                let result = await window.storage.get(STORAGE_KEY, true);
+                let count = result ? parseInt(result.value) : 0;
+                
+                // Increment count
+                count++;
+                
+                // Save new count
+                await window.storage.set(STORAGE_KEY, count.toString(), true);
+                
+                // Display count
+                counterElement.textContent = count;
+            } catch (error) {
+                console.error('Storage error:', error);
+                counterElement.textContent = '1';
+            }
+        }
+        
+        // Update counter when page loads
+        updateCounter();
+        
+        // Optional: refresh count every 5 seconds to show other users
+        setInterval(async () => {
+            try {
+                let result = await window.storage.get(STORAGE_KEY, true);
+                if (result) {
+                    counterElement.textContent = result.value;
+                }
+            } catch (error) {
+                console.error('Storage error:', error);
+            }
+        }, 5000);
+    </script>
 </body>
 </html>
