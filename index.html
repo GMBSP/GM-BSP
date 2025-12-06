@@ -99,10 +99,15 @@
         Your browser does not support the audio tag.
     </audio>
     <script>
-        const STORAGE_KEY = 'active-users';
+        const STORAGE_KEY = 'active-sessions';
         const counterElement = document.getElementById('userCount');
         const audioElement = document.getElementById('bgAudio');
         const audioBtn = document.getElementById('audioBtn');
+        
+        // Generate unique session ID
+        const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const HEARTBEAT_INTERVAL = 3000; // Check in every 3 seconds
+        const SESSION_TIMEOUT = 10000; // Consider inactive after 10 seconds
         
         // Audio control
         let audioStarted = false;
@@ -137,41 +142,63 @@
             audioBtn.textContent = 'CLICK TO START';
         });
         
-        async function updateCounter() {
+        async function updateSessions() {
             try {
-                // Get current count
-                let result = await window.storage.get(STORAGE_KEY, true);
-                let count = result ? parseInt(result.value) : 0;
+                const now = Date.now();
+                let sessions = {};
                 
-                // Increment count
-                count++;
+                // Get existing sessions
+                try {
+                    const result = await window.storage.get(STORAGE_KEY, true);
+                    if (result) {
+                        sessions = JSON.parse(result.value);
+                    }
+                } catch (error) {
+                    // Key doesn't exist yet, start fresh
+                    sessions = {};
+                }
                 
-                // Save new count
-                await window.storage.set(STORAGE_KEY, count.toString(), true);
+                // Remove expired sessions
+                for (const [id, timestamp] of Object.entries(sessions)) {
+                    if (now - timestamp > SESSION_TIMEOUT) {
+                        delete sessions[id];
+                    }
+                }
                 
-                // Display count
-                counterElement.textContent = count;
+                // Add/update current session
+                sessions[sessionId] = now;
+                
+                // Save back to storage
+                await window.storage.set(STORAGE_KEY, JSON.stringify(sessions), true);
+                
+                // Update display
+                const activeCount = Object.keys(sessions).length;
+                counterElement.textContent = activeCount;
             } catch (error) {
                 console.error('Storage error:', error);
                 counterElement.textContent = '1';
             }
         }
         
-        // Update counter when page loads
-        updateCounter();
+        // Initial update
+        updateSessions();
         
-        // Refresh count every 1 second
-        setInterval(async () => {
+        // Heartbeat - check in regularly
+        setInterval(updateSessions, HEARTBEAT_INTERVAL);
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', async () => {
             try {
-                let result = await window.storage.get(STORAGE_KEY, true);
+                const result = await window.storage.get(STORAGE_KEY, true);
                 if (result) {
-                    let currentCount = parseInt(result.value);
-                    counterElement.textContent = currentCount;
+                    const sessions = JSON.parse(result.value);
+                    delete sessions[sessionId];
+                    await window.storage.set(STORAGE_KEY, JSON.stringify(sessions), true);
                 }
             } catch (error) {
-                console.error('Storage error:', error);
+                console.error('Cleanup error:', error);
             }
-        }, 1000);
+        });
     </script>
 </body>
 </html>
