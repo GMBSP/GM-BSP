@@ -94,6 +94,7 @@
             font-family: 'Courier New', monospace;
             z-index: 1000;
             display: none;
+            cursor: move;
         }
         .video-control-hud.active {
             display: block;
@@ -103,6 +104,7 @@
             font-size: 14px;
             margin-bottom: 10px;
             letter-spacing: 1px;
+            cursor: move;
         }
         .video-control-hud button {
             width: 100%;
@@ -371,6 +373,7 @@
             display: none;
             max-width: 500px;
             width: 90%;
+            cursor: move;
         }
         .admin-vote-panel.active {
             display: block;
@@ -379,6 +382,7 @@
             font-size: 20px;
             margin-bottom: 20px;
             letter-spacing: 2px;
+            cursor: move;
         }
         .admin-vote-panel textarea {
             width: 100%;
@@ -435,6 +439,7 @@
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
+            cursor: move;
         }
         .admin-sound-panel.active {
             display: block;
@@ -443,6 +448,7 @@
             font-size: 20px;
             margin-bottom: 20px;
             letter-spacing: 2px;
+            cursor: move;
         }
         .admin-sound-panel select {
             width: 100%;
@@ -1129,7 +1135,7 @@
             if (text) {
                 const messagesRef = ref(database, 'messages');
                 await push(messagesRef, {
-                    username: 'ADMIN',
+                    username: 'SOURCEENGINE',
                     text: text,
                     timestamp: Date.now()
                 });
@@ -1389,6 +1395,78 @@
             audioStarted = true;
         }).catch(() => {
             audioBtn.textContent = 'CLICK TO START';
+        });
+        
+        // Make HUD elements draggable
+        function makeDraggable(element) {
+            let isDragging = false;
+            let currentX;
+            let currentY;
+            let initialX;
+            let initialY;
+            let xOffset = 0;
+            let yOffset = 0;
+
+            element.addEventListener('mousedown', dragStart);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', dragEnd);
+            
+            // Touch support
+            element.addEventListener('touchstart', dragStart);
+            document.addEventListener('touchmove', drag);
+            document.addEventListener('touchend', dragEnd);
+
+            function dragStart(e) {
+                // Only drag if clicking on header or the element itself (not buttons)
+                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || 
+                    e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                    return;
+                }
+                
+                if (e.type === 'touchstart') {
+                    initialX = e.touches[0].clientX - xOffset;
+                    initialY = e.touches[0].clientY - yOffset;
+                } else {
+                    initialX = e.clientX - xOffset;
+                    initialY = e.clientY - yOffset;
+                }
+
+                isDragging = true;
+            }
+
+            function drag(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    
+                    if (e.type === 'touchmove') {
+                        currentX = e.touches[0].clientX - initialX;
+                        currentY = e.touches[0].clientY - initialY;
+                    } else {
+                        currentX = e.clientX - initialX;
+                        currentY = e.clientY - initialY;
+                    }
+
+                    xOffset = currentX;
+                    yOffset = currentY;
+
+                    setTranslate(currentX, currentY, element);
+                }
+            }
+
+            function dragEnd(e) {
+                isDragging = false;
+            }
+
+            function setTranslate(xPos, yPos, el) {
+                el.style.transform = `translate(${xPos}px, ${yPos}px)`;
+            }
+        }
+
+        // Make all panels draggable
+        document.addEventListener('DOMContentLoaded', () => {
+            makeDraggable(document.getElementById('videoControlHud'));
+            makeDraggable(document.getElementById('adminVotePanel'));
+            makeDraggable(document.getElementById('adminSoundPanel'));
         });
     </script>
 </body>
