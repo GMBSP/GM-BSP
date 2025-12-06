@@ -240,14 +240,10 @@
             cursor: pointer;
             padding: 0 8px;
             font-size: 14px;
-            display: none;
             transition: color 0.2s;
         }
         .console-message .delete-btn:hover {
             color: #ff6666;
-        }
-        .console-message:hover .delete-btn {
-            display: inline;
         }
         .console-message .timestamp {
             color: #888;
@@ -281,6 +277,7 @@
             font-family: 'Courier New', monospace;
             cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
         }
         .console-input button:hover {
             background: #ff9933;
@@ -331,14 +328,17 @@
             .console-input {
                 padding: 8px 15px;
                 gap: 8px;
+                flex-wrap: wrap;
             }
             .console-input input {
                 font-size: 12px;
                 padding: 6px 10px;
+                flex: 1 1 100%;
             }
             .console-input button {
                 padding: 6px 15px;
-                font-size: 12px;
+                font-size: 11px;
+                flex: 1;
             }
             .console-toggle {
                 font-size: 12px;
@@ -518,6 +518,12 @@
                 document.getElementById('consoleInput').style.display = 'flex';
                 document.getElementById('logoutBtn').style.display = 'block';
                 console.log('Admin logged in:', user.email);
+                
+                // Trigger a refresh of messages to show delete buttons
+                setTimeout(() => {
+                    const event = new Event('admin-login');
+                    window.dispatchEvent(event);
+                }, 100);
             } else {
                 // User is signed out
                 window.isAdmin = false;
@@ -532,46 +538,53 @@
         let isFirstLoad = true;
         let messageCount = 0;
         
-        onValue(messagesRef, (snapshot) => {
-            const messages = snapshot.val();
-            const messagesDiv = document.getElementById('consoleMessages');
-            messagesDiv.innerHTML = '';
-            
-            if (messages) {
-                const messageArray = Object.entries(messages);
-                messageArray.forEach(([msgId, msg]) => {
-                    const msgDiv = document.createElement('div');
-                    msgDiv.className = 'console-message' + (msg.deleted ? ' deleted' : '');
-                    const time = new Date(msg.timestamp).toLocaleTimeString();
-                    
-                    if (msg.deleted) {
-                        msgDiv.innerHTML = `<div class="message-content"><span class="timestamp">[${time}]</span><span style="color: #ff4444;">ERROR</span></div>`;
-                    } else {
-                        const deleteBtn = window.isAdmin ? `<span class="delete-btn" style="display: inline;" onclick="deleteMessage('${msgId}')">✕</span>` : '';
-                        msgDiv.innerHTML = `
-                            <div class="message-content">
-                                <span class="timestamp">[${time}]</span><span class="username">${msg.username}:</span>${msg.text}
-                            </div>
-                            ${deleteBtn}
-                        `;
-                    }
-                    messagesDiv.appendChild(msgDiv);
-                });
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        function renderMessages() {
+            onValue(messagesRef, (snapshot) => {
+                const messages = snapshot.val();
+                const messagesDiv = document.getElementById('consoleMessages');
+                messagesDiv.innerHTML = '';
                 
-                // Play alert sound for new messages (skip on first load)
-                const currentCount = messageArray.length;
-                if (!isFirstLoad && currentCount > messageCount) {
-                    const alertSound = document.getElementById('alertAudio');
-                    if (alertSound) {
-                        alertSound.currentTime = 0;
-                        alertSound.play().catch(e => console.log('Alert sound failed:', e));
+                if (messages) {
+                    const messageArray = Object.entries(messages);
+                    messageArray.forEach(([msgId, msg]) => {
+                        const msgDiv = document.createElement('div');
+                        msgDiv.className = 'console-message' + (msg.deleted ? ' deleted' : '');
+                        const time = new Date(msg.timestamp).toLocaleTimeString();
+                        
+                        if (msg.deleted) {
+                            msgDiv.innerHTML = `<div class="message-content"><span class="timestamp">[${time}]</span><span style="color: #ff4444;">ERROR</span></div>`;
+                        } else {
+                            const deleteBtn = window.isAdmin ? `<span class="delete-btn" onclick="deleteMessage('${msgId}')">✕</span>` : '';
+                            msgDiv.innerHTML = `
+                                <div class="message-content">
+                                    <span class="timestamp">[${time}]</span><span class="username">${msg.username}:</span>${msg.text}
+                                </div>
+                                ${deleteBtn}
+                            `;
+                        }
+                        messagesDiv.appendChild(msgDiv);
+                    });
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                    
+                    // Play alert sound for new messages (skip on first load)
+                    const currentCount = messageArray.length;
+                    if (!isFirstLoad && currentCount > messageCount) {
+                        const alertSound = document.getElementById('alertAudio');
+                        if (alertSound) {
+                            alertSound.currentTime = 0;
+                            alertSound.play().catch(e => console.log('Alert sound failed:', e));
+                        }
                     }
+                    messageCount = currentCount;
+                    isFirstLoad = false;
                 }
-                messageCount = currentCount;
-                isFirstLoad = false;
-            }
-        });
+            });
+        }
+        
+        renderMessages();
+        
+        // Re-render messages when admin logs in
+        window.addEventListener('admin-login', renderMessages);
         
         // Make functions available globally
         window.loginAdmin = async function() {
