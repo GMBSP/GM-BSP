@@ -286,6 +286,14 @@
             background: #ff9933;
             color: #000;
         }
+        .console-input button.danger {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+        .console-input button.danger:hover {
+            background: #ff4444;
+            color: #000;
+        }
         .console-toggle {
             position: fixed;
             bottom: 70px;
@@ -418,6 +426,7 @@
         <div class="console-input" id="consoleInput">
             <input type="text" id="messageInput" placeholder="Enter message..." />
             <button onclick="sendMessage()">SEND</button>
+            <button class="danger" onclick="deleteAllMessages()">DELETE ALL</button>
         </div>
     </div>
     
@@ -620,6 +629,16 @@
                     timestamp: Date.now()
                 });
                 input.value = '';
+            }
+        };
+        
+        window.deleteAllMessages = async function() {
+            if (!window.isAdmin) return;
+            
+            if (confirm('Are you sure you want to delete ALL messages? This cannot be undone!')) {
+                const messagesRef = ref(database, 'messages');
+                await set(messagesRef, null);
+                console.log('All messages deleted');
             }
         };
     </script>
