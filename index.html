@@ -538,11 +538,12 @@
                     if (msg.deleted) {
                         msgDiv.innerHTML = `<div class="message-content"><span class="timestamp">[${time}]</span><span style="color: #ff4444;">ERROR</span></div>`;
                     } else {
+                        const deleteBtn = window.isAdmin ? `<span class="delete-btn" style="display: inline;" onclick="deleteMessage('${msgId}')">✕</span>` : '';
                         msgDiv.innerHTML = `
                             <div class="message-content">
                                 <span class="timestamp">[${time}]</span><span class="username">${msg.username}:</span>${msg.text}
                             </div>
-                            ${window.isAdmin ? `<span class="delete-btn" onclick="deleteMessage('${msgId}')">✕</span>` : ''}
+                            ${deleteBtn}
                         `;
                     }
                     messagesDiv.appendChild(msgDiv);
@@ -614,7 +615,7 @@
             if (text) {
                 const messagesRef = ref(database, 'messages');
                 await push(messagesRef, {
-                    username: window.adminEmail.split('@')[0].toUpperCase(),
+                    username: 'SOURCEENGINE',
                     text: text,
                     timestamp: Date.now()
                 });
