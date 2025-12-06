@@ -37,6 +37,14 @@
             backdrop-filter: blur(10px);
             border: 2px solid rgba(255, 255, 255, 0.2);
             z-index: 1000;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .counter:hover {
+            background: rgba(0, 0, 0, 0.9);
+            border-color: rgba(0, 255, 0, 0.5);
+            transform: scale(1.05);
         }
 
         .counter-label {
@@ -53,7 +61,7 @@
     </style>
 </head>
 <body>
-    <div class="counter">
+    <div class="counter" onclick="window.open('https://discord.gg/2MaeHsZ5GC', '_blank')">
         <div class="counter-label">ACTIVE USERS</div>
         <div class="counter-number" id="userCount">1</div>
     </div>
@@ -95,12 +103,13 @@
         // Update counter when page loads
         updateCounter();
         
-        // Optional: refresh count every 5 seconds to show other users
+        // Refresh count every 5 seconds
         setInterval(async () => {
             try {
                 let result = await window.storage.get(STORAGE_KEY, true);
                 if (result) {
-                    counterElement.textContent = result.value;
+                    let currentCount = parseInt(result.value);
+                    counterElement.textContent = currentCount;
                 }
             } catch (error) {
                 console.error('Storage error:', error);
