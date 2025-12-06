@@ -173,6 +173,297 @@
             color: #000;
         }
         
+        /* Vote Panel */
+        .vote-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(20, 20, 20, 0.98);
+            border: 3px solid #ff9933;
+            padding: 30px;
+            font-family: 'Courier New', monospace;
+            color: #ff9933;
+            box-shadow: 0 0 30px rgba(255, 153, 51, 0.5);
+            z-index: 2500;
+            display: none;
+            max-width: 500px;
+            width: 90%;
+        }
+        .vote-panel.active {
+            display: block;
+        }
+        .vote-panel h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            color: #ffcc66;
+        }
+        .vote-question {
+            font-size: 16px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+            color: #ffcc66;
+        }
+        .vote-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .vote-buttons button {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ff9933;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+        }
+        .vote-buttons button:hover:not(:disabled) {
+            background: #ff9933;
+            color: #000;
+        }
+        .vote-buttons button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .vote-results {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #ff9933;
+        }
+        .vote-result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .vote-result-bar {
+            height: 25px;
+            background: rgba(255, 153, 51, 0.3);
+            margin-bottom: 15px;
+            position: relative;
+            border: 1px solid #ff9933;
+        }
+        .vote-result-bar-fill {
+            height: 100%;
+            background: #ff9933;
+            transition: width 0.3s;
+        }
+        .vote-result-label {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #000;
+            font-weight: bold;
+            z-index: 1;
+        }
+        .vote-status {
+            font-size: 12px;
+            color: #888;
+            margin-top: 10px;
+        }
+        
+        /* Admin Vote Control */
+        .admin-vote-btn {
+            position: fixed;
+            top: 130px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #ff9933;
+            padding: 8px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            z-index: 1000;
+            cursor: pointer;
+            border: 2px solid #ff9933;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            display: none;
+        }
+        .admin-vote-btn:hover {
+            background: #ff9933;
+            color: #000;
+        }
+        
+        .admin-sound-btn {
+            position: fixed;
+            top: 180px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #ff9933;
+            padding: 8px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            z-index: 1000;
+            cursor: pointer;
+            border: 2px solid #ff9933;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            display: none;
+        }
+        .admin-sound-btn:hover {
+            background: #ff9933;
+            color: #000;
+        }
+        
+        .admin-vote-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(20, 20, 20, 0.98);
+            border: 3px solid #ff9933;
+            padding: 30px;
+            font-family: 'Courier New', monospace;
+            color: #ff9933;
+            box-shadow: 0 0 30px rgba(255, 153, 51, 0.5);
+            z-index: 2600;
+            display: none;
+            max-width: 500px;
+            width: 90%;
+        }
+        .admin-vote-panel.active {
+            display: block;
+        }
+        .admin-vote-panel h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        .admin-vote-panel textarea {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ffcc66;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        .admin-vote-panel button {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ff9933;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+        .admin-vote-panel button:hover {
+            background: #ff9933;
+            color: #000;
+        }
+        .admin-vote-panel button.danger {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+        .admin-vote-panel button.danger:hover {
+            background: #ff4444;
+            color: #000;
+        }
+        
+        /* Sound Control Panel */
+        .admin-sound-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(20, 20, 20, 0.98);
+            border: 3px solid #ff9933;
+            padding: 30px;
+            font-family: 'Courier New', monospace;
+            color: #ff9933;
+            box-shadow: 0 0 30px rgba(255, 153, 51, 0.5);
+            z-index: 2600;
+            display: none;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .admin-sound-panel.active {
+            display: block;
+        }
+        .admin-sound-panel h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        .admin-sound-panel input[type="file"] {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ffcc66;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        .admin-sound-panel button {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ff9933;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+        .admin-sound-panel button:hover {
+            background: #ff9933;
+            color: #000;
+        }
+        .sound-list {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #ff9933;
+        }
+        .sound-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #ff9933;
+        }
+        .sound-item-name {
+            flex: 1;
+            color: #ffcc66;
+            font-size: 12px;
+        }
+        .sound-item-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .sound-item-buttons button {
+            width: auto;
+            padding: 5px 15px;
+            font-size: 11px;
+            margin: 0;
+        }
+        .sound-item-buttons button.danger {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+        .sound-item-buttons button.danger:hover {
+            background: #ff4444;
+            color: #000;
+        }
+        
         /* Console/Chat */
         .console {
             position: fixed;
@@ -415,6 +706,44 @@
     </div>
     
     <button class="logout-btn" id="logoutBtn" onclick="logoutAdmin()">LOGOUT</button>
+    <button class="admin-vote-btn" id="adminVoteBtn" onclick="openAdminVotePanel()">VOTE CONTROL</button>
+    <button class="admin-sound-btn" id="adminSoundBtn" onclick="openAdminSoundPanel()">SOUND CONTROL</button>
+    
+    <!-- Vote Panel (for users) -->
+    <div class="vote-panel" id="votePanel">
+        <h2>VOTE</h2>
+        <div class="vote-question" id="voteQuestion">Loading...</div>
+        <div class="vote-buttons">
+            <button onclick="submitVote('yes')" id="yesBtn">YES</button>
+            <button onclick="submitVote('no')" id="noBtn">NO</button>
+        </div>
+        <div class="vote-results" id="voteResults" style="display: none;"></div>
+        <div class="vote-status" id="voteStatus"></div>
+    </div>
+    
+    <!-- Admin Vote Control Panel -->
+    <div class="admin-vote-panel" id="adminVotePanel">
+        <h2>VOTE CONTROL PANEL</h2>
+        <textarea id="voteQuestionInput" placeholder="Enter vote question..."></textarea>
+        <button onclick="startVote()">START VOTE</button>
+        <button class="danger" onclick="endVote()">END VOTE</button>
+        <button onclick="closeAdminVotePanel()">CLOSE</button>
+        <div class="vote-results" id="adminVoteResults" style="margin-top: 20px;"></div>
+    </div>
+    
+    <!-- Admin Sound Control Panel -->
+    <div class="admin-sound-panel" id="adminSoundPanel">
+        <h2>SOUND CONTROL PANEL</h2>
+        <input type="file" id="soundFileInput" accept="audio/*" />
+        <button onclick="uploadSound()">UPLOAD SOUND</button>
+        <button onclick="closeAdminSoundPanel()">CLOSE</button>
+        <div class="sound-list" id="soundList">
+            <h3 style="margin-bottom: 15px; font-size: 16px;">UPLOADED SOUNDS</h3>
+            <div id="soundItems"></div>
+        </div>
+    </div>
+    
+    <audio id="globalSoundPlayer"></audio>
     
     <!-- Console/Chat -->
     <div class="console" id="console">
@@ -514,9 +843,12 @@
                 // User is signed in
                 window.isAdmin = true;
                 window.adminEmail = user.email;
+                window.userId = user.uid;
                 document.getElementById('loginPage').classList.remove('active');
                 document.getElementById('consoleInput').style.display = 'flex';
                 document.getElementById('logoutBtn').style.display = 'block';
+                document.getElementById('adminVoteBtn').style.display = 'block';
+                document.getElementById('adminSoundBtn').style.display = 'block';
                 console.log('Admin logged in:', user.email);
                 
                 // Trigger a refresh of messages to show delete buttons
@@ -528,8 +860,11 @@
                 // User is signed out
                 window.isAdmin = false;
                 window.adminEmail = null;
+                window.userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 document.getElementById('consoleInput').style.display = 'none';
                 document.getElementById('logoutBtn').style.display = 'none';
+                document.getElementById('adminVoteBtn').style.display = 'none';
+                document.getElementById('adminSoundBtn').style.display = 'none';
             }
         });
         
@@ -585,6 +920,122 @@
         
         // Re-render messages when admin logs in
         window.addEventListener('admin-login', renderMessages);
+        
+        // Listen for active vote
+        const voteRef = ref(database, 'vote');
+        onValue(voteRef, (snapshot) => {
+            const vote = snapshot.val();
+            const votePanel = document.getElementById('votePanel');
+            
+            if (vote && vote.active) {
+                // Show vote panel
+                document.getElementById('voteQuestion').textContent = vote.question;
+                
+                // Check if user has already voted
+                const userVoted = vote.votes && vote.votes[window.userId];
+                
+                if (userVoted) {
+                    // Disable buttons and show results
+                    document.getElementById('yesBtn').disabled = true;
+                    document.getElementById('noBtn').disabled = true;
+                    document.getElementById('voteStatus').textContent = 'You voted: ' + userVoted.toUpperCase();
+                    showVoteResults(vote);
+                } else {
+                    // Enable buttons
+                    document.getElementById('yesBtn').disabled = false;
+                    document.getElementById('noBtn').disabled = false;
+                    document.getElementById('voteStatus').textContent = '';
+                    document.getElementById('voteResults').style.display = 'none';
+                }
+                
+                votePanel.classList.add('active');
+                
+                // Update admin panel if open
+                if (window.isAdmin) {
+                    updateAdminVoteResults(vote);
+                }
+            } else {
+                votePanel.classList.remove('active');
+            }
+        });
+        
+        function showVoteResults(vote) {
+            const resultsDiv = document.getElementById('voteResults');
+            const votes = vote.votes || {};
+            
+            let yesCount = 0;
+            let noCount = 0;
+            
+            Object.values(votes).forEach(v => {
+                if (v === 'yes') yesCount++;
+                if (v === 'no') noCount++;
+            });
+            
+            const total = yesCount + noCount;
+            const yesPercent = total > 0 ? (yesCount / total * 100).toFixed(1) : 0;
+            const noPercent = total > 0 ? (noCount / total * 100).toFixed(1) : 0;
+            
+            resultsDiv.innerHTML = `
+                <div class="vote-result-item">
+                    <span>YES: ${yesCount} votes (${yesPercent}%)</span>
+                </div>
+                <div class="vote-result-bar">
+                    <div class="vote-result-bar-fill" style="width: ${yesPercent}%"></div>
+                    <div class="vote-result-label">YES</div>
+                </div>
+                <div class="vote-result-item">
+                    <span>NO: ${noCount} votes (${noPercent}%)</span>
+                </div>
+                <div class="vote-result-bar">
+                    <div class="vote-result-bar-fill" style="width: ${noPercent}%"></div>
+                    <div class="vote-result-label">NO</div>
+                </div>
+                <div style="text-align: center; margin-top: 10px; color: #888;">
+                    Total votes: ${total}
+                </div>
+            `;
+            resultsDiv.style.display = 'block';
+        }
+        
+        function updateAdminVoteResults(vote) {
+            const adminResultsDiv = document.getElementById('adminVoteResults');
+            if (!adminResultsDiv) return;
+            
+            const votes = vote.votes || {};
+            
+            let yesCount = 0;
+            let noCount = 0;
+            
+            Object.values(votes).forEach(v => {
+                if (v === 'yes') yesCount++;
+                if (v === 'no') noCount++;
+            });
+            
+            const total = yesCount + noCount;
+            const yesPercent = total > 0 ? (yesCount / total * 100).toFixed(1) : 0;
+            const noPercent = total > 0 ? (noCount / total * 100).toFixed(1) : 0;
+            
+            adminResultsDiv.innerHTML = `
+                <h3 style="margin-bottom: 15px; font-size: 16px;">LIVE RESULTS</h3>
+                <div class="vote-result-item">
+                    <span>YES: ${yesCount} votes (${yesPercent}%)</span>
+                </div>
+                <div class="vote-result-bar">
+                    <div class="vote-result-bar-fill" style="width: ${yesPercent}%"></div>
+                    <div class="vote-result-label">YES</div>
+                </div>
+                <div class="vote-result-item">
+                    <span>NO: ${noCount} votes (${noPercent}%)</span>
+                </div>
+                <div class="vote-result-bar">
+                    <div class="vote-result-bar-fill" style="width: ${noPercent}%"></div>
+                    <div class="vote-result-label">NO</div>
+                </div>
+                <div style="text-align: center; margin-top: 10px; color: #888;">
+                    Total votes: ${total}
+                </div>
+            `;
+        }
         
         // Make functions available globally
         window.loginAdmin = async function() {
@@ -653,6 +1104,143 @@
                 await set(messagesRef, null);
                 console.log('All messages deleted');
             }
+        };
+        
+        window.submitVote = async function(choice) {
+            if (!window.userId) return;
+            
+            const voteRef = ref(database, 'vote');
+            const snapshot = await new Promise(resolve => {
+                onValue(voteRef, resolve, { onlyOnce: true });
+            });
+            
+            const vote = snapshot.val();
+            if (!vote || !vote.active) return;
+            
+            // Check if already voted
+            if (vote.votes && vote.votes[window.userId]) {
+                alert('You have already voted!');
+                return;
+            }
+            
+            // Submit vote
+            const userVoteRef = ref(database, `vote/votes/${window.userId}`);
+            await set(userVoteRef, choice);
+        };
+        
+        window.openAdminVotePanel = function() {
+            document.getElementById('adminVotePanel').classList.add('active');
+        };
+        
+        window.closeAdminVotePanel = function() {
+            document.getElementById('adminVotePanel').classList.remove('active');
+        };
+        
+        window.startVote = async function() {
+            if (!window.isAdmin) return;
+            
+            const question = document.getElementById('voteQuestionInput').value.trim();
+            if (!question) {
+                alert('Please enter a question!');
+                return;
+            }
+            
+            const voteRef = ref(database, 'vote');
+            await set(voteRef, {
+                question: question,
+                active: true,
+                votes: {},
+                startedAt: Date.now()
+            });
+            
+            document.getElementById('voteQuestionInput').value = '';
+            alert('Vote started!');
+        };
+        
+        window.endVote = async function() {
+            if (!window.isAdmin) return;
+            
+            if (!confirm('Are you sure you want to end the current vote?')) return;
+            
+            const voteRef = ref(database, 'vote');
+            await update(voteRef, {
+                active: false
+            });
+            
+            alert('Vote ended!');
+        };
+        
+        window.openAdminSoundPanel = function() {
+            document.getElementById('adminSoundPanel').classList.add('active');
+        };
+        
+        window.closeAdminSoundPanel = function() {
+            document.getElementById('adminSoundPanel').classList.remove('active');
+        };
+        
+        window.uploadSound = async function() {
+            if (!window.isAdmin) return;
+            
+            const fileInput = document.getElementById('soundFileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a sound file!');
+                return;
+            }
+            
+            if (!file.type.startsWith('audio/')) {
+                alert('Please select a valid audio file!');
+                return;
+            }
+            
+            // Convert to base64
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const base64Data = e.target.result;
+                
+                const soundsRef = ref(database, 'sounds');
+                const newSoundRef = push(soundsRef);
+                
+                await set(newSoundRef, {
+                    name: file.name,
+                    soundData: base64Data,
+                    uploadedAt: Date.now()
+                });
+                
+                fileInput.value = '';
+                alert('Sound uploaded successfully!');
+            };
+            
+            reader.readAsDataURL(file);
+        };
+        
+        window.playSoundForAll = async function(soundId) {
+            if (!window.isAdmin) return;
+            
+            const soundRef = ref(database, `sounds/${soundId}`);
+            const snapshot = await new Promise(resolve => {
+                onValue(soundRef, resolve, { onlyOnce: true });
+            });
+            
+            const sound = snapshot.val();
+            if (!sound) return;
+            
+            // Trigger sound for all users
+            const triggerRef = ref(database, 'soundTrigger');
+            await set(triggerRef, {
+                soundData: sound.soundData,
+                timestamp: Date.now()
+            });
+        };
+        
+        window.deleteSound = async function(soundId) {
+            if (!window.isAdmin) return;
+            
+            if (!confirm('Delete this sound?')) return;
+            
+            const soundRef = ref(database, `sounds/${soundId}`);
+            await set(soundRef, null);
         };
     </script>
 
