@@ -81,22 +81,66 @@
             background: rgba(0, 0, 0, 0.95);
             box-shadow: 0 0 15px rgba(255, 153, 51, 0.5);
         }
+        .redirect-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s;
+        }
+        .redirect-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .redirect-text {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #ff9933;
+            padding: 8px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            z-index: 1001;
+            border-left: 3px solid #ff9933;
+            border-bottom: 3px solid #ff9933;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+            box-shadow: 
+                inset 0 0 20px rgba(255, 153, 51, 0.1),
+                0 0 10px rgba(255, 153, 51, 0.3);
+            letter-spacing: 2px;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .redirect-text.active {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
+    <div class="redirect-overlay" id="redirectOverlay"></div>
+    <div class="redirect-text" id="redirectText">REDIRECTING</div>
     <div class="counter" onclick="window.open('https://discord.gg/2MaeHsZ5GC', '_blank')">
         <div class="counter-label">ACTIVE USERS</div>
         <div class="counter-number" id="userCount">0</div>
     </div>
     <button class="audio-btn" id="audioBtn">CLICK TO START</button>
-    <video autoplay loop muted playsinline>
+    <video autoplay muted playsinline id="mainVideo">
         <source src="water.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
-    <audio autoplay loop id="bgAudio">
+    <audio loop id="bgAudio">
         <source src="water01.ogg" type="audio/ogg">
         <source src="water01.mp3" type="audio/mpeg">
         Your browser does not support the audio tag.
+    </audio>
+    <audio id="alertAudio">
+        <source src="alert1.ogg" type="audio/ogg">
     </audio>
 
     <!-- Firebase SDK -->
@@ -151,12 +195,58 @@
     </script>
 
     <script>
-        // Audio control
+        // Video and audio elements
+        const mainVideo = document.getElementById('mainVideo');
         const audioElement = document.getElementById('bgAudio');
+        const alertAudio = document.getElementById('alertAudio');
         const audioBtn = document.getElementById('audioBtn');
+        const redirectOverlay = document.getElementById('redirectOverlay');
+        const redirectText = document.getElementById('redirectText');
         let audioStarted = false;
+        let hasRedirected = false;
 
-        // Auto-start audio on first click anywhere
+        // Trigger redirect sequence when first video ends
+        mainVideo.addEventListener('ended', () => {
+            if (!hasRedirected) {
+                hasRedirected = true;
+                startRedirectSequence();
+            }
+        });
+
+        function startRedirectSequence() {
+            // Pause background audio
+            audioElement.pause();
+            
+            // Play alert sound
+            alertAudio.play();
+            
+            // Show black overlay and redirecting text
+            redirectOverlay.classList.add('active');
+            redirectText.classList.add('active');
+            
+            // After 5 seconds, start water1.mp4
+            setTimeout(() => {
+                redirectText.classList.remove('active');
+                redirectOverlay.classList.remove('active');
+                
+                // Change video source to water1.mp4
+                mainVideo.innerHTML = '<source src="water1.mp4" type="video/mp4">';
+                mainVideo.load();
+                mainVideo.muted = true;
+                mainVideo.play();
+                
+                // When water1 ends, switch to water2 (looping)
+                mainVideo.addEventListener('ended', () => {
+                    mainVideo.innerHTML = '<source src="water2.mp4" type="video/mp4">';
+                    mainVideo.load();
+                    mainVideo.loop = true;
+                    mainVideo.muted = true;
+                    mainVideo.play();
+                }, { once: true });
+            }, 5000);
+        }
+
+        // Audio control
         document.body.addEventListener('click', () => {
             if (!audioStarted) {
                 audioElement.play();
