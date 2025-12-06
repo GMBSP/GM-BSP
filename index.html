@@ -441,13 +441,15 @@
         
         // Listen for chat messages
         const messagesRef = ref(database, 'messages');
+        let isFirstLoad = true;
         onValue(messagesRef, (snapshot) => {
             const messages = snapshot.val();
             const messagesDiv = document.getElementById('consoleMessages');
             messagesDiv.innerHTML = '';
             
             if (messages) {
-                Object.values(messages).forEach(msg => {
+                const messageArray = Object.values(messages);
+                messageArray.forEach(msg => {
                     const msgDiv = document.createElement('div');
                     msgDiv.className = 'console-message';
                     const time = new Date(msg.timestamp).toLocaleTimeString();
@@ -455,6 +457,16 @@
                     messagesDiv.appendChild(msgDiv);
                 });
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                
+                // Play alert sound for new messages (skip on first load)
+                if (!isFirstLoad && messageArray.length > 0) {
+                    const alertSound = document.getElementById('alertAudio');
+                    if (alertSound) {
+                        alertSound.currentTime = 0;
+                        alertSound.play().catch(e => console.log('Alert sound failed:', e));
+                    }
+                }
+                isFirstLoad = false;
             }
         });
     </script>
