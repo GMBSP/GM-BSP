@@ -542,6 +542,7 @@
         const redirectText = document.getElementById('redirectText');
         let audioStarted = false;
         let hasRedirected = false;
+        let water1HasPlayed = false;
 
         // Preload videos to avoid pauses
         const video1 = document.createElement('video');
@@ -556,10 +557,18 @@
         video2.loop = true;
 
         // Trigger redirect sequence when first video ends
-        mainVideo.addEventListener('ended', () => {
+        mainVideo.addEventListener('ended', (e) => {
             if (!hasRedirected) {
                 hasRedirected = true;
                 startRedirectSequence();
+            } else if (!water1HasPlayed) {
+                // water1 just ended, switch to water2
+                water1HasPlayed = true;
+                mainVideo.src = 'water2.mp4';
+                mainVideo.load();
+                mainVideo.loop = true;
+                mainVideo.muted = true;
+                mainVideo.play();
             }
         });
 
@@ -584,21 +593,12 @@
                     audioElement.play();
                 }
                 
-                // Change to preloaded water1 video
-                mainVideo.srcObject = null;
+                // Change to water1 video (no loop)
                 mainVideo.src = 'water1.mp4';
                 mainVideo.load();
+                mainVideo.loop = false;
                 mainVideo.muted = true;
                 mainVideo.play();
-                
-                // When water1 ends, seamlessly switch to water2
-                mainVideo.addEventListener('ended', () => {
-                    mainVideo.src = 'water2.mp4';
-                    mainVideo.load();
-                    mainVideo.loop = true;
-                    mainVideo.muted = true;
-                    mainVideo.play();
-                }, { once: true });
             }, 5000);
         }
 
