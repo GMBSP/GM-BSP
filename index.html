@@ -1124,8 +1124,14 @@
             }
             
             // Submit vote
-            const userVoteRef = ref(database, `vote/votes/${window.userId}`);
-            await set(userVoteRef, choice);
+            try {
+                const userVoteRef = ref(database, `vote/votes/${window.userId}`);
+                await set(userVoteRef, choice);
+                console.log('Vote submitted:', choice);
+            } catch (error) {
+                console.error('Vote error:', error);
+                alert('Error submitting vote. Please try again.');
+            }
         };
         
         window.openAdminVotePanel = function() {
