@@ -82,68 +82,6 @@
             box-shadow: 0 0 15px rgba(255, 153, 51, 0.5);
         }
         
-        /* Login Page */
-        .login-page {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
-            z-index: 2000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .login-page.active {
-            display: flex;
-        }
-        .login-box {
-            background: rgba(20, 20, 20, 0.95);
-            border: 3px solid #ff9933;
-            padding: 40px;
-            font-family: 'Courier New', monospace;
-            color: #ff9933;
-            box-shadow: 0 0 30px rgba(255, 153, 51, 0.3);
-        }
-        .login-box h2 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            letter-spacing: 2px;
-        }
-        .login-box input {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #ff9933;
-            color: #ffcc66;
-            padding: 10px;
-            margin-bottom: 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-        }
-        .login-box button {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #ff9933;
-            color: #ff9933;
-            padding: 10px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            cursor: pointer;
-            letter-spacing: 1px;
-            transition: all 0.2s;
-        }
-        .login-box button:hover {
-            background: #ff9933;
-            color: #000;
-        }
-        .login-error {
-            color: #ff4444;
-            font-size: 12px;
-            margin-top: 10px;
-            display: none;
-        }
-        
         /* Console/Chat */
         .console {
             position: fixed;
@@ -229,34 +167,6 @@
             font-weight: bold;
             margin-right: 10px;
         }
-        .console-input {
-            border-top: 2px solid #ff9933;
-            padding: 10px 20px;
-            display: flex;
-            gap: 10px;
-        }
-        .console-input input {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #ff9933;
-            color: #ffcc66;
-            padding: 8px 12px;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-        }
-        .console-input button {
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #ff9933;
-            color: #ff9933;
-            padding: 8px 20px;
-            font-family: 'Courier New', monospace;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .console-input button:hover {
-            background: #ff9933;
-            color: #000;
-        }
         .console-toggle {
             position: fixed;
             bottom: 70px;
@@ -290,18 +200,6 @@
             .console-messages {
                 font-size: 11px;
                 padding: 8px 15px;
-            }
-            .console-input {
-                padding: 8px 15px;
-                gap: 8px;
-            }
-            .console-input input {
-                font-size: 12px;
-                padding: 6px 10px;
-            }
-            .console-input button {
-                padding: 6px 15px;
-                font-size: 12px;
             }
             .console-toggle {
                 font-size: 12px;
@@ -365,17 +263,6 @@
     </style>
 </head>
 <body>
-    <!-- Login Page (hidden by default) -->
-    <div class="login-page" id="loginPage">
-        <div class="login-box">
-            <h2>ADMIN LOGIN</h2>
-            <input type="text" id="username" placeholder="USERNAME" />
-            <input type="password" id="password" placeholder="PASSWORD" />
-            <button onclick="attemptLogin()">AUTHENTICATE</button>
-            <div class="login-error" id="loginError">ACCESS DENIED</div>
-        </div>
-    </div>
-    
     <!-- Console/Chat -->
     <div class="console" id="console">
         <div class="console-header">
@@ -383,10 +270,6 @@
             <span class="console-close" onclick="toggleConsole()">✕</span>
         </div>
         <div class="console-messages" id="consoleMessages"></div>
-        <div class="console-input" id="consoleInput" style="display: none;">
-            <input type="text" id="messageInput" placeholder="Enter message..." />
-            <button onclick="sendMessage()">SEND</button>
-        </div>
     </div>
     
     <button class="console-toggle" id="consoleToggle" onclick="toggleConsole()">CONSOLE (~)</button>
@@ -462,8 +345,9 @@
             });
         }, 10000);
         
-        // Listen for chat messages
+        // Listen for chat messages (read-only)
         const messagesRef = ref(database, 'messages');
+        
         let isFirstLoad = true;
         let messageCount = 0;
         
@@ -486,7 +370,7 @@
                             <div class="message-content">
                                 <span class="timestamp">[${time}]</span><span class="username">${msg.username}:</span>${msg.text}
                             </div>
-                            ${window.isAdmin ? `<span class="delete-btn" onclick="deleteMessage('${msgId}')">✕</span>` : ''}
+                            <span class="delete-btn" onclick="deleteMessage('${msgId}')">✕</span>
                         `;
                     }
                     messagesDiv.appendChild(msgDiv);
@@ -509,8 +393,6 @@
         
         // Make deleteMessage available globally
         window.deleteMessage = async function(msgId) {
-            if (!window.isAdmin) return;
-            
             const { ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
             const msgRef = ref(window.firebaseDB, 'messages/' + msgId);
             
@@ -523,78 +405,17 @@
     </script>
 
     <script>
-        // Admin authentication
-        let isAdmin = false;
-        let adminUsername = '';
-        
-        // Check if ?admin is in URL
-        if (window.location.search.includes('admin')) {
-            document.getElementById('loginPage').classList.add('active');
-        }
-        
-        function attemptLogin() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            if (username === 'SOURCE' && password === 'TF2HL2CS2L4D2') {
-                isAdmin = true;
-                adminUsername = username;
-                document.getElementById('loginPage').classList.remove('active');
-                document.getElementById('consoleInput').style.display = 'flex';
-                // Remove ?admin from URL
-                window.history.replaceState({}, document.title, window.location.pathname);
-            } else {
-                document.getElementById('loginError').style.display = 'block';
-                setTimeout(() => {
-                    document.getElementById('loginError').style.display = 'none';
-                }, 3000);
-            }
-        }
-        
-        // Console toggle
+        // Console toggle (read-only mode)
         function toggleConsole() {
             document.getElementById('console').classList.toggle('active');
         }
         
-        // Send message (admin only)
-        async function sendMessage() {
-            if (!isAdmin) return;
-            
-            const input = document.getElementById('messageInput');
-            const text = input.value.trim();
-            
-            if (text && window.firebaseDB) {
-                const { ref, push } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
-                const messagesRef = ref(window.firebaseDB, 'messages');
-                
-                await push(messagesRef, {
-                    username: adminUsername,
-                    text: text,
-                    timestamp: Date.now()
-                });
-                
-                input.value = '';
+        // ~ key to toggle console
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '`' || e.key === '~') {
+                e.preventDefault();
+                toggleConsole();
             }
-        }
-        
-        // Enter key to send message
-        document.addEventListener('DOMContentLoaded', () => {
-            const messageInput = document.getElementById('messageInput');
-            if (messageInput) {
-                messageInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                });
-            }
-            
-            // ~ key to toggle console
-            document.addEventListener('keydown', (e) => {
-                if (e.key === '`' || e.key === '~') {
-                    e.preventDefault();
-                    toggleConsole();
-                }
-            });
         });
         // Video and audio elements
         const mainVideo = document.getElementById('mainVideo');
