@@ -61,6 +61,26 @@
             text-shadow: 0 0 10px rgba(255, 153, 51, 0.8);
             letter-spacing: 2px;
         }
+        .audio-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #ff9933;
+            padding: 10px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            z-index: 1000;
+            cursor: pointer;
+            border: 2px solid #ff9933;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .audio-btn:hover {
+            background: rgba(0, 0, 0, 0.95);
+            box-shadow: 0 0 15px rgba(255, 153, 51, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -68,11 +88,12 @@
         <div class="counter-label">ACTIVE USERS</div>
         <div class="counter-number" id="userCount">1</div>
     </div>
+    <button class="audio-btn" id="audioBtn">🔊 UNMUTE</button>
     <video autoplay loop muted playsinline>
         <source src="water.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
-    <audio autoplay loop>
+    <audio autoplay loop id="bgAudio">
         <source src="water01.ogg" type="audio/ogg">
         <source src="water01.mp3" type="audio/mpeg">
         Your browser does not support the audio tag.
@@ -80,6 +101,25 @@
     <script>
         const STORAGE_KEY = 'active-users';
         const counterElement = document.getElementById('userCount');
+        const audioElement = document.getElementById('bgAudio');
+        const audioBtn = document.getElementById('audioBtn');
+        
+        // Audio control
+        audioBtn.addEventListener('click', () => {
+            if (audioElement.paused) {
+                audioElement.play();
+                audioBtn.textContent = '🔇 MUTE';
+            } else {
+                audioElement.pause();
+                audioBtn.textContent = '🔊 UNMUTE';
+            }
+        });
+        
+        // Try to autoplay
+        audioElement.play().catch(() => {
+            // Autoplay blocked, user will need to click the button
+            console.log('Autoplay blocked - click unmute button');
+        });
         
         async function updateCounter() {
             try {
