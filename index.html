@@ -86,9 +86,9 @@
 <body>
     <div class="counter" onclick="window.open('https://discord.gg/2MaeHsZ5GC', '_blank')">
         <div class="counter-label">ACTIVE USERS</div>
-        <div class="counter-number" id="userCount">1</div>
+        <div class="counter-number" id="userCount">0</div>
     </div>
-    <button class="audio-btn" id="audioBtn">MUTE</button>
+    <button class="audio-btn" id="audioBtn">CLICK TO START</button>
     <video autoplay loop muted playsinline>
         <source src="water.mp4" type="video/mp4">
         Your browser does not support the video tag.
@@ -98,20 +98,64 @@
         <source src="water01.mp3" type="audio/mpeg">
         Your browser does not support the audio tag.
     </audio>
-    <script>
-        const STORAGE_KEY = 'active-sessions';
-        const counterElement = document.getElementById('userCount');
-        const audioElement = document.getElementById('bgAudio');
-        const audioBtn = document.getElementById('audioBtn');
-        
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, set, onValue, onDisconnect, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCPj_IFALPhx8JL3tvdO-UzcsGorlx5czw",
+            authDomain: "f-5faaa.firebaseapp.com",
+            databaseURL: "https://f-5faaa-default-rtdb.firebaseio.com",
+            projectId: "f-5faaa",
+            storageBucket: "f-5faaa.firebasestorage.app",
+            messagingSenderId: "403091114082",
+            appId: "1:403091114082:web:3db7ac9f65060ad4d8e93b"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
         // Generate unique session ID
         const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        const HEARTBEAT_INTERVAL = 3000; // Check in every 3 seconds
-        const SESSION_TIMEOUT = 10000; // Consider inactive after 10 seconds
-        
+        const sessionRef = ref(database, 'sessions/' + sessionId);
+        const counterElement = document.getElementById('userCount');
+
+        // Set this session as active
+        set(sessionRef, {
+            timestamp: serverTimestamp(),
+            active: true
+        });
+
+        // Remove session when user leaves
+        onDisconnect(sessionRef).remove();
+
+        // Listen for all active sessions
+        const sessionsRef = ref(database, 'sessions');
+        onValue(sessionsRef, (snapshot) => {
+            const sessions = snapshot.val();
+            const activeCount = sessions ? Object.keys(sessions).length : 0;
+            counterElement.textContent = activeCount;
+        });
+
+        // Clean up old sessions (older than 30 seconds)
+        setInterval(() => {
+            set(sessionRef, {
+                timestamp: serverTimestamp(),
+                active: true
+            });
+        }, 10000);
+    </script>
+
+    <script>
         // Audio control
+        const audioElement = document.getElementById('bgAudio');
+        const audioBtn = document.getElementById('audioBtn');
         let audioStarted = false;
-        
+
         // Auto-start audio on first click anywhere
         document.body.addEventListener('click', () => {
             if (!audioStarted) {
@@ -120,7 +164,7 @@
                 audioStarted = true;
             }
         }, { once: true });
-        
+
         audioBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             if (audioElement.paused) {
@@ -132,72 +176,13 @@
             }
             audioStarted = true;
         });
-        
+
         // Try to autoplay
         audioElement.play().then(() => {
             audioBtn.textContent = 'MUTE';
             audioStarted = true;
         }).catch(() => {
-            // Autoplay blocked
             audioBtn.textContent = 'CLICK TO START';
-        });
-        
-        async function updateSessions() {
-            try {
-                const now = Date.now();
-                let sessions = {};
-                
-                // Get existing sessions
-                try {
-                    const result = await window.storage.get(STORAGE_KEY, true);
-                    if (result) {
-                        sessions = JSON.parse(result.value);
-                    }
-                } catch (error) {
-                    // Key doesn't exist yet, start fresh
-                    sessions = {};
-                }
-                
-                // Remove expired sessions
-                for (const [id, timestamp] of Object.entries(sessions)) {
-                    if (now - timestamp > SESSION_TIMEOUT) {
-                        delete sessions[id];
-                    }
-                }
-                
-                // Add/update current session
-                sessions[sessionId] = now;
-                
-                // Save back to storage
-                await window.storage.set(STORAGE_KEY, JSON.stringify(sessions), true);
-                
-                // Update display
-                const activeCount = Object.keys(sessions).length;
-                counterElement.textContent = activeCount;
-            } catch (error) {
-                console.error('Storage error:', error);
-                counterElement.textContent = '1';
-            }
-        }
-        
-        // Initial update
-        updateSessions();
-        
-        // Heartbeat - check in regularly
-        setInterval(updateSessions, HEARTBEAT_INTERVAL);
-        
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', async () => {
-            try {
-                const result = await window.storage.get(STORAGE_KEY, true);
-                if (result) {
-                    const sessions = JSON.parse(result.value);
-                    delete sessions[sessionId];
-                    await window.storage.set(STORAGE_KEY, JSON.stringify(sessions), true);
-                }
-            } catch (error) {
-                console.error('Cleanup error:', error);
-            }
         });
     </script>
 </body>
