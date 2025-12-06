@@ -409,6 +409,17 @@
             margin-bottom: 15px;
             font-family: 'Courier New', monospace;
             font-size: 12px;
+            display: none;
+        }
+        .admin-sound-panel select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ffcc66;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
         }
         .admin-sound-panel button {
             width: 100%;
@@ -734,13 +745,15 @@
     <!-- Admin Sound Control Panel -->
     <div class="admin-sound-panel" id="adminSoundPanel">
         <h2>SOUND CONTROL PANEL</h2>
-        <input type="file" id="soundFileInput" accept="audio/*" />
-        <button onclick="uploadSound()">UPLOAD SOUND</button>
+        <select id="soundSelect">
+            <option value="">-- Select Sound --</option>
+            <option value="windchime2.wav">Windchime 2</option>
+            <option value="impact_water.mp3">Impact Water</option>
+            <option value="friend-online-wav (2).mp3">Friend Online</option>
+            <option value="windchime4-wav.mp3">Windchime 4</option>
+        </select>
+        <button onclick="playSelectedSound()">PLAY FOR ALL USERS</button>
         <button onclick="closeAdminSoundPanel()">CLOSE</button>
-        <div class="sound-list" id="soundList">
-            <h3 style="margin-bottom: 15px; font-size: 16px;">UPLOADED SOUNDS</h3>
-            <div id="soundItems"></div>
-        </div>
     </div>
     
     <audio id="globalSoundPlayer"></audio>
@@ -1184,69 +1197,25 @@
             document.getElementById('adminSoundPanel').classList.remove('active');
         };
         
-        window.uploadSound = async function() {
+        window.playSelectedSound = async function() {
             if (!window.isAdmin) return;
             
-            const fileInput = document.getElementById('soundFileInput');
-            const file = fileInput.files[0];
+            const soundSelect = document.getElementById('soundSelect');
+            const soundFile = soundSelect.value;
             
-            if (!file) {
-                alert('Please select a sound file!');
+            if (!soundFile) {
+                alert('Please select a sound!');
                 return;
             }
-            
-            if (!file.type.startsWith('audio/')) {
-                alert('Please select a valid audio file!');
-                return;
-            }
-            
-            // Convert to base64
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                const base64Data = e.target.result;
-                
-                const soundsRef = ref(database, 'sounds');
-                const newSoundRef = push(soundsRef);
-                
-                await set(newSoundRef, {
-                    name: file.name,
-                    soundData: base64Data,
-                    uploadedAt: Date.now()
-                });
-                
-                fileInput.value = '';
-                alert('Sound uploaded successfully!');
-            };
-            
-            reader.readAsDataURL(file);
-        };
-        
-        window.playSoundForAll = async function(soundId) {
-            if (!window.isAdmin) return;
-            
-            const soundRef = ref(database, `sounds/${soundId}`);
-            const snapshot = await new Promise(resolve => {
-                onValue(soundRef, resolve, { onlyOnce: true });
-            });
-            
-            const sound = snapshot.val();
-            if (!sound) return;
             
             // Trigger sound for all users
             const triggerRef = ref(database, 'soundTrigger');
             await set(triggerRef, {
-                soundData: sound.soundData,
+                soundFile: soundFile,
                 timestamp: Date.now()
             });
-        };
-        
-        window.deleteSound = async function(soundId) {
-            if (!window.isAdmin) return;
             
-            if (!confirm('Delete this sound?')) return;
-            
-            const soundRef = ref(database, `sounds/${soundId}`);
-            await set(soundRef, null);
+            console.log('Playing sound for all users:', soundFile);
         };
     </script>
 
