@@ -88,7 +88,7 @@
         <div class="counter-label">ACTIVE USERS</div>
         <div class="counter-number" id="userCount">1</div>
     </div>
-    <button class="audio-btn" id="audioBtn">🔊 UNMUTE</button>
+    <button class="audio-btn" id="audioBtn">MUTE</button>
     <video autoplay loop muted playsinline>
         <source src="water.mp4" type="video/mp4">
         Your browser does not support the video tag.
@@ -108,16 +108,19 @@
         audioBtn.addEventListener('click', () => {
             if (audioElement.paused) {
                 audioElement.play();
-                audioBtn.textContent = '🔇 MUTE';
+                audioBtn.textContent = 'MUTE';
             } else {
                 audioElement.pause();
-                audioBtn.textContent = '🔊 UNMUTE';
+                audioBtn.textContent = 'UNMUTE';
             }
         });
         
         // Try to autoplay
-        audioElement.play().catch(() => {
+        audioElement.play().then(() => {
+            audioBtn.textContent = 'MUTE';
+        }).catch(() => {
             // Autoplay blocked, user will need to click the button
+            audioBtn.textContent = 'UNMUTE';
             console.log('Autoplay blocked - click unmute button');
         });
         
