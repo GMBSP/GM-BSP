@@ -105,7 +105,19 @@
         const audioBtn = document.getElementById('audioBtn');
         
         // Audio control
-        audioBtn.addEventListener('click', () => {
+        let audioStarted = false;
+        
+        // Auto-start audio on first click anywhere
+        document.body.addEventListener('click', () => {
+            if (!audioStarted) {
+                audioElement.play();
+                audioBtn.textContent = 'MUTE';
+                audioStarted = true;
+            }
+        }, { once: true });
+        
+        audioBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             if (audioElement.paused) {
                 audioElement.play();
                 audioBtn.textContent = 'MUTE';
@@ -113,15 +125,16 @@
                 audioElement.pause();
                 audioBtn.textContent = 'UNMUTE';
             }
+            audioStarted = true;
         });
         
         // Try to autoplay
         audioElement.play().then(() => {
             audioBtn.textContent = 'MUTE';
+            audioStarted = true;
         }).catch(() => {
-            // Autoplay blocked, user will need to click the button
-            audioBtn.textContent = 'UNMUTE';
-            console.log('Autoplay blocked - click unmute button');
+            // Autoplay blocked
+            audioBtn.textContent = 'CLICK TO START';
         });
         
         async function updateCounter() {
