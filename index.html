@@ -103,7 +103,7 @@
         // Update counter when page loads
         updateCounter();
         
-        // Refresh count every 5 seconds
+        // Refresh count every 1 second
         setInterval(async () => {
             try {
                 let result = await window.storage.get(STORAGE_KEY, true);
@@ -114,7 +114,7 @@
             } catch (error) {
                 console.error('Storage error:', error);
             }
-        }, 5000);
+        }, 1000);
     </script>
 </body>
 </html>
