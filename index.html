@@ -120,26 +120,10 @@
         .redirect-text.active {
             opacity: 1;
         }
-        .video-fade {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
-            z-index: 998;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 1s;
-        }
-        .video-fade.active {
-            opacity: 1;
-        }
     </style>
 </head>
 <body>
     <div class="redirect-overlay" id="redirectOverlay"></div>
-    <div class="video-fade" id="videoFade"></div>
     <div class="redirect-text" id="redirectText">REDIRECTING</div>
     <div class="counter" onclick="window.open('https://discord.gg/2MaeHsZ5GC', '_blank')">
         <div class="counter-label">ACTIVE USERS</div>
@@ -218,7 +202,6 @@
         const audioBtn = document.getElementById('audioBtn');
         const redirectOverlay = document.getElementById('redirectOverlay');
         const redirectText = document.getElementById('redirectText');
-        const videoFade = document.getElementById('videoFade');
         let audioStarted = false;
         let hasRedirected = false;
 
@@ -270,22 +253,13 @@
                 mainVideo.muted = true;
                 mainVideo.play();
                 
-                // When water1 ends, fade to water2
+                // When water1 ends, seamlessly switch to water2
                 mainVideo.addEventListener('ended', () => {
-                    // Fade out
-                    videoFade.classList.add('active');
-                    
-                    setTimeout(() => {
-                        // Switch to water2
-                        mainVideo.src = 'water2.mp4';
-                        mainVideo.load();
-                        mainVideo.loop = true;
-                        mainVideo.muted = true;
-                        mainVideo.play();
-                        
-                        // Fade in
-                        videoFade.classList.remove('active');
-                    }, 1000);
+                    mainVideo.src = 'water2.mp4';
+                    mainVideo.load();
+                    mainVideo.loop = true;
+                    mainVideo.muted = true;
+                    mainVideo.play();
                 }, { once: true });
             }, 5000);
         }
