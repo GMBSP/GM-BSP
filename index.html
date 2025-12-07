@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -375,6 +374,51 @@
             color: #000;
         }
         .video-control-hud button.active {
+            background: #ff9933;
+            color: #000;
+        }
+        
+        /* Missing Texture Overlay */
+        .missing-texture-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 500;
+            pointer-events: none;
+            display: none;
+            background-image: 
+                repeating-linear-gradient(
+                    45deg,
+                    #000 0px,
+                    #000 64px,
+                    #ff00ff 64px,
+                    #ff00ff 128px
+                );
+            opacity: 0.5;
+        }
+        .missing-texture-overlay.active {
+            display: block;
+        }
+        
+        .texture-control-btn {
+            position: fixed;
+            top: 230px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #ff9933;
+            padding: 8px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            z-index: 1000;
+            cursor: pointer;
+            border: 2px solid #ff9933;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            display: none;
+        }
+        .texture-control-btn:hover {
             background: #ff9933;
             color: #000;
         }
@@ -1064,6 +1108,10 @@
     <button class="logout-btn" id="logoutBtn" onclick="logoutAdmin()">LOGOUT</button>
     <button class="admin-vote-btn" id="adminVoteBtn" onclick="openAdminVotePanel()">VOTE CONTROL</button>
     <button class="admin-sound-btn" id="adminSoundBtn" onclick="openAdminSoundPanel()">SOUND CONTROL</button>
+    <button class="texture-control-btn" id="textureControlBtn" onclick="toggleMissingTexture()">TOGGLE TEXTURE</button>
+    
+    <!-- Missing Texture Overlay -->
+    <div class="missing-texture-overlay" id="missingTextureOverlay"></div>
     
     <!-- Video Control HUD (Admin only) -->
     <div class="video-control-hud" id="videoControlHud">
@@ -1221,6 +1269,7 @@
                 document.getElementById('adminVoteBtn').style.display = 'block';
                 document.getElementById('adminSoundBtn').style.display = 'block';
                 document.getElementById('videoControlHud').classList.add('active');
+                document.getElementById('textureControlBtn').style.display = 'block';
                 console.log('Admin logged in:', user.email);
                 
                 // Trigger a refresh of messages to show delete buttons
@@ -1238,6 +1287,7 @@
                 document.getElementById('adminVoteBtn').style.display = 'none';
                 document.getElementById('adminSoundBtn').style.display = 'none';
                 document.getElementById('videoControlHud').classList.remove('active');
+                document.getElementById('textureControlBtn').style.display = 'none';
             }
         });
         
@@ -1512,6 +1562,17 @@
             const text = input.value.trim();
             
             if (text) {
+                // Check for special commands
+                const upperText = text.toUpperCase();
+                if (upperText === 'RUN VRAD.EXE' || upperText === 'FIND SOURCEENGINE.MDL') {
+                    // Trigger missing texture overlay for all users
+                    const textureRef = ref(database, 'missingTexture');
+                    await set(textureRef, {
+                        active: true,
+                        timestamp: Date.now()
+                    });
+                }
+                
                 const messagesRef = ref(database, 'messages');
                 await push(messagesRef, {
                     username: 'SOURCEENGINE',
