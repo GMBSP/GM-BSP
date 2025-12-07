@@ -390,13 +390,13 @@
             pointer-events: none;
             display: none;
             background-image: 
-                repeating-linear-gradient(
-                    45deg,
-                    #000 0px,
-                    #000 64px,
-                    #ff00ff 64px,
-                    #ff00ff 128px
-                );
+                linear-gradient(45deg, #000 25%, transparent 25%),
+                linear-gradient(-45deg, #000 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #000 75%),
+                linear-gradient(-45deg, transparent 75%, #000 75%);
+            background-size: 64px 64px;
+            background-position: 0 0, 0 32px, 32px -32px, -32px 0px;
+            background-color: #ff00ff;
         }
         .missing-texture-overlay.active {
             display: block;
@@ -830,82 +830,6 @@
             text-shadow: 0 0 10px rgba(255, 68, 68, 0.6);
         }
         
-        /* Progress Bar Page */
-        .progress-page {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
-            z-index: 3000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .progress-page.active {
-            display: flex;
-        }
-        .progress-content {
-            text-align: center;
-            width: 90%;
-            max-width: 1200px;
-        }
-        .progress-title {
-            font-size: 72px;
-            color: #ffcc66;
-            letter-spacing: 8px;
-            margin-bottom: 60px;
-            text-shadow: 0 0 30px rgba(255, 153, 51, 0.8);
-        }
-        .progress-bar-container {
-            background: rgba(0, 0, 0, 0.9);
-            border: 3px solid #ff9933;
-            padding: 20px;
-            margin-bottom: 40px;
-            box-shadow: 
-                inset 0 0 20px rgba(255, 153, 51, 0.2),
-                0 0 20px rgba(255, 153, 51, 0.3);
-        }
-        .progress-bar-text {
-            font-size: 48px;
-            color: #ffcc66;
-            letter-spacing: 4px;
-            line-height: 1.5;
-            word-break: break-all;
-            text-shadow: 0 0 20px rgba(255, 153, 51, 0.8);
-        }
-        .progress-bar-text .filled {
-            color: #ff9933;
-            text-shadow: 0 0 30px rgba(255, 153, 51, 1);
-        }
-        .progress-percentage {
-            font-size: 36px;
-            color: #ff9933;
-            letter-spacing: 2px;
-            margin-top: 20px;
-        }
-        .progress-time-display {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 60px;
-        }
-        .progress-time-unit {
-            text-align: center;
-        }
-        .progress-time-value {
-            font-size: 64px;
-            color: #ffcc66;
-            text-shadow: 0 0 20px rgba(255, 153, 51, 0.8);
-        }
-        .progress-time-label {
-            font-size: 14px;
-            color: #ff9933;
-            letter-spacing: 2px;
-            margin-top: 10px;
-        }
-        
         /* Mobile Support */
         @media (max-width: 768px) {
             .console {
@@ -969,26 +893,6 @@
             .data-status {
                 margin-left: 0;
             }
-            .progress-title {
-                font-size: 36px;
-                margin-bottom: 30px;
-            }
-            .progress-bar-text {
-                font-size: 24px;
-            }
-            .progress-percentage {
-                font-size: 24px;
-            }
-            .progress-time-display {
-                gap: 15px;
-                margin-top: 30px;
-            }
-            .progress-time-value {
-                font-size: 36px;
-            }
-            .progress-time-label {
-                font-size: 11px;
-            }
         }
     </style>
 </head>
@@ -1015,35 +919,6 @@
     <div class="data-page" id="dataPage">
         <div class="data-title">DATA</div>
         <div class="data-terminal" id="dataTerminal"></div>
-    </div>
-    
-    <!-- Progress Bar Page -->
-    <div class="progress-page" id="progressPage">
-        <div class="progress-content">
-            <div class="progress-title">SOURCE</div>
-            <div class="progress-bar-container">
-                <div class="progress-bar-text" id="progressBarText"></div>
-                <div class="progress-percentage" id="progressPercentage">0.00%</div>
-            </div>
-            <div class="progress-time-display">
-                <div class="progress-time-unit">
-                    <div class="progress-time-value" id="progDays">00</div>
-                    <div class="progress-time-label">DAYS</div>
-                </div>
-                <div class="progress-time-unit">
-                    <div class="progress-time-value" id="progHours">00</div>
-                    <div class="progress-time-label">HOURS</div>
-                </div>
-                <div class="progress-time-unit">
-                    <div class="progress-time-value" id="progMinutes">00</div>
-                    <div class="progress-time-label">MINUTES</div>
-                </div>
-                <div class="progress-time-unit">
-                    <div class="progress-time-value" id="progSeconds">00</div>
-                    <div class="progress-time-label">SECONDS</div>
-                </div>
-            </div>
-        </div>
     </div>
     
     <button class="logout-btn" id="logoutBtn" onclick="logoutAdmin()">LOGOUT</button>
@@ -1674,14 +1549,6 @@
             startDataTerminal();
         }
         
-        if (window.location.search.includes('progress')) {
-            document.getElementById('progressPage').classList.add('active');
-            document.getElementById('mainVideo').style.display = 'none';
-            document.getElementById('bgAudio').pause();
-            updateProgressBar();
-            setInterval(updateProgressBar, 1000);
-        }
-        
         const sourceEngineMaps = [
             'maps/cp_dustbowl.bsp', 'maps/ctf_2fort.bsp', 'maps/pl_badwater.bsp',
             'maps/koth_harvest.bsp', 'maps/pl_upward.bsp', 'maps/cp_granary.bsp',
@@ -1693,7 +1560,26 @@
             'maps/cs_italy.bsp', 'maps/de_aztec.bsp', 'maps/de_train.bsp',
             'maps/cs_assault.bsp', 'maps/gm_construct.bsp', 'maps/gm_flatgrass.bsp',
             'maps/rp_downtown_v4c.bsp', 'maps/gm_bigcity.bsp', 'maps/rp_evocity_v4b1.bsp',
-            'maps/ph_restaurant.bsp', 'maps/ttt_minecraft_b5.bsp', 'maps/gm_fork.bsp'
+            'maps/ph_restaurant.bsp', 'maps/ttt_minecraft_b5.bsp', 'maps/gm_fork.bsp',
+            'maps/de_dust.bsp', 'maps/cs_militia.bsp', 'maps/cp_badlands.bsp',
+            'maps/pl_frontier_final.bsp', 'maps/ctf_sawmill.bsp', 'maps/koth_king.bsp',
+            'maps/cp_steel.bsp', 'maps/pl_thundermountain.bsp', 'maps/koth_viaduct.bsp',
+            'maps/cp_gorge.bsp', 'maps/ctf_doublecross.bsp', 'maps/pl_hoodoo_final.bsp',
+            'maps/d1_canals_02.bsp', 'maps/d1_canals_03.bsp', 'maps/d1_eli_01.bsp',
+            'maps/d2_prison_01.bsp', 'maps/d2_coast_03.bsp', 'maps/d3_breen_01.bsp',
+            'maps/ep1_c17_00.bsp', 'maps/ep2_outland_05.bsp', 'maps/de_cbble.bsp',
+            'maps/de_mirage.bsp', 'maps/cs_compound.bsp', 'maps/gm_mobenix_v1_5.bsp',
+            'maps/rp_florida.bsp', 'maps/dm_lockdown.bsp', 'maps/de_prodigy.bsp',
+            'maps/cs_havana.bsp', 'maps/pl_swiftwater_final1.bsp', 'maps/cp_foundry.bsp',
+            'maps/koth_lakeside_final.bsp', 'maps/arena_lumberyard.bsp', 'maps/cp_egypt_final.bsp',
+            'maps/pl_barnblitz.bsp', 'maps/ctf_well.bsp', 'maps/cp_yukon_final.bsp',
+            'maps/pl_cashworks.bsp', 'maps/koth_badlands.bsp', 'maps/cp_process_final.bsp',
+            'maps/d1_trainstation_02.bsp', 'maps/d1_town_02.bsp', 'maps/d2_coast_09.bsp',
+            'maps/d3_c17_05.bsp', 'maps/ep1_citadel_03.bsp', 'maps/ep2_outland_12.bsp',
+            'maps/gm_wireburg.bsp', 'maps/rp_rockford_v2b.bsp', 'maps/ttt_67thway_v14.bsp',
+            'maps/gm_flatgrass_v3.bsp', 'maps/ph_manor.bsp', 'maps/de_cache.bsp',
+            'maps/cs_agency.bsp', 'maps/cp_well.bsp', 'maps/arena_watchtower.bsp',
+            'maps/koth_sawmill.bsp'
         ];
         
         function startMapTerminal() {
@@ -1798,48 +1684,6 @@
         }
         
         const targetDate = new Date('January 6, 2026 00:00:00').getTime();
-        const startDate = new Date('December 6, 2024 00:00:00').getTime();
-        const totalBars = 50;
-        
-        function updateProgressBar() {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-            
-            if (distance < 0) {
-                document.getElementById('progressBarText').innerHTML = '<span class="filled">EVENT STARTED</span>';
-                document.getElementById('progressPercentage').textContent = '100.00%';
-                return;
-            }
-            
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
-            document.getElementById('progDays').textContent = String(days).padStart(2, '0');
-            document.getElementById('progHours').textContent = String(hours).padStart(2, '0');
-            document.getElementById('progMinutes').textContent = String(minutes).padStart(2, '0');
-            document.getElementById('progSeconds').textContent = String(seconds).padStart(2, '0');
-            
-            const totalDuration = targetDate - startDate;
-            const elapsed = now - startDate;
-            const percentage = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
-            
-            const filledBlocks = Math.floor((percentage / 100) * totalBars);
-            const emptyBlocks = totalBars - filledBlocks;
-            
-            let progressBar = '[';
-            for (let i = 0; i < filledBlocks; i++) {
-                progressBar += '<span class="filled">█</span>';
-            }
-            for (let i = 0; i < emptyBlocks; i++) {
-                progressBar += '░';
-            }
-            progressBar += ']';
-            
-            document.getElementById('progressBarText').innerHTML = progressBar;
-            document.getElementById('progressPercentage').textContent = percentage.toFixed(2) + '%';
-        }
         
         function makeDraggable(element) {
             let isDragging = false;
