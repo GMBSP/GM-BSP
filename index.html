@@ -1026,6 +1026,12 @@
         <div class="maps-terminal" id="mapsTerminal"></div>
     </div>
     
+    <!-- Data Page -->
+    <div class="data-page" id="dataPage">
+        <div class="data-title">DATA</div>
+        <div class="data-terminal" id="dataTerminal"></div>
+    </div>
+    
     <!-- Progress Bar Page -->
     <div class="progress-page" id="progressPage">
         <div class="progress-content">
@@ -1650,6 +1656,17 @@
             startMapTerminal();
         }
         
+        // Check if ?data is in URL
+        if (window.location.search.includes('data')) {
+            document.getElementById('dataPage').classList.add('active');
+            // Hide other elements
+            document.getElementById('mainVideo').style.display = 'none';
+            document.getElementById('bgAudio').pause();
+            
+            // Start data terminal animation
+            startDataTerminal();
+        }
+        
         // Maps terminal effect
         const sourceEngineMaps = [
             'maps/cp_dustbowl.bsp',
@@ -1768,6 +1785,158 @@
                 const status = statuses[Math.floor(Math.random() * statuses.length)];
                 
                 line.textContent = `[${timestamp}] ${status}: ${map}`;
+                
+                terminal.appendChild(line);
+                terminal.scrollTop = terminal.scrollHeight;
+                
+                lineCount++;
+            }
+            
+            // Add initial burst of lines
+            for (let i = 0; i < 30; i++) {
+                setTimeout(addLine, i * 50);
+            }
+            
+            // Continue adding lines at random intervals
+            function scheduleNextLine() {
+                const delay = Math.random() * 300 + 100; // 100-400ms
+                setTimeout(() => {
+                    addLine();
+                    scheduleNextLine();
+                }, delay);
+            }
+            
+            scheduleNextLine();
+        }
+        
+        // Data terminal effect
+        const dataFileMaps = [
+            'maps/cp_dustbowl.bsp',
+            'maps/ctf_2fort.bsp',
+            'maps/pl_badwater.bsp',
+            'maps/koth_harvest.bsp',
+            'maps/pl_upward.bsp',
+            'maps/cp_granary.bsp',
+            'maps/ctf_turbine.bsp',
+            'maps/pl_goldrush.bsp',
+            'maps/cp_gravelpit.bsp',
+            'maps/koth_nucleus.bsp',
+            'maps/d1_trainstation_01.bsp',
+            'maps/d1_canals_01.bsp',
+            'maps/d1_town_01.bsp',
+            'maps/d2_coast_01.bsp',
+            'maps/d3_c17_01.bsp',
+            'maps/ep1_citadel_00.bsp',
+            'maps/ep2_outland_01.bsp',
+            'maps/de_dust2.bsp',
+            'maps/cs_office.bsp',
+            'maps/de_inferno.bsp',
+            'maps/de_nuke.bsp',
+            'maps/cs_italy.bsp',
+            'maps/de_aztec.bsp',
+            'maps/de_train.bsp',
+            'maps/cs_assault.bsp',
+            'maps/gm_construct.bsp',
+            'maps/gm_flatgrass.bsp',
+            'maps/rp_downtown_v4c.bsp',
+            'maps/gm_bigcity.bsp',
+            'maps/rp_evocity_v4b1.bsp',
+            'maps/ph_restaurant.bsp',
+            'maps/ttt_minecraft_b5.bsp',
+            'maps/gm_fork.bsp',
+            'maps/de_dust.bsp',
+            'maps/cs_militia.bsp',
+            'maps/cp_badlands.bsp',
+            'maps/pl_frontier_final.bsp',
+            'maps/ctf_sawmill.bsp',
+            'maps/koth_king.bsp',
+            'maps/cp_steel.bsp',
+            'maps/pl_thundermountain.bsp',
+            'maps/koth_viaduct.bsp',
+            'maps/cp_gorge.bsp',
+            'maps/ctf_doublecross.bsp',
+            'maps/pl_hoodoo_final.bsp',
+            'maps/d1_canals_02.bsp',
+            'maps/d1_canals_03.bsp',
+            'maps/d1_eli_01.bsp',
+            'maps/d2_prison_01.bsp',
+            'maps/d2_coast_03.bsp',
+            'maps/d3_breen_01.bsp',
+            'maps/ep1_c17_00.bsp',
+            'maps/ep2_outland_05.bsp',
+            'maps/de_cbble.bsp',
+            'maps/de_mirage.bsp',
+            'maps/cs_compound.bsp',
+            'maps/gm_mobenix_v1_5.bsp',
+            'maps/rp_florida.bsp',
+            'maps/dm_lockdown.bsp',
+            'maps/de_prodigy.bsp',
+            'maps/cs_havana.bsp',
+            'maps/pl_swiftwater_final1.bsp',
+            'maps/cp_foundry.bsp',
+            'maps/koth_lakeside_final.bsp',
+            'maps/arena_lumberyard.bsp',
+            'maps/cp_egypt_final.bsp',
+            'maps/pl_barnblitz.bsp',
+            'maps/ctf_well.bsp',
+            'maps/cp_yukon_final.bsp',
+            'maps/pl_cashworks.bsp',
+            'maps/koth_badlands.bsp',
+            'maps/cp_process_final.bsp',
+            'maps/d1_trainstation_02.bsp',
+            'maps/d1_town_02.bsp',
+            'maps/d2_coast_09.bsp',
+            'maps/d3_c17_05.bsp',
+            'maps/ep1_citadel_03.bsp',
+            'maps/ep2_outland_12.bsp',
+            'maps/gm_wireburg.bsp',
+            'maps/rp_rockford_v2b.bsp',
+            'maps/ttt_67thway_v14.bsp',
+            'maps/gm_flatgrass_v3.bsp',
+            'maps/ph_manor.bsp',
+            'maps/de_cache.bsp',
+            'maps/cs_agency.bsp',
+            'maps/cp_well.bsp',
+            'maps/arena_watchtower.bsp',
+            'maps/koth_sawmill.bsp'
+        ];
+        
+        function startDataTerminal() {
+            const terminal = document.getElementById('dataTerminal');
+            let lineCount = 0;
+            const maxLines = 100;
+            
+            function addLine() {
+                if (lineCount >= maxLines) {
+                    // Remove oldest line
+                    const firstLine = terminal.firstChild;
+                    if (firstLine) terminal.removeChild(firstLine);
+                }
+                
+                const line = document.createElement('div');
+                line.className = 'data-line';
+                
+                // Random map
+                const map = dataFileMaps[Math.floor(Math.random() * dataFileMaps.length)];
+                
+                // Random status with weighted probabilities
+                const rand = Math.random();
+                let status, statusClass;
+                if (rand < 0.7) {
+                    status = 'PERFECT';
+                    statusClass = 'perfect';
+                } else if (rand < 0.9) {
+                    status = 'DAMAGED';
+                    statusClass = 'damaged';
+                } else {
+                    status = 'CORRUPTED';
+                    statusClass = 'corrupted';
+                }
+                
+                line.innerHTML = `
+                    <span class="data-file">${map}</span>
+                    <span class="data-status ${statusClass}">[${status}]</span>
+                `;
                 
                 terminal.appendChild(line);
                 terminal.scrollTop = terminal.scrollHeight;
