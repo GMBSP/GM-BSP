@@ -1,15 +1,14 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WORLD</title>
-    <link rel="icon" type="image/png" href="source.png">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Courier New', monospace;
         }
         body {
             width: 100vw;
@@ -47,27 +46,6 @@
                 inset 0 0 30px rgba(255, 153, 51, 0.2),
                 0 0 15px rgba(255, 153, 51, 0.5);
         }
-        .countdown {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.85);
-            color: #ff9933;
-            padding: 10px 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 18px;
-            z-index: 1000;
-            border-left: 3px solid #ff9933;
-            border-bottom: 3px solid #ff9933;
-            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
-            box-shadow: 
-                inset 0 0 20px rgba(255, 153, 51, 0.1),
-                0 0 10px rgba(255, 153, 51, 0.3);
-            font-weight: bold;
-            color: #ffcc66;
-            text-shadow: 0 0 10px rgba(255, 153, 51, 0.8);
-            letter-spacing: 2px;
-        }
         .counter-label {
             font-size: 10px;
             opacity: 0.8;
@@ -102,6 +80,52 @@
         .audio-btn:hover {
             background: rgba(0, 0, 0, 0.95);
             box-shadow: 0 0 15px rgba(255, 153, 51, 0.5);
+        }
+        
+        /* Video Control HUD */
+        .video-control-hud {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            border: 2px solid #ff9933;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            z-index: 1000;
+            display: none;
+            cursor: move;
+        }
+        .video-control-hud.active {
+            display: block;
+        }
+        .video-control-hud h3 {
+            color: #ff9933;
+            font-size: 14px;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            cursor: move;
+        }
+        .video-control-hud button {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ff9933;
+            padding: 8px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+        }
+        .video-control-hud button:hover {
+            background: #ff9933;
+            color: #000;
+        }
+        .video-control-hud button.active {
+            background: #ff9933;
+            color: #000;
         }
         
         /* Login Page */
@@ -334,95 +358,6 @@
             color: #000;
         }
         
-        /* Video Control HUD */
-        .video-control-hud {
-            position: fixed;
-            top: 50%;
-            right: 20px;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.85);
-            border: 2px solid #ff9933;
-            padding: 15px;
-            z-index: 1000;
-            display: none;
-            cursor: move;
-        }
-        .video-control-hud.active {
-            display: block;
-        }
-        .video-control-hud h3 {
-            color: #ff9933;
-            font-size: 14px;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-            cursor: move;
-        }
-        .video-control-hud button {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #ff9933;
-            color: #ff9933;
-            padding: 8px 15px;
-            font-size: 12px;
-            cursor: pointer;
-            margin-bottom: 8px;
-            transition: all 0.2s;
-            letter-spacing: 1px;
-        }
-        .video-control-hud button:hover {
-            background: #ff9933;
-            color: #000;
-        }
-        .video-control-hud button.active {
-            background: #ff9933;
-            color: #000;
-        }
-        
-        /* Missing Texture Overlay */
-        .missing-texture-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 500;
-            pointer-events: none;
-            display: none;
-            background-image: 
-                repeating-linear-gradient(
-                    45deg,
-                    #000 0px,
-                    #000 64px,
-                    #ff00ff 64px,
-                    #ff00ff 128px
-                );
-            opacity: 0.5;
-        }
-        .missing-texture-overlay.active {
-            display: block;
-        }
-        
-        .texture-control-btn {
-            position: fixed;
-            top: 230px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.85);
-            color: #ff9933;
-            padding: 8px 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            z-index: 1000;
-            cursor: pointer;
-            border: 2px solid #ff9933;
-            transition: all 0.2s;
-            letter-spacing: 1px;
-            display: none;
-        }
-        .texture-control-btn:hover {
-            background: #ff9933;
-            color: #000;
-        }
-        
         .admin-vote-panel {
             position: fixed;
             top: 50%;
@@ -438,6 +373,7 @@
             display: none;
             max-width: 500px;
             width: 90%;
+            cursor: move;
         }
         .admin-vote-panel.active {
             display: block;
@@ -446,6 +382,7 @@
             font-size: 20px;
             margin-bottom: 20px;
             letter-spacing: 2px;
+            cursor: move;
         }
         .admin-vote-panel textarea {
             width: 100%;
@@ -502,6 +439,7 @@
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
+            cursor: move;
         }
         .admin-sound-panel.active {
             display: block;
@@ -510,17 +448,7 @@
             font-size: 20px;
             margin-bottom: 20px;
             letter-spacing: 2px;
-        }
-        .admin-sound-panel input[type="file"] {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #ff9933;
-            color: #ffcc66;
-            padding: 10px;
-            margin-bottom: 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            display: none;
+            cursor: move;
         }
         .admin-sound-panel select {
             width: 100%;
@@ -546,43 +474,6 @@
         }
         .admin-sound-panel button:hover {
             background: #ff9933;
-            color: #000;
-        }
-        .sound-list {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid #ff9933;
-        }
-        .sound-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            margin-bottom: 10px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid #ff9933;
-        }
-        .sound-item-name {
-            flex: 1;
-            color: #ffcc66;
-            font-size: 12px;
-        }
-        .sound-item-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        .sound-item-buttons button {
-            width: auto;
-            padding: 5px 15px;
-            font-size: 11px;
-            margin: 0;
-        }
-        .sound-item-buttons button.danger {
-            border-color: #ff4444;
-            color: #ff4444;
-        }
-        .sound-item-buttons button.danger:hover {
-            background: #ff4444;
             color: #000;
         }
         
@@ -772,6 +663,14 @@
                 font-size: 12px;
                 padding: 8px 15px;
             }
+            .video-control-hud {
+                right: 10px;
+                padding: 10px;
+            }
+            .video-control-hud button {
+                font-size: 11px;
+                padding: 6px 12px;
+            }
         }
         .redirect-overlay {
             position: fixed;
@@ -812,243 +711,6 @@
         .redirect-text.active {
             opacity: 1;
         }
-        
-        /* Maps Page */
-        .maps-page {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
-            z-index: 3000;
-            display: none;
-            overflow: hidden;
-        }
-        .maps-page.active {
-            display: block;
-        }
-        .maps-title {
-            position: absolute;
-            top: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 96px;
-            color: #ffcc66;
-            letter-spacing: 12px;
-            text-shadow: 0 0 30px rgba(255, 153, 51, 0.8);
-            z-index: 10;
-        }
-        .maps-terminal {
-            width: 100%;
-            height: 100%;
-            padding: 200px 40px 40px 40px;
-            overflow-y: auto;
-            color: #ff9933;
-            font-size: 14px;
-            line-height: 1.4;
-            letter-spacing: 1px;
-        }
-        .maps-line {
-            opacity: 0.8;
-            margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-        }
-        .maps-line.highlight {
-            color: #ffcc66;
-            text-shadow: 0 0 10px rgba(255, 153, 51, 0.6);
-        }
-        
-        /* Data Page */
-        .data-page {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
-            z-index: 3000;
-            display: none;
-            overflow: hidden;
-        }
-        .data-page.active {
-            display: block;
-        }
-        .data-title {
-            position: absolute;
-            top: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 96px;
-            color: #ffcc66;
-            letter-spacing: 12px;
-            text-shadow: 0 0 30px rgba(255, 153, 51, 0.8);
-            z-index: 10;
-        }
-        .data-terminal {
-            width: 100%;
-            height: 100%;
-            padding: 200px 40px 40px 40px;
-            overflow-y: auto;
-            color: #ff9933;
-            font-size: 14px;
-            line-height: 1.4;
-            letter-spacing: 1px;
-        }
-        .data-line {
-            opacity: 0.8;
-            margin-bottom: 3px;
-            white-space: nowrap;
-            overflow: hidden;
-            display: flex;
-            justify-content: space-between;
-            padding-right: 20px;
-        }
-        .data-file {
-            flex: 1;
-        }
-        .data-status {
-            margin-left: 20px;
-            font-weight: bold;
-        }
-        .data-status.perfect {
-            color: #44ff44;
-            text-shadow: 0 0 10px rgba(68, 255, 68, 0.6);
-        }
-        .data-status.damaged {
-            color: #ffaa00;
-            text-shadow: 0 0 10px rgba(255, 170, 0, 0.6);
-        }
-        .data-status.corrupted {
-            color: #ff4444;
-            text-shadow: 0 0 10px rgba(255, 68, 68, 0.6);
-        }
-        
-        @media (max-width: 768px) {
-            .maps-title {
-                font-size: 48px;
-                top: 30px;
-            }
-            .maps-terminal {
-                padding: 120px 20px 20px 20px;
-                font-size: 11px;
-            }
-            .data-title {
-                font-size: 48px;
-                top: 30px;
-            }
-            .data-terminal {
-                padding: 120px 20px 20px 20px;
-                font-size: 11px;
-            }
-            .data-line {
-                flex-direction: column;
-                gap: 2px;
-            }
-            .data-status {
-                margin-left: 0;
-            }
-        }
-        
-        /* Progress Bar Page */
-        .progress-page {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
-            z-index: 3000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .progress-page.active {
-            display: flex;
-        }
-        .progress-content {
-            text-align: center;
-            width: 90%;
-            max-width: 1200px;
-        }
-        .progress-title {
-            font-size: 72px;
-            color: #ffcc66;
-            letter-spacing: 8px;
-            margin-bottom: 60px;
-            text-shadow: 0 0 30px rgba(255, 153, 51, 0.8);
-        }
-        .progress-bar-container {
-            background: rgba(0, 0, 0, 0.9);
-            border: 3px solid #ff9933;
-            padding: 20px;
-            margin-bottom: 40px;
-            box-shadow: 
-                inset 0 0 20px rgba(255, 153, 51, 0.2),
-                0 0 20px rgba(255, 153, 51, 0.3);
-        }
-        .progress-bar-text {
-            font-size: 48px;
-            color: #ffcc66;
-            letter-spacing: 4px;
-            line-height: 1.5;
-            word-break: break-all;
-            text-shadow: 0 0 20px rgba(255, 153, 51, 0.8);
-        }
-        .progress-bar-text .filled {
-            color: #ff9933;
-            text-shadow: 0 0 30px rgba(255, 153, 51, 1);
-        }
-        .progress-percentage {
-            font-size: 36px;
-            color: #ff9933;
-            letter-spacing: 2px;
-            margin-top: 20px;
-        }
-        .progress-time-display {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 60px;
-        }
-        .progress-time-unit {
-            text-align: center;
-        }
-        .progress-time-value {
-            font-size: 64px;
-            color: #ffcc66;
-            text-shadow: 0 0 20px rgba(255, 153, 51, 0.8);
-        }
-        .progress-time-label {
-            font-size: 14px;
-            color: #ff9933;
-            letter-spacing: 2px;
-            margin-top: 10px;
-        }
-        
-        @media (max-width: 768px) {
-            .progress-title {
-                font-size: 36px;
-                margin-bottom: 30px;
-            }
-            .progress-bar-text {
-                font-size: 24px;
-            }
-            .progress-percentage {
-                font-size: 24px;
-            }
-            .progress-time-display {
-                gap: 15px;
-                margin-top: 30px;
-            }
-            .progress-time-value {
-                font-size: 36px;
-            }
-            .progress-time-label {
-                font-size: 11px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -1064,54 +726,9 @@
         </div>
     </div>
     
-    <!-- Maps Page -->
-    <div class="maps-page" id="mapsPage">
-        <div class="maps-title">DOORS</div>
-        <div class="maps-terminal" id="mapsTerminal"></div>
-    </div>
-    
-    <!-- Data Page -->
-    <div class="data-page" id="dataPage">
-        <div class="data-title">DATA</div>
-        <div class="data-terminal" id="dataTerminal"></div>
-    </div>
-    
-    <!-- Progress Bar Page -->
-    <div class="progress-page" id="progressPage">
-        <div class="progress-content">
-            <div class="progress-title">SOURCE</div>
-            <div class="progress-bar-container">
-                <div class="progress-bar-text" id="progressBarText"></div>
-                <div class="progress-percentage" id="progressPercentage">0.00%</div>
-            </div>
-            <div class="progress-time-display">
-                <div class="progress-time-unit">
-                    <div class="progress-time-value" id="progDays">00</div>
-                    <div class="progress-time-label">DAYS</div>
-                </div>
-                <div class="progress-time-unit">
-                    <div class="progress-time-value" id="progHours">00</div>
-                    <div class="progress-time-label">HOURS</div>
-                </div>
-                <div class="progress-time-unit">
-                    <div class="progress-time-value" id="progMinutes">00</div>
-                    <div class="progress-time-label">MINUTES</div>
-                </div>
-                <div class="progress-time-unit">
-                    <div class="progress-time-value" id="progSeconds">00</div>
-                    <div class="progress-time-label">SECONDS</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
     <button class="logout-btn" id="logoutBtn" onclick="logoutAdmin()">LOGOUT</button>
     <button class="admin-vote-btn" id="adminVoteBtn" onclick="openAdminVotePanel()">VOTE CONTROL</button>
     <button class="admin-sound-btn" id="adminSoundBtn" onclick="openAdminSoundPanel()">SOUND CONTROL</button>
-    <button class="texture-control-btn" id="textureControlBtn" onclick="toggleMissingTexture()">TOGGLE TEXTURE</button>
-    
-    <!-- Missing Texture Overlay -->
-    <div class="missing-texture-overlay" id="missingTextureOverlay"></div>
     
     <!-- Video Control HUD (Admin only) -->
     <div class="video-control-hud" id="videoControlHud">
@@ -1159,9 +776,6 @@
     </div>
     
     <audio id="globalSoundPlayer"></audio>
-    <audio id="voteChimeSound">
-        <source src="windchime2.wav" type="audio/wav">
-    </audio>
     
     <!-- Console/Chat -->
     <div class="console" id="console">
@@ -1181,7 +795,6 @@
     
     <div class="redirect-overlay" id="redirectOverlay"></div>
     <div class="redirect-text" id="redirectText">REDIRECTING</div>
-    <div class="countdown" id="countdownTime">00:00:00:00</div>
     <div class="counter" onclick="window.open('https://discord.gg/2MaeHsZ5GC', '_blank')">
         <div class="counter-label">ACTIVE USERS</div>
         <div class="counter-number" id="userCount">0</div>
@@ -1228,6 +841,7 @@
 
         // Generate unique session ID
         const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        window.userId = sessionId;
         const sessionRef = ref(database, 'sessions/' + sessionId);
         const counterElement = document.getElementById('userCount');
 
@@ -1269,7 +883,6 @@
                 document.getElementById('adminVoteBtn').style.display = 'block';
                 document.getElementById('adminSoundBtn').style.display = 'block';
                 document.getElementById('videoControlHud').classList.add('active');
-                document.getElementById('textureControlBtn').style.display = 'block';
                 console.log('Admin logged in:', user.email);
                 
                 // Trigger a refresh of messages to show delete buttons
@@ -1281,13 +894,11 @@
                 // User is signed out
                 window.isAdmin = false;
                 window.adminEmail = null;
-                window.userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 document.getElementById('consoleInput').style.display = 'none';
                 document.getElementById('logoutBtn').style.display = 'none';
                 document.getElementById('adminVoteBtn').style.display = 'none';
                 document.getElementById('adminSoundBtn').style.display = 'none';
                 document.getElementById('videoControlHud').classList.remove('active');
-                document.getElementById('textureControlBtn').style.display = 'none';
             }
         });
         
@@ -1344,65 +955,13 @@
         // Re-render messages when admin logs in
         window.addEventListener('admin-login', renderMessages);
         
-        // Listen for global video changes
-        const videoStateRef = ref(database, 'videoState');
-        onValue(videoStateRef, (snapshot) => {
-            const videoState = snapshot.val();
-            console.log('Video state received:', videoState);
-            console.log('Current video:', currentVideo);
-            
-            if (videoState && videoState.currentVideo) {
-                const newVideo = videoState.currentVideo;
-                
-                // Only switch if it's different from current video
-                if (newVideo !== currentVideo) {
-                    console.log('Switching to video:', newVideo);
-                    const mainVideo = document.getElementById('mainVideo');
-                    mainVideo.src = newVideo;
-                    mainVideo.load();
-                    mainVideo.loop = (newVideo === 'water2.mp4' || newVideo === 'water03.mp4');
-                    mainVideo.muted = true;
-                    mainVideo.play()
-                        .then(() => console.log('Video switched successfully'))
-                        .catch(e => console.error('Video switch failed:', e));
-                    
-                    currentVideo = newVideo;
-                    
-                    // Update active button if admin
-                    if (window.isAdmin) {
-                        document.querySelectorAll('.video-control-hud button').forEach(btn => {
-                            btn.classList.remove('active');
-                        });
-                        const activeBtn = document.querySelector(`[data-video="${newVideo}"]`);
-                        if (activeBtn) activeBtn.classList.add('active');
-                    }
-                } else {
-                    console.log('Video already playing:', newVideo);
-                }
-            }
-        });
-        
         // Listen for active vote
         const voteRef = ref(database, 'vote');
-        let lastVoteCount = 0;
-        
         onValue(voteRef, (snapshot) => {
             const vote = snapshot.val();
             const votePanel = document.getElementById('votePanel');
             
             if (vote && vote.active) {
-                // Check if there's a new vote
-                const votes = vote.votes || {};
-                const currentVoteCount = Object.keys(votes).length;
-                
-                // Play chime sound if vote count increased (but not on first load)
-                if (lastVoteCount > 0 && currentVoteCount > lastVoteCount) {
-                    const chimeSound = document.getElementById('voteChimeSound');
-                    chimeSound.currentTime = 0;
-                    chimeSound.play().catch(e => console.log('Chime sound failed:', e));
-                }
-                lastVoteCount = currentVoteCount;
-                
                 // Show vote panel
                 document.getElementById('voteQuestion').textContent = vote.question;
                 
@@ -1431,7 +990,6 @@
                 }
             } else {
                 votePanel.classList.remove('active');
-                lastVoteCount = 0;
             }
         });
         
@@ -1513,6 +1071,19 @@
             `;
         }
         
+        // Listen for sound triggers
+        const soundTriggerRef = ref(database, 'soundTrigger');
+        let lastSoundTimestamp = 0;
+        onValue(soundTriggerRef, (snapshot) => {
+            const trigger = snapshot.val();
+            if (trigger && trigger.timestamp > lastSoundTimestamp) {
+                lastSoundTimestamp = trigger.timestamp;
+                const player = document.getElementById('globalSoundPlayer');
+                player.src = trigger.soundFile;
+                player.play().catch(e => console.log('Sound play failed:', e));
+            }
+        });
+        
         // Make functions available globally
         window.loginAdmin = async function() {
             const email = document.getElementById('loginEmail').value;
@@ -1562,25 +1133,6 @@
             const text = input.value.trim();
             
             if (text) {
-                // Check for special commands
-                const upperText = text.toUpperCase();
-                if (upperText === 'RUN VRAD.EXE' || upperText === 'FIND SOURCEENGINE.MDL') {
-                    console.log('Special command detected:', text);
-                    // Trigger missing texture overlay for all users
-                    const { ref, set } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
-                    const textureRef = ref(window.firebaseDB, 'missingTexture');
-                    
-                    try {
-                        await set(textureRef, {
-                            active: true,
-                            timestamp: Date.now()
-                        });
-                        console.log('Missing texture activated via command');
-                    } catch (error) {
-                        console.error('Failed to activate texture:', error);
-                    }
-                }
-                
                 const messagesRef = ref(database, 'messages');
                 await push(messagesRef, {
                     username: 'SOURCEENGINE',
@@ -1679,7 +1231,11 @@
             document.getElementById('adminSoundPanel').classList.remove('active');
         };
         
-        window.playSelectedSound = async function() {
+        window.toggleMissingTexture = function() {
+            if (!window.isAdmin) return;
+            const overlay = document.getElementById('missingTextureOverlay');
+            overlay.classList.toggle('active');
+        };
             if (!window.isAdmin) return;
             
             const soundSelect = document.getElementById('soundSelect');
@@ -1697,11 +1253,6 @@
                 timestamp: Date.now()
             });
             
-            // Also play locally for admin
-            const player = document.getElementById('globalSoundPlayer');
-            player.src = soundFile;
-            player.play().catch(e => console.log('Local sound play failed:', e));
-            
             console.log('Playing sound for all users:', soundFile);
         };
     </script>
@@ -1714,385 +1265,141 @@
             window.history.replaceState({}, document.title, window.location.pathname);
         }
         
-        // Check if ?maps is in URL
-        if (window.location.search.includes('maps')) {
-            document.getElementById('mapsPage').classList.add('active');
-            // Hide other elements
-            document.getElementById('mainVideo').style.display = 'none';
-            document.getElementById('bgAudio').pause();
-            
-            // Start map terminal animation
-            startMapTerminal();
+        // Console toggle
+        function toggleConsole() {
+            document.getElementById('console').classList.toggle('active');
         }
         
-        // Check if ?data is in URL
-        if (window.location.search.includes('data')) {
-            document.getElementById('dataPage').classList.add('active');
-            // Hide other elements
-            document.getElementById('mainVideo').style.display = 'none';
-            document.getElementById('bgAudio').pause();
+        let currentVideo = 'water.mp4';
+        
+        // Video switching function
+        function switchVideo(videoFile) {
+            if (!window.isAdmin) return;
             
-            // Start data terminal animation
-            startDataTerminal();
+            const mainVideo = document.getElementById('mainVideo');
+            mainVideo.src = videoFile;
+            mainVideo.load();
+            mainVideo.loop = (videoFile === 'water2.mp4' || videoFile === 'water03.mp4');
+            mainVideo.muted = true;
+            mainVideo.play();
+            
+            currentVideo = videoFile;
+            
+            // Update active button
+            document.querySelectorAll('.video-control-hud button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const activeBtn = document.querySelector(`[data-video="${videoFile}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
         }
         
-        // Maps terminal effect
-        const sourceEngineMaps = [
-            'maps/cp_dustbowl.bsp',
-            'maps/ctf_2fort.bsp',
-            'maps/pl_badwater.bsp',
-            'maps/koth_harvest.bsp',
-            'maps/pl_upward.bsp',
-            'maps/cp_granary.bsp',
-            'maps/ctf_turbine.bsp',
-            'maps/pl_goldrush.bsp',
-            'maps/cp_gravelpit.bsp',
-            'maps/koth_nucleus.bsp',
-            'maps/d1_trainstation_01.bsp',
-            'maps/d1_canals_01.bsp',
-            'maps/d1_town_01.bsp',
-            'maps/d2_coast_01.bsp',
-            'maps/d3_c17_01.bsp',
-            'maps/ep1_citadel_00.bsp',
-            'maps/ep2_outland_01.bsp',
-            'maps/de_dust2.bsp',
-            'maps/cs_office.bsp',
-            'maps/de_inferno.bsp',
-            'maps/de_nuke.bsp',
-            'maps/cs_italy.bsp',
-            'maps/de_aztec.bsp',
-            'maps/de_train.bsp',
-            'maps/cs_assault.bsp',
-            'maps/gm_construct.bsp',
-            'maps/gm_flatgrass.bsp',
-            'maps/rp_downtown_v4c.bsp',
-            'maps/gm_bigcity.bsp',
-            'maps/rp_evocity_v4b1.bsp',
-            'maps/ph_restaurant.bsp',
-            'maps/ttt_minecraft_b5.bsp',
-            'maps/gm_fork.bsp',
-            'maps/de_dust.bsp',
-            'maps/cs_militia.bsp',
-            'maps/cp_badlands.bsp',
-            'maps/pl_frontier_final.bsp',
-            'maps/ctf_sawmill.bsp',
-            'maps/koth_king.bsp',
-            'maps/cp_steel.bsp',
-            'maps/pl_thundermountain.bsp',
-            'maps/koth_viaduct.bsp',
-            'maps/cp_gorge.bsp',
-            'maps/ctf_doublecross.bsp',
-            'maps/pl_hoodoo_final.bsp',
-            'maps/d1_canals_02.bsp',
-            'maps/d1_canals_03.bsp',
-            'maps/d1_eli_01.bsp',
-            'maps/d2_prison_01.bsp',
-            'maps/d2_coast_03.bsp',
-            'maps/d3_breen_01.bsp',
-            'maps/ep1_c17_00.bsp',
-            'maps/ep2_outland_05.bsp',
-            'maps/de_cbble.bsp',
-            'maps/de_mirage.bsp',
-            'maps/cs_compound.bsp',
-            'maps/gm_mobenix_v1_5.bsp',
-            'maps/rp_florida.bsp',
-            'maps/dm_lockdown.bsp',
-            'maps/de_prodigy.bsp',
-            'maps/cs_havana.bsp',
-            'maps/pl_swiftwater_final1.bsp',
-            'maps/cp_foundry.bsp',
-            'maps/koth_lakeside_final.bsp',
-            'maps/arena_lumberyard.bsp',
-            'maps/cp_egypt_final.bsp',
-            'maps/pl_barnblitz.bsp',
-            'maps/ctf_well.bsp',
-            'maps/cp_yukon_final.bsp',
-            'maps/pl_cashworks.bsp',
-            'maps/koth_badlands.bsp',
-            'maps/cp_process_final.bsp',
-            'maps/d1_trainstation_02.bsp',
-            'maps/d1_town_02.bsp',
-            'maps/d2_coast_09.bsp',
-            'maps/d3_c17_05.bsp',
-            'maps/ep1_citadel_03.bsp',
-            'maps/ep2_outland_12.bsp',
-            'maps/gm_wireburg.bsp',
-            'maps/rp_rockford_v2b.bsp',
-            'maps/ttt_67thway_v14.bsp',
-            'maps/gm_flatgrass_v3.bsp',
-            'maps/ph_manor.bsp',
-            'maps/de_cache.bsp',
-            'maps/cs_agency.bsp'
-        ];
-        
-        function startMapTerminal() {
-            const terminal = document.getElementById('mapsTerminal');
-            let lineCount = 0;
-            const maxLines = 100;
+        // Enter key to send message
+        document.addEventListener('DOMContentLoaded', () => {
+            const messageInput = document.getElementById('messageInput');
+            if (messageInput) {
+                messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
             
-            function addLine() {
-                if (lineCount >= maxLines) {
-                    // Remove oldest line
-                    const firstLine = terminal.firstChild;
-                    if (firstLine) terminal.removeChild(firstLine);
+            // Enter key to login
+            const loginPassword = document.getElementById('loginPassword');
+            if (loginPassword) {
+                loginPassword.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        loginAdmin();
+                    }
+                });
+            }
+        });
+        
+        // ~ key to toggle console
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '`' || e.key === '~') {
+                e.preventDefault();
+                toggleConsole();
+            }
+        });
+        
+        // Video and audio elements
+        const mainVideo = document.getElementById('mainVideo');
+        const audioElement = document.getElementById('bgAudio');
+        const alertAudio = document.getElementById('alertAudio');
+        const audioBtn = document.getElementById('audioBtn');
+        const redirectOverlay = document.getElementById('redirectOverlay');
+        const redirectText = document.getElementById('redirectText');
+        let audioStarted = false;
+        let hasRedirected = false;
+        let water1HasPlayed = false;
+
+        // Trigger redirect sequence when first video ends
+        mainVideo.addEventListener('ended', (e) => {
+            if (!hasRedirected && currentVideo === 'water.mp4') {
+                hasRedirected = true;
+                startRedirectSequence();
+            } else if (!water1HasPlayed && currentVideo === 'water1.mp4') {
+                // water1 just ended, switch to water2
+                water1HasPlayed = true;
+                switchVideo('water2.mp4');
+            }
+        });
+
+        function startRedirectSequence() {
+            // Pause background audio
+            audioElement.pause();
+            
+            // Play alert sound
+            alertAudio.play();
+            
+            // Show black overlay and redirecting text
+            redirectOverlay.classList.add('active');
+            redirectText.classList.add('active');
+            
+            // After 5 seconds, start water1.mp4
+            setTimeout(() => {
+                redirectText.classList.remove('active');
+                redirectOverlay.classList.remove('active');
+                
+                // Resume background audio
+                if (audioStarted) {
+                    audioElement.play();
                 }
                 
-                const line = document.createElement('div');
-                line.className = 'maps-line';
-                
-                // Random chance for highlighted line
-                if (Math.random() < 0.15) {
-                    line.classList.add('highlight');
-                }
-                
-                // Random map
-                const map = sourceEngineMaps[Math.floor(Math.random() * sourceEngineMaps.length)];
-                
-                // Add timestamp and status
-                const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
-                const statuses = ['LOADING', 'PARSING', 'MOUNTING', 'INDEXING', 'VERIFIED', 'CACHED'];
-                const status = statuses[Math.floor(Math.random() * statuses.length)];
-                
-                line.textContent = `[${timestamp}] ${status}: ${map}`;
-                
-                terminal.appendChild(line);
-                terminal.scrollTop = terminal.scrollHeight;
-                
-                lineCount++;
-            }
-            
-            // Add initial burst of lines
-            for (let i = 0; i < 30; i++) {
-                setTimeout(addLine, i * 50);
-            }
-            
-            // Continue adding lines at random intervals
-            function scheduleNextLine() {
-                const delay = Math.random() * 300 + 100; // 100-400ms
-                setTimeout(() => {
-                    addLine();
-                    scheduleNextLine();
-                }, delay);
-            }
-            
-            scheduleNextLine();
+                // Change to water1 video (no loop)
+                switchVideo('water1.mp4');
+            }, 5000);
         }
-        
-        // Data terminal effect
-        const dataFileMaps = [
-            'maps/cp_dustbowl.bsp',
-            'maps/ctf_2fort.bsp',
-            'maps/pl_badwater.bsp',
-            'maps/koth_harvest.bsp',
-            'maps/pl_upward.bsp',
-            'maps/cp_granary.bsp',
-            'maps/ctf_turbine.bsp',
-            'maps/pl_goldrush.bsp',
-            'maps/cp_gravelpit.bsp',
-            'maps/koth_nucleus.bsp',
-            'maps/d1_trainstation_01.bsp',
-            'maps/d1_canals_01.bsp',
-            'maps/d1_town_01.bsp',
-            'maps/d2_coast_01.bsp',
-            'maps/d3_c17_01.bsp',
-            'maps/ep1_citadel_00.bsp',
-            'maps/ep2_outland_01.bsp',
-            'maps/de_dust2.bsp',
-            'maps/cs_office.bsp',
-            'maps/de_inferno.bsp',
-            'maps/de_nuke.bsp',
-            'maps/cs_italy.bsp',
-            'maps/de_aztec.bsp',
-            'maps/de_train.bsp',
-            'maps/cs_assault.bsp',
-            'maps/gm_construct.bsp',
-            'maps/gm_flatgrass.bsp',
-            'maps/rp_downtown_v4c.bsp',
-            'maps/gm_bigcity.bsp',
-            'maps/rp_evocity_v4b1.bsp',
-            'maps/ph_restaurant.bsp',
-            'maps/ttt_minecraft_b5.bsp',
-            'maps/gm_fork.bsp',
-            'maps/de_dust.bsp',
-            'maps/cs_militia.bsp',
-            'maps/cp_badlands.bsp',
-            'maps/pl_frontier_final.bsp',
-            'maps/ctf_sawmill.bsp',
-            'maps/koth_king.bsp',
-            'maps/cp_steel.bsp',
-            'maps/pl_thundermountain.bsp',
-            'maps/koth_viaduct.bsp',
-            'maps/cp_gorge.bsp',
-            'maps/ctf_doublecross.bsp',
-            'maps/pl_hoodoo_final.bsp',
-            'maps/d1_canals_02.bsp',
-            'maps/d1_canals_03.bsp',
-            'maps/d1_eli_01.bsp',
-            'maps/d2_prison_01.bsp',
-            'maps/d2_coast_03.bsp',
-            'maps/d3_breen_01.bsp',
-            'maps/ep1_c17_00.bsp',
-            'maps/ep2_outland_05.bsp',
-            'maps/de_cbble.bsp',
-            'maps/de_mirage.bsp',
-            'maps/cs_compound.bsp',
-            'maps/gm_mobenix_v1_5.bsp',
-            'maps/rp_florida.bsp',
-            'maps/dm_lockdown.bsp',
-            'maps/de_prodigy.bsp',
-            'maps/cs_havana.bsp',
-            'maps/pl_swiftwater_final1.bsp',
-            'maps/cp_foundry.bsp',
-            'maps/koth_lakeside_final.bsp',
-            'maps/arena_lumberyard.bsp',
-            'maps/cp_egypt_final.bsp',
-            'maps/pl_barnblitz.bsp',
-            'maps/ctf_well.bsp',
-            'maps/cp_yukon_final.bsp',
-            'maps/pl_cashworks.bsp',
-            'maps/koth_badlands.bsp',
-            'maps/cp_process_final.bsp',
-            'maps/d1_trainstation_02.bsp',
-            'maps/d1_town_02.bsp',
-            'maps/d2_coast_09.bsp',
-            'maps/d3_c17_05.bsp',
-            'maps/ep1_citadel_03.bsp',
-            'maps/ep2_outland_12.bsp',
-            'maps/gm_wireburg.bsp',
-            'maps/rp_rockford_v2b.bsp',
-            'maps/ttt_67thway_v14.bsp',
-            'maps/gm_flatgrass_v3.bsp',
-            'maps/ph_manor.bsp',
-            'maps/de_cache.bsp',
-            'maps/cs_agency.bsp',
-            'maps/cp_well.bsp',
-            'maps/arena_watchtower.bsp',
-            'maps/koth_sawmill.bsp'
-        ];
-        
-        function startDataTerminal() {
-            const terminal = document.getElementById('dataTerminal');
-            let lineCount = 0;
-            const maxLines = 100;
-            
-            function addLine() {
-                if (lineCount >= maxLines) {
-                    // Remove oldest line
-                    const firstLine = terminal.firstChild;
-                    if (firstLine) terminal.removeChild(firstLine);
-                }
-                
-                const line = document.createElement('div');
-                line.className = 'data-line';
-                
-                // Random map
-                const map = dataFileMaps[Math.floor(Math.random() * dataFileMaps.length)];
-                
-                // Random status with weighted probabilities
-                const rand = Math.random();
-                let status, statusClass;
-                if (rand < 0.7) {
-                    status = 'PERFECT';
-                    statusClass = 'perfect';
-                } else if (rand < 0.9) {
-                    status = 'DAMAGED';
-                    statusClass = 'damaged';
-                } else {
-                    status = 'CORRUPTED';
-                    statusClass = 'corrupted';
-                }
-                
-                line.innerHTML = `
-                    <span class="data-file">${map}</span>
-                    <span class="data-status ${statusClass}">[${status}]</span>
-                `;
-                
-                terminal.appendChild(line);
-                terminal.scrollTop = terminal.scrollHeight;
-                
-                lineCount++;
+
+        // Audio control
+        document.body.addEventListener('click', () => {
+            if (!audioStarted) {
+                audioElement.play();
+                audioBtn.textContent = 'MUTE';
+                audioStarted = true;
             }
-            
-            // Add initial burst of lines
-            for (let i = 0; i < 30; i++) {
-                setTimeout(addLine, i * 50);
+        }, { once: true });
+
+        audioBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (audioElement.paused) {
+                audioElement.play();
+                audioBtn.textContent = 'MUTE';
+            } else {
+                audioElement.pause();
+                audioBtn.textContent = 'UNMUTE';
             }
-            
-            // Continue adding lines at random intervals
-            function scheduleNextLine() {
-                const delay = Math.random() * 300 + 100; // 100-400ms
-                setTimeout(() => {
-                    addLine();
-                    scheduleNextLine();
-                }, delay);
-            }
-            
-            scheduleNextLine();
-        }
-        
-        // Check if ?progress is in URL
-        if (window.location.search.includes('progress')) {
-            document.getElementById('progressPage').classList.add('active');
-            // Hide other elements
-            document.getElementById('mainVideo').style.display = 'none';
-            document.getElementById('bgAudio').pause();
-        }
-        
-        // Progress bar update function
-        const targetDate = new Date('January 6, 2026 00:00:00').getTime();
-        const startDate = new Date('December 6, 2024 00:00:00').getTime();
-        const totalBars = 50; // Total number of blocks in progress bar
-        
-        function updateProgressBar() {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-            
-            if (distance < 0) {
-                document.getElementById('progressBarText').innerHTML = '<span class="filled">EVENT STARTED</span>';
-                document.getElementById('progressPercentage').textContent = '100.00%';
-                return;
-            }
-            
-            // Calculate time units
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
-            // Update time display
-            document.getElementById('progDays').textContent = String(days).padStart(2, '0');
-            document.getElementById('progHours').textContent = String(hours).padStart(2, '0');
-            document.getElementById('progMinutes').textContent = String(minutes).padStart(2, '0');
-            document.getElementById('progSeconds').textContent = String(seconds).padStart(2, '0');
-            
-            // Calculate progress percentage
-            const totalDuration = targetDate - startDate;
-            const elapsed = now - startDate;
-            const percentage = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
-            
-            // Calculate filled blocks
-            const filledBlocks = Math.floor((percentage / 100) * totalBars);
-            const emptyBlocks = totalBars - filledBlocks;
-            
-            // Build progress bar string
-            let progressBar = '[';
-            for (let i = 0; i < filledBlocks; i++) {
-                progressBar += '<span class="filled">█</span>';
-            }
-            for (let i = 0; i < emptyBlocks; i++) {
-                progressBar += '░';
-            }
-            progressBar += ']';
-            
-            document.getElementById('progressBarText').innerHTML = progressBar;
-            document.getElementById('progressPercentage').textContent = percentage.toFixed(2) + '%';
-        }
-        
-        // Update progress bar if on progress page
-        if (window.location.search.includes('progress')) {
-            updateProgressBar();
-            setInterval(updateProgressBar, 1000);
-        }
+            audioStarted = true;
+        });
+
+        // Try to autoplay
+        audioElement.play().then(() => {
+            audioBtn.textContent = 'MUTE';
+            audioStarted = true;
+        }).catch(() => {
+            audioBtn.textContent = 'CLICK TO START';
+        });
         
         // Make HUD elements draggable
         function makeDraggable(element) {
@@ -2165,181 +1472,6 @@
             makeDraggable(document.getElementById('adminVotePanel'));
             makeDraggable(document.getElementById('adminSoundPanel'));
         });
-        
-        // Console toggle
-        function toggleConsole() {
-            document.getElementById('console').classList.toggle('active');
-        }
-        
-        let currentVideo = 'water.mp4';
-        
-        // Video switching function (global)
-        window.switchVideo = async function(videoFile) {
-            if (!window.isAdmin) return;
-            
-            console.log('Admin switching video to:', videoFile);
-            
-            // Update Firebase with new video state
-            const { ref, set } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
-            const videoStateRef = ref(window.firebaseDB, 'videoState');
-            
-            try {
-                await set(videoStateRef, {
-                    currentVideo: videoFile,
-                    timestamp: Date.now()
-                });
-                console.log('Video state updated in Firebase');
-            } catch (error) {
-                console.error('Failed to update video state:', error);
-            }
-        };
-        
-        // Enter key to send message
-        document.addEventListener('DOMContentLoaded', () => {
-            const messageInput = document.getElementById('messageInput');
-            if (messageInput) {
-                messageInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
-                });
-            }
-            
-            // Enter key to login
-            const loginPassword = document.getElementById('loginPassword');
-            if (loginPassword) {
-                loginPassword.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        loginAdmin();
-                    }
-                });
-            }
-        });
-        
-        // ~ key to toggle console
-        document.addEventListener('keydown', (e) => {
-            if (e.key === '`' || e.key === '~') {
-                e.preventDefault();
-                toggleConsole();
-            }
-        });
-        
-        // Video and audio elements
-        const mainVideo = document.getElementById('mainVideo');
-        const audioElement = document.getElementById('bgAudio');
-        const alertAudio = document.getElementById('alertAudio');
-        const audioBtn = document.getElementById('audioBtn');
-        const redirectOverlay = document.getElementById('redirectOverlay');
-        const redirectText = document.getElementById('redirectText');
-        let audioStarted = false;
-        let hasRedirected = false;
-        let water1HasPlayed = false;
-
-        // Preload videos to avoid pauses
-        const video1 = document.createElement('video');
-        video1.src = 'water1.mp4';
-        video1.preload = 'auto';
-        video1.muted = true;
-        
-        const video2 = document.createElement('video');
-        video2.src = 'water2.mp4';
-        video2.preload = 'auto';
-        video2.muted = true;
-        video2.loop = true;
-
-        // Trigger redirect sequence when first video ends
-        mainVideo.addEventListener('ended', (e) => {
-            if (!hasRedirected && currentVideo === 'water.mp4') {
-                hasRedirected = true;
-                startRedirectSequence();
-            } else if (!water1HasPlayed && currentVideo === 'water1.mp4') {
-                // water1 just ended, switch to water2
-                water1HasPlayed = true;
-                switchVideo('water2.mp4');
-            }
-        });
-
-        function startRedirectSequence() {
-            // Pause background audio
-            audioElement.pause();
-            
-            // Play alert sound
-            alertAudio.play();
-            
-            // Show black overlay and redirecting text
-            redirectOverlay.classList.add('active');
-            redirectText.classList.add('active');
-            
-            // After 5 seconds, start water1.mp4
-            setTimeout(() => {
-                redirectText.classList.remove('active');
-                redirectOverlay.classList.remove('active');
-                
-                // Resume background audio
-                if (audioStarted) {
-                    audioElement.play();
-                }
-                
-                // Change to water1 video (no loop)
-                switchVideo('water1.mp4');
-            }, 5000);
-        }
-
-        // Audio control
-        document.body.addEventListener('click', () => {
-            if (!audioStarted) {
-                audioElement.play();
-                audioBtn.textContent = 'MUTE';
-                audioStarted = true;
-            }
-        }, { once: true });
-
-        audioBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (audioElement.paused) {
-                audioElement.play();
-                audioBtn.textContent = 'MUTE';
-            } else {
-                audioElement.pause();
-                audioBtn.textContent = 'UNMUTE';
-            }
-            audioStarted = true;
-        });
-
-        // Try to autoplay
-        audioElement.play().then(() => {
-            audioBtn.textContent = 'MUTE';
-            audioStarted = true;
-        }).catch(() => {
-            audioBtn.textContent = 'CLICK TO START';
-        });
-        
-        // Countdown timer
-        function updateCountdown() {
-            const targetDate = new Date('January 6, 2026 00:00:00').getTime();
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-            
-            if (distance < 0) {
-                document.getElementById('countdownTime').textContent = 'EVENT STARTED';
-                return;
-            }
-            
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
-            document.getElementById('countdownTime').textContent = 
-                String(days).padStart(2, '0') + ':' +
-                String(hours).padStart(2, '0') + ':' +
-                String(minutes).padStart(2, '0') + ':' +
-                String(seconds).padStart(2, '0');
-        }
-        
-        // Update countdown every second
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
     </script>
 </body>
 </html>
