@@ -933,11 +933,11 @@
     <div class="video-control-hud" id="videoControlHud">
         <h3>VIDEO CONTROL</h3>
         <button onclick="switchVideo('water.mp4')" data-video="water.mp4">WATER</button>
-        <button onclick="switchVideo('water1.mp4')" data-video="water1.mp4">WATER1</button>
         <button onclick="switchVideo('water2.mp4')" data-video="water2.mp4">WATER2</button>
         <button onclick="switchVideo('water03.mp4')" data-video="water03.mp4">WATER03</button>
         <button onclick="switchVideo('city.mp4')" data-video="city.mp4">CITY</button>
         <button onclick="switchVideo('sighting.mp4')" data-video="sighting.mp4">SIGHTING</button>
+        <button onclick="switchVideo('tree.mp4')" data-video="tree.mp4">TREE</button>
     </div>
     
     <!-- Vote Panel (for users) -->
@@ -1511,7 +1511,7 @@
                     const mainVideo = document.getElementById('mainVideo');
                     mainVideo.src = newVideo;
                     mainVideo.load();
-                    mainVideo.loop = (newVideo === 'water2.mp4' || newVideo === 'water03.mp4' || newVideo === 'city.mp4' || newVideo === 'sighting.mp4');
+                    mainVideo.loop = (newVideo === 'water2.mp4' || newVideo === 'water03.mp4' || newVideo === 'city.mp4' || newVideo === 'sighting.mp4' || newVideo === 'tree.mp4' || newVideo === 'water.mp4');
                     mainVideo.muted = true;
                     mainVideo.play()
                         .then(() => console.log('Video switched successfully'))
@@ -1545,8 +1545,6 @@
 
     <script>
         window.currentVideo = 'water.mp4';
-        let hasRedirected = false;
-        let water1HasPlayed = false;
         let audioStarted = false;
         
         if (window.location.search.includes('admin')) {
@@ -1811,39 +1809,7 @@
         
         const mainVideo = document.getElementById('mainVideo');
         const audioElement = document.getElementById('bgAudio');
-        const alertAudio = document.getElementById('alertAudio');
         const audioBtn = document.getElementById('audioBtn');
-        const redirectOverlay = document.getElementById('redirectOverlay');
-        const redirectText = document.getElementById('redirectText');
-
-        mainVideo.addEventListener('ended', (e) => {
-            if (!hasRedirected && window.currentVideo === 'water.mp4') {
-                hasRedirected = true;
-                startRedirectSequence();
-            } else if (!water1HasPlayed && window.currentVideo === 'water1.mp4') {
-                water1HasPlayed = true;
-                switchVideo('water2.mp4');
-            }
-        });
-
-        function startRedirectSequence() {
-            audioElement.pause();
-            alertAudio.play();
-            
-            redirectOverlay.classList.add('active');
-            redirectText.classList.add('active');
-            
-            setTimeout(() => {
-                redirectText.classList.remove('active');
-                redirectOverlay.classList.remove('active');
-                
-                if (audioStarted) {
-                    audioElement.play();
-                }
-                
-                switchVideo('water1.mp4');
-            }, 5000);
-        }
 
         document.body.addEventListener('click', () => {
             if (!audioStarted) {
