@@ -937,6 +937,7 @@
         <button onclick="switchVideo('water2.mp4')" data-video="water2.mp4">WATER2</button>
         <button onclick="switchVideo('water03.mp4')" data-video="water03.mp4">WATER03</button>
         <button onclick="switchVideo('city.mp4')" data-video="city.mp4">CITY</button>
+        <button onclick="switchVideo('sighting.mp4')" data-video="sighting.mp4">SIGHTING</button>
     </div>
     
     <!-- Vote Panel (for users) -->
@@ -1510,7 +1511,7 @@
                     const mainVideo = document.getElementById('mainVideo');
                     mainVideo.src = newVideo;
                     mainVideo.load();
-                    mainVideo.loop = (newVideo === 'water2.mp4' || newVideo === 'water03.mp4' || newVideo === 'city.mp4');
+                    mainVideo.loop = (newVideo === 'water2.mp4' || newVideo === 'water03.mp4' || newVideo === 'city.mp4' || newVideo === 'sighting.mp4');
                     mainVideo.muted = true;
                     mainVideo.play()
                         .then(() => console.log('Video switched successfully'))
