@@ -926,69 +926,76 @@
         }
         .tgmt-header {
             background: #fff;
-            padding: 20px;
+            padding: 20px 40px;
             text-align: center;
-            border-bottom: 3px solid #000;
+            border-bottom: 2px solid #000;
         }
         .tgmt-title {
-            font-size: 64px;
+            font-size: 48px;
             font-weight: 900;
             color: #000;
-            letter-spacing: 2px;
-            margin-bottom: 0;
+            letter-spacing: 4px;
+            margin: 0;
             font-family: Impact, 'Arial Black', sans-serif;
+            text-transform: uppercase;
         }
         .tgmt-nav {
             background: #fff;
-            border-bottom: 3px solid #000;
+            border-bottom: 2px solid #000;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             padding: 0;
         }
         .tgmt-nav-item {
-            padding: 15px 40px;
-            font-size: 32px;
+            padding: 15px 50px;
+            font-size: 28px;
             font-weight: 900;
             color: #000;
             border-right: 2px solid #000;
             cursor: pointer;
             font-family: Impact, 'Arial Black', sans-serif;
             background: #fff;
+            transition: background 0.2s;
         }
         .tgmt-nav-item:first-child {
             border-left: 2px solid #000;
         }
+        .tgmt-nav-item:hover {
+            background: #f0f0f0;
+        }
         .tgmt-content {
-            padding: 40px;
-            max-width: 1200px;
+            padding: 60px 40px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         .tgmt-section {
             display: flex;
             align-items: center;
-            margin-bottom: 60px;
-            gap: 40px;
+            margin-bottom: 80px;
+            gap: 60px;
         }
         .tgmt-section:nth-child(even) {
             flex-direction: row-reverse;
         }
         .tgmt-text {
             flex: 1;
-            font-size: 48px;
+            font-size: 42px;
             font-weight: 900;
             color: #000;
-            line-height: 1.2;
+            line-height: 1.3;
             font-family: Impact, 'Arial Black', sans-serif;
-            text-align: center;
+            text-align: left;
+            text-transform: uppercase;
         }
         .tgmt-image {
             flex: 1;
-            border: 4px solid #000;
+            border: 3px solid #000;
             background: #fff;
-            min-height: 300px;
+            min-height: 350px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         .tgmt-image img {
             max-width: 100%;
@@ -996,7 +1003,7 @@
             display: block;
         }
         .tgmt-image-placeholder {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 900;
             color: #000;
             font-family: Impact, 'Arial Black', sans-serif;
@@ -1004,26 +1011,32 @@
         
         @media (max-width: 768px) {
             .tgmt-title {
-                font-size: 32px;
+                font-size: 28px;
+                letter-spacing: 2px;
             }
             .tgmt-nav {
                 flex-wrap: wrap;
             }
             .tgmt-nav-item {
-                padding: 10px 20px;
+                padding: 12px 25px;
                 font-size: 18px;
-                flex: 1;
+                flex: 1 1 auto;
                 text-align: center;
             }
             .tgmt-section {
                 flex-direction: column !important;
-                gap: 20px;
+                gap: 30px;
+                margin-bottom: 50px;
             }
             .tgmt-text {
                 font-size: 28px;
+                text-align: center;
             }
             .tgmt-content {
-                padding: 20px;
+                padding: 30px 20px;
+            }
+            .tgmt-image {
+                min-height: 250px;
             }
         }
     </style>
@@ -1066,7 +1079,7 @@
         </div>
         <div class="tgmt-content">
             <div class="tgmt-section">
-                <div class="tgmt-text">TEXT HERE THAT<br>SAYS "ERROR"</div>
+                <div class="tgmt-text">ERROR</div>
                 <div class="tgmt-image">
                     <img src="1.png" alt="Image 1" onerror="this.parentElement.innerHTML='<div class=\'tgmt-image-placeholder\'>IMAGE HERE</div>'">
                 </div>
@@ -1075,10 +1088,10 @@
                 <div class="tgmt-image">
                     <img src="2.png" alt="Image 2" onerror="this.parentElement.innerHTML='<div class=\'tgmt-image-placeholder\'>IMAGE HERE</div>'">
                 </div>
-                <div class="tgmt-text">TEXT HERE THAT<br>SAYS "ERROR"</div>
+                <div class="tgmt-text">ERROR</div>
             </div>
             <div class="tgmt-section">
-                <div class="tgmt-text">TEXT HERE THAT<br>SAYS "ERROR"</div>
+                <div class="tgmt-text">ERROR</div>
                 <div class="tgmt-image">
                     <img src="3.png" alt="Image 3" onerror="this.parentElement.innerHTML='<div class=\'tgmt-image-placeholder\'>IMAGE HERE</div>'">
                 </div>
@@ -1087,7 +1100,7 @@
                 <div class="tgmt-image">
                     <img src="4.png" alt="Image 4" onerror="this.parentElement.innerHTML='<div class=\'tgmt-image-placeholder\'>IMAGE HERE</div>'">
                 </div>
-                <div class="tgmt-text">TEXT HERE THAT<br>SAYS "ERROR"</div>
+                <div class="tgmt-text">ERROR</div>
             </div>
         </div>
     </div>
