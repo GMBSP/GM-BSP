@@ -916,7 +916,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: #fff;
+            background: #f4f4f4;
             z-index: 3000;
             display: none;
             overflow-y: auto;
@@ -925,77 +925,138 @@
             display: block;
         }
         .tgmt-header {
-            background: #fff;
-            padding: 20px 40px;
-            text-align: center;
-            border-bottom: 2px solid #000;
-        }
-        .tgmt-title {
-            font-size: 48px;
-            font-weight: 900;
-            color: #000;
-            letter-spacing: 4px;
-            margin: 0;
-            font-family: Impact, 'Arial Black', sans-serif;
-            text-transform: uppercase;
-        }
-        .tgmt-nav {
-            background: #fff;
-            border-bottom: 2px solid #000;
-            display: flex;
-            justify-content: flex-start;
-            padding: 0;
-        }
-        .tgmt-nav-item {
-            padding: 15px 50px;
-            font-size: 28px;
-            font-weight: 900;
-            color: #000;
-            border-right: 2px solid #000;
-            cursor: pointer;
-            font-family: Impact, 'Arial Black', sans-serif;
-            background: #fff;
-            transition: background 0.2s;
-        }
-        .tgmt-nav-item:first-child {
-            border-left: 2px solid #000;
-        }
-        .tgmt-nav-item:hover {
-            background: #f0f0f0;
-        }
-        .tgmt-content {
-            padding: 60px 40px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .tgmt-section {
+            background: #444;
+            padding: 15px 20px;
             display: flex;
             align-items: center;
-            margin-bottom: 80px;
-            gap: 60px;
+            gap: 15px;
+            border-bottom: 3px solid #333;
         }
-        .tgmt-section:nth-child(even) {
-            flex-direction: row-reverse;
-        }
-        .tgmt-text {
-            flex: 1;
-            font-size: 42px;
-            font-weight: 900;
-            color: #000;
-            line-height: 1.3;
-            font-family: Impact, 'Arial Black', sans-serif;
-            text-align: left;
-            text-transform: uppercase;
-        }
-        .tgmt-image {
-            flex: 1;
-            border: 3px solid #000;
-            background: #fff;
-            min-height: 350px;
+        .tgmt-logo {
+            width: 40px;
+            height: 40px;
+            background: #0d9eff;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .tgmt-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .tgmt-nav {
+            background: #444;
+            padding: 10px 20px;
+            border-bottom: 1px solid #333;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            color: #aaa;
+        }
+        .tgmt-nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 5px;
+        }
+        .tgmt-nav a:hover {
+            text-decoration: underline;
+        }
+        .tgmt-container {
+            display: flex;
+            min-height: calc(100vh - 120px);
+        }
+        .tgmt-sidebar {
+            width: 280px;
+            background: #3a3a3a;
+            padding: 20px;
+            color: #aaa;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+        }
+        .tgmt-sidebar-section {
+            margin-bottom: 30px;
+        }
+        .tgmt-sidebar-title {
+            color: #777;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .tgmt-sidebar-item {
+            padding: 8px 12px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            border-radius: 3px;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tgmt-sidebar-item:hover {
+            background: #444;
+        }
+        .tgmt-sidebar-icon {
+            font-size: 16px;
+        }
+        .tgmt-content {
+            flex: 1;
+            padding: 40px;
+            background: #fff;
+        }
+        .tgmt-section {
+            margin-bottom: 50px;
+        }
+        .tgmt-section-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #0d9eff;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0d9eff;
+            font-family: Arial, sans-serif;
+        }
+        .tgmt-section-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        .tgmt-section-content:nth-child(even) .tgmt-text {
+            order: 2;
+        }
+        .tgmt-section-content:nth-child(even) .tgmt-image {
+            order: 1;
+        }
+        .tgmt-text {
+            flex: 1;
+            font-size: 18px;
+            color: #666;
+            line-height: 1.6;
+            font-family: Arial, sans-serif;
+        }
+        .tgmt-error-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .tgmt-image {
+            flex: 1;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
         }
         .tgmt-image img {
             max-width: 100%;
@@ -1003,40 +1064,33 @@
             display: block;
         }
         .tgmt-image-placeholder {
-            font-size: 28px;
-            font-weight: 900;
-            color: #000;
-            font-family: Impact, 'Arial Black', sans-serif;
+            font-size: 18px;
+            color: #999;
+            font-family: Arial, sans-serif;
+        }
+        
+        @media (max-width: 1024px) {
+            .tgmt-container {
+                flex-direction: column;
+            }
+            .tgmt-sidebar {
+                width: 100%;
+            }
         }
         
         @media (max-width: 768px) {
-            .tgmt-title {
-                font-size: 28px;
-                letter-spacing: 2px;
-            }
-            .tgmt-nav {
-                flex-wrap: wrap;
-            }
-            .tgmt-nav-item {
-                padding: 12px 25px;
-                font-size: 18px;
-                flex: 1 1 auto;
-                text-align: center;
-            }
-            .tgmt-section {
+            .tgmt-section-content {
                 flex-direction: column !important;
-                gap: 30px;
-                margin-bottom: 50px;
             }
-            .tgmt-text {
-                font-size: 28px;
-                text-align: center;
+            .tgmt-section-content:nth-child(even) .tgmt-text,
+            .tgmt-section-content:nth-child(even) .tgmt-image {
+                order: initial;
             }
             .tgmt-content {
-                padding: 30px 20px;
+                padding: 20px;
             }
-            .tgmt-image {
-                min-height: 250px;
+            .tgmt-section-title {
+                font-size: 24px;
             }
         }
     </style>
@@ -1069,38 +1123,93 @@
     <!-- TGMT Page -->
     <div class="tgmt-page" id="tgmtPage">
         <div class="tgmt-header">
-            <h1 class="tgmt-title">THE GM TOWER.COM</h1>
+            <div class="tgmt-logo">g</div>
+            <h1 class="tgmt-title">Garry's Mod Wiki</h1>
         </div>
         <div class="tgmt-nav">
-            <div class="tgmt-nav-item">home</div>
-            <div class="tgmt-nav-item">ERROR</div>
-            <div class="tgmt-nav-item">ERROR</div>
-            <div class="tgmt-nav-item">ERROR</div>
+            <a href="#">Home</a> / <span>DColorPalette</span>
         </div>
-        <div class="tgmt-content">
-            <div class="tgmt-section">
-                <div class="tgmt-text">ERROR</div>
-                <div class="tgmt-image">
-                    <img src="1.png" alt="Image 1" onerror="this.parentElement.innerHTML='<div class=\'tgmt-image-placeholder\'>IMAGE HERE</div>'">
+        <div class="tgmt-container">
+            <div class="tgmt-sidebar">
+                <div class="tgmt-sidebar-section">
+                    <div class="tgmt-sidebar-title">PLAYER GUIDES</div>
+                    <div class="tgmt-sidebar-item">
+                        <span class="tgmt-sidebar-icon">📖</span>
+                        <span>Getting Started</span>
+                    </div>
+                    <div class="tgmt-sidebar-item">
+                        <span class="tgmt-sidebar-icon">🔧</span>
+                        <span>Sandbox Tools</span>
+                    </div>
+                    <div class="tgmt-sidebar-item">
+                        <span class="tgmt-sidebar-icon">🎮</span>
+                        <span>Game Modes</span>
+                    </div>
+                </div>
+                <div class="tgmt-sidebar-section">
+                    <div class="tgmt-sidebar-title">DEVELOPER GUIDES</div>
+                    <div class="tgmt-sidebar-item">
+                        <span class="tgmt-sidebar-icon">📖</span>
+                        <span>Getting Started</span>
+                    </div>
+                    <div class="tgmt-sidebar-item">
+                        <span class="tgmt-sidebar-icon">💻</span>
+                        <span>Lua Programming</span>
+                    </div>
+                    <div class="tgmt-sidebar-item">
+                        <span class="tgmt-sidebar-icon">⚙️</span>
+                        <span>Game Systems</span>
+                    </div>
                 </div>
             </div>
-            <div class="tgmt-section">
-                <div class="tgmt-image">
-                    <img src="2.png" alt="Image 2" onerror="this.parentElement.innerHTML='<div class=\'tgmt-image-placeholder\'>IMAGE HERE</div>'">
+            <div class="tgmt-content">
+                <div class="tgmt-section">
+                    <h2 class="tgmt-section-title">Description</h2>
+                    <div class="tgmt-section-content">
+                        <div class="tgmt-text">
+                            <div class="tgmt-error-text">ERROR</div>
+                        </div>
+                        <div class="tgmt-image">
+                            <img src="1.png" alt="Image 1" onerror="this.parentElement.innerHTML='<div class=\'tgmt-image-placeholder\'>IMAGE HERE</div>'">
+                        </div>
+                    </div>
                 </div>
-                <div class="tgmt-text">ERROR</div>
-            </div>
-            <div class="tgmt-section">
-                <div class="tgmt-text">ERROR</div>
-                <div class="tgmt-image">
-                    <img src="3.png" alt="Image 3" onerror="this.parentElement.innerHTML='<div class=\'tgmt-image-placeholder\'>IMAGE HERE</div>'">
+                
+                <div class="tgmt-section">
+                    <h2 class="tgmt-section-title">Parent</h2>
+                    <div class="tgmt-section-content">
+                        <div class="tgmt-image">
+                            <img src="2.png" alt="Image 2" onerror="this.parentElement.innerHTML='<div class=\'tgmt-image-placeholder\'>IMAGE HERE</div>'">
+                        </div>
+                        <div class="tgmt-text">
+                            <div class="tgmt-error-text">ERROR</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="tgmt-section">
-                <div class="tgmt-image">
-                    <img src="4.png" alt="Image 4" onerror="this.parentElement.innerHTML='<div class=\'tgmt-image-placeholder\'>IMAGE HERE</div>'">
+                
+                <div class="tgmt-section">
+                    <h2 class="tgmt-section-title">Implements</h2>
+                    <div class="tgmt-section-content">
+                        <div class="tgmt-text">
+                            <div class="tgmt-error-text">ERROR</div>
+                        </div>
+                        <div class="tgmt-image">
+                            <img src="3.png" alt="Image 3" onerror="this.parentElement.innerHTML='<div class=\'tgmt-image-placeholder\'>IMAGE HERE</div>'">
+                        </div>
+                    </div>
                 </div>
-                <div class="tgmt-text">ERROR</div>
+                
+                <div class="tgmt-section">
+                    <h2 class="tgmt-section-title">Events</h2>
+                    <div class="tgmt-section-content">
+                        <div class="tgmt-image">
+                            <img src="4.png" alt="Image 4" onerror="this.parentElement.innerHTML='<div class=\'tgmt-image-placeholder\'>IMAGE HERE</div>'">
+                        </div>
+                        <div class="tgmt-text">
+                            <div class="tgmt-error-text">ERROR</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
