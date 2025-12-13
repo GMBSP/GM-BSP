@@ -640,29 +640,30 @@
             top: 0;
             left: 0;
             width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 3500;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 900;
             display: none;
-            align-items: center;
-            justify-content: center;
+            padding: 20px;
+            border-bottom: 3px solid #ff9933;
         }
         .loading-bar-overlay.active {
-            display: flex;
+            display: block;
         }
         .loading-bar-container {
             text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
         }
         .loading-bar-text {
             font-family: 'Courier New', monospace;
-            font-size: 32px;
+            font-size: 24px;
             color: #ff9933;
-            letter-spacing: 4px;
-            margin-bottom: 20px;
+            letter-spacing: 3px;
+            margin-bottom: 15px;
         }
         .loading-bar {
             font-family: 'Courier New', monospace;
-            font-size: 48px;
+            font-size: 36px;
             color: #ff9933;
             letter-spacing: 2px;
             text-shadow: 0 0 10px rgba(255, 153, 51, 0.8);
@@ -672,15 +673,17 @@
         }
         .loading-percentage {
             font-family: 'Courier New', monospace;
-            font-size: 24px;
+            font-size: 18px;
             color: #ff9933;
-            margin-top: 20px;
+            margin-top: 10px;
+            display: inline-block;
+            margin-right: 20px;
         }
         .loading-time-remaining {
             font-family: 'Courier New', monospace;
-            font-size: 20px;
+            font-size: 18px;
             color: #ffcc66;
-            margin-top: 15px;
+            display: inline-block;
         }
         
         .admin-loading-btn {
@@ -706,13 +709,19 @@
         
         @media (max-width: 768px) {
             .loading-bar-text {
-                font-size: 20px;
+                font-size: 16px;
             }
             .loading-bar {
-                font-size: 24px;
+                font-size: 20px;
             }
-            .loading-percentage {
-                font-size: 16px;
+            .loading-percentage,
+            .loading-time-remaining {
+                font-size: 14px;
+                display: block;
+                margin: 5px 0;
+            }
+            .loading-bar-overlay {
+                padding: 15px 10px;
             }
         }
         
@@ -1384,8 +1393,10 @@
         <div class="loading-bar-container">
             <div class="loading-bar-text">LOADING</div>
             <div class="loading-bar" id="loadingBar">[..........] </div>
-            <div class="loading-percentage" id="loadingPercentage">0%</div>
-            <div class="loading-time-remaining" id="loadingTimeRemaining">Time remaining: 0d 0h 0m 0s</div>
+            <div>
+                <span class="loading-percentage" id="loadingPercentage">0%</span>
+                <span class="loading-time-remaining" id="loadingTimeRemaining">Time remaining: 0d 0h 0m 0s</span>
+            </div>
         </div>
     </div>
     
@@ -2022,9 +2033,11 @@
                     // Auto-stop when complete
                     if (progress >= 1) {
                         clearInterval(loadingInterval);
-                        setTimeout(() => {
+                        setTimeout(async () => {
                             overlay.classList.remove('active');
-                        }, 1000);
+                            // Auto-clear from Firebase when complete
+                            await set(loadingBarRef, { active: false });
+                        }, 2000);
                     }
                 }, 50);
             } else {
