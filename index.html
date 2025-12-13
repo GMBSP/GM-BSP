@@ -554,6 +554,168 @@
             color: #000;
         }
         
+        /* Loading Bar Control Panel */
+        .admin-loading-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(20, 20, 20, 0.98);
+            border: 3px solid #ff9933;
+            padding: 30px;
+            font-family: 'Courier New', monospace;
+            color: #ff9933;
+            box-shadow: 0 0 30px rgba(255, 153, 51, 0.5);
+            z-index: 2600;
+            display: none;
+            max-width: 600px;
+            width: 90%;
+            cursor: move;
+            resize: both;
+            overflow: auto;
+            min-width: 400px;
+            min-height: 250px;
+            max-height: 90vh;
+        }
+        .admin-loading-panel.active {
+            display: block;
+        }
+        .admin-loading-panel h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        .admin-loading-panel label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .admin-loading-panel .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .admin-loading-panel .time-input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .admin-loading-panel input[type="number"] {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ffcc66;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .admin-loading-panel button {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ff9933;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+        .admin-loading-panel button:hover {
+            background: #ff9933;
+            color: #000;
+        }
+        .admin-loading-panel .total-display {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border: 1px solid #ff9933;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        /* Loading Bar Overlay */
+        .loading-bar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .loading-bar-overlay.active {
+            display: flex;
+        }
+        .loading-bar-container {
+            text-align: center;
+        }
+        .loading-bar-text {
+            font-family: 'Courier New', monospace;
+            font-size: 32px;
+            color: #ff9933;
+            letter-spacing: 4px;
+            margin-bottom: 20px;
+        }
+        .loading-bar {
+            font-family: 'Courier New', monospace;
+            font-size: 48px;
+            color: #ff9933;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(255, 153, 51, 0.8);
+        }
+        .loading-bar .filled {
+            color: #ffcc66;
+        }
+        .loading-percentage {
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            color: #ff9933;
+            margin-top: 20px;
+        }
+        .loading-time-remaining {
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            color: #ffcc66;
+            margin-top: 15px;
+        }
+        
+        .admin-loading-btn {
+            position: fixed;
+            top: 280px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #ff9933;
+            padding: 8px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            z-index: 1000;
+            cursor: pointer;
+            border: 2px solid #ff9933;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            display: none;
+        }
+        .admin-loading-btn:hover {
+            background: #ff9933;
+            color: #000;
+        }
+        
+        @media (max-width: 768px) {
+            .loading-bar-text {
+                font-size: 20px;
+            }
+            .loading-bar {
+                font-size: 24px;
+            }
+            .loading-percentage {
+                font-size: 16px;
+            }
+        }
+        
         /* Console/Chat */
         .console {
             position: fixed;
@@ -1212,9 +1374,20 @@
     <button class="admin-vote-btn" id="adminVoteBtn" onclick="openAdminVotePanel()">VOTE CONTROL</button>
     <button class="admin-sound-btn" id="adminSoundBtn" onclick="openAdminSoundPanel()">SOUND CONTROL</button>
     <button class="texture-control-btn" id="textureControlBtn" onclick="toggleMissingTexture()">TOGGLE TEXTURE</button>
+    <button class="admin-loading-btn" id="adminLoadingBtn" onclick="openAdminLoadingPanel()">LOADING BAR</button>
     
     <!-- Missing Texture Overlay -->
     <div class="missing-texture-overlay" id="missingTextureOverlay"></div>
+    
+    <!-- Loading Bar Overlay -->
+    <div class="loading-bar-overlay" id="loadingBarOverlay">
+        <div class="loading-bar-container">
+            <div class="loading-bar-text">LOADING</div>
+            <div class="loading-bar" id="loadingBar">[..........] </div>
+            <div class="loading-percentage" id="loadingPercentage">0%</div>
+            <div class="loading-time-remaining" id="loadingTimeRemaining">Time remaining: 0d 0h 0m 0s</div>
+        </div>
+    </div>
     
     <!-- Video Control HUD (Admin only) -->
     <div class="video-control-hud" id="videoControlHud">
@@ -1261,6 +1434,33 @@
         </select>
         <button onclick="playSelectedSound()">PLAY FOR ALL USERS</button>
         <button onclick="closeAdminSoundPanel()">CLOSE</button>
+    </div>
+    
+    <!-- Admin Loading Bar Control Panel -->
+    <div class="admin-loading-panel" id="adminLoadingPanel">
+        <h2>LOADING BAR CONTROL</h2>
+        <div class="time-inputs">
+            <div class="time-input-group">
+                <label for="loadingDays">Days:</label>
+                <input type="number" id="loadingDays" min="0" max="365" value="0" oninput="updateTotalTime()" />
+            </div>
+            <div class="time-input-group">
+                <label for="loadingHours">Hours:</label>
+                <input type="number" id="loadingHours" min="0" max="23" value="0" oninput="updateTotalTime()" />
+            </div>
+            <div class="time-input-group">
+                <label for="loadingMinutes">Minutes:</label>
+                <input type="number" id="loadingMinutes" min="0" max="59" value="0" oninput="updateTotalTime()" />
+            </div>
+            <div class="time-input-group">
+                <label for="loadingSeconds">Seconds:</label>
+                <input type="number" id="loadingSeconds" min="0" max="59" value="10" oninput="updateTotalTime()" />
+            </div>
+        </div>
+        <div class="total-display" id="totalTimeDisplay">Total: 10 seconds</div>
+        <button onclick="startLoadingBar()">START LOADING BAR</button>
+        <button onclick="stopLoadingBar()">STOP LOADING BAR</button>
+        <button onclick="closeAdminLoadingPanel()">CLOSE</button>
     </div>
     
     <audio id="globalSoundPlayer"></audio>
@@ -1707,6 +1907,135 @@
             console.log('Missing texture overlay:', newState ? 'ON' : 'OFF');
         };
         
+        window.openAdminLoadingPanel = function() {
+            document.getElementById('adminLoadingPanel').classList.add('active');
+        };
+        
+        window.closeAdminLoadingPanel = function() {
+            document.getElementById('adminLoadingPanel').classList.remove('active');
+        };
+        
+        window.updateTotalTime = function() {
+            const days = parseInt(document.getElementById('loadingDays').value) || 0;
+            const hours = parseInt(document.getElementById('loadingHours').value) || 0;
+            const minutes = parseInt(document.getElementById('loadingMinutes').value) || 0;
+            const seconds = parseInt(document.getElementById('loadingSeconds').value) || 0;
+            
+            const totalSeconds = (days * 86400) + (hours * 3600) + (minutes * 60) + seconds;
+            
+            let displayText = 'Total: ';
+            if (days > 0) displayText += days + ' day' + (days > 1 ? 's ' : ' ');
+            if (hours > 0) displayText += hours + ' hour' + (hours > 1 ? 's ' : ' ');
+            if (minutes > 0) displayText += minutes + ' minute' + (minutes > 1 ? 's ' : ' ');
+            if (seconds > 0) displayText += seconds + ' second' + (seconds > 1 ? 's' : '');
+            
+            if (totalSeconds === 0) displayText = 'Total: 0 seconds';
+            
+            document.getElementById('totalTimeDisplay').textContent = displayText;
+        };
+        
+        window.startLoadingBar = async function() {
+            if (!window.isAdmin) return;
+            
+            const days = parseInt(document.getElementById('loadingDays').value) || 0;
+            const hours = parseInt(document.getElementById('loadingHours').value) || 0;
+            const minutes = parseInt(document.getElementById('loadingMinutes').value) || 0;
+            const seconds = parseInt(document.getElementById('loadingSeconds').value) || 0;
+            
+            const totalSeconds = (days * 86400) + (hours * 3600) + (minutes * 60) + seconds;
+            
+            if (totalSeconds < 1) {
+                alert('Please enter a valid duration!');
+                return;
+            }
+            
+            const loadingRef = ref(database, 'loadingBar');
+            await set(loadingRef, {
+                active: true,
+                duration: totalSeconds,
+                startTime: Date.now()
+            });
+            
+            console.log('Loading bar started:', totalSeconds, 'seconds');
+        };
+        
+        window.stopLoadingBar = async function() {
+            if (!window.isAdmin) return;
+            
+            const loadingRef = ref(database, 'loadingBar');
+            await set(loadingRef, {
+                active: false
+            });
+            
+            console.log('Loading bar stopped');
+        };
+        
+        // Listen for loading bar state
+        const loadingBarRef = ref(database, 'loadingBar');
+        let loadingInterval = null;
+        
+        onValue(loadingBarRef, (snapshot) => {
+            const loadingState = snapshot.val();
+            const overlay = document.getElementById('loadingBarOverlay');
+            
+            if (loadingState && loadingState.active) {
+                overlay.classList.add('active');
+                
+                const duration = loadingState.duration * 1000; // Convert to milliseconds
+                const startTime = loadingState.startTime;
+                const totalBlocks = 10;
+                
+                // Clear any existing interval
+                if (loadingInterval) clearInterval(loadingInterval);
+                
+                // Update loading bar
+                loadingInterval = setInterval(() => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const percentage = Math.floor(progress * 100);
+                    const filledBlocks = Math.floor(progress * totalBlocks);
+                    
+                    let barText = '[';
+                    for (let i = 0; i < totalBlocks; i++) {
+                        if (i < filledBlocks) {
+                            barText += '<span class="filled">█</span>';
+                        } else {
+                            barText += '.';
+                        }
+                    }
+                    barText += ']';
+                    
+                    document.getElementById('loadingBar').innerHTML = barText;
+                    document.getElementById('loadingPercentage').textContent = percentage + '%';
+                    
+                    // Calculate time remaining
+                    const remaining = Math.max(0, duration - elapsed);
+                    const remainingSeconds = Math.floor(remaining / 1000);
+                    const remDays = Math.floor(remainingSeconds / 86400);
+                    const remHours = Math.floor((remainingSeconds % 86400) / 3600);
+                    const remMinutes = Math.floor((remainingSeconds % 3600) / 60);
+                    const remSecs = remainingSeconds % 60;
+                    
+                    document.getElementById('loadingTimeRemaining').textContent = 
+                        `Time remaining: ${remDays}d ${remHours}h ${remMinutes}m ${remSecs}s`;
+                    
+                    // Auto-stop when complete
+                    if (progress >= 1) {
+                        clearInterval(loadingInterval);
+                        setTimeout(() => {
+                            overlay.classList.remove('active');
+                        }, 1000);
+                    }
+                }, 50);
+            } else {
+                overlay.classList.remove('active');
+                if (loadingInterval) {
+                    clearInterval(loadingInterval);
+                    loadingInterval = null;
+                }
+            }
+        });
+        
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 window.isAdmin = true;
@@ -1719,6 +2048,7 @@
                 document.getElementById('adminSoundBtn').style.display = 'block';
                 document.getElementById('videoControlHud').classList.add('active');
                 document.getElementById('textureControlBtn').style.display = 'block';
+                document.getElementById('adminLoadingBtn').style.display = 'block';
                 console.log('Admin logged in:', user.email);
                 
                 setTimeout(() => {
@@ -1735,6 +2065,7 @@
                 document.getElementById('adminSoundBtn').style.display = 'none';
                 document.getElementById('videoControlHud').classList.remove('active');
                 document.getElementById('textureControlBtn').style.display = 'none';
+                document.getElementById('adminLoadingBtn').style.display = 'none';
             }
         });
         
@@ -2052,6 +2383,7 @@
             makeDraggable(document.getElementById('videoControlHud'));
             makeDraggable(document.getElementById('adminVotePanel'));
             makeDraggable(document.getElementById('adminSoundPanel'));
+            makeDraggable(document.getElementById('adminLoadingPanel'));
             
             const messageInput = document.getElementById('messageInput');
             if (messageInput) {
