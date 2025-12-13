@@ -1264,6 +1264,158 @@
                 font-size: 24px;
             }
         }
+        
+        /* Chat Page */
+        .chat-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+        }
+        .chat-page.active {
+            display: flex;
+        }
+        .chat-header {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 15px 20px;
+            border-bottom: 3px solid #ff9933;
+            text-align: center;
+        }
+        .chat-title {
+            font-size: 24px;
+            color: #ff9933;
+            letter-spacing: 3px;
+            font-weight: bold;
+        }
+        .chat-messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #0a0a0a;
+        }
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            background: rgba(255, 153, 51, 0.1);
+            border-left: 3px solid #ff9933;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            transition: background 0.2s;
+        }
+        .chat-message:hover {
+            background: rgba(255, 153, 51, 0.15);
+        }
+        .chat-message.deleted {
+            background: rgba(255, 68, 68, 0.1);
+            border-left-color: #ff4444;
+        }
+        .chat-message-content {
+            flex: 1;
+        }
+        .chat-message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        .chat-username {
+            color: #ff9933;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .chat-username.admin {
+            color: #ffcc00;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+        .chat-timestamp {
+            color: #666;
+            font-size: 11px;
+        }
+        .chat-text {
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        .chat-delete-btn {
+            color: #ff4444;
+            cursor: pointer;
+            padding: 5px 10px;
+            font-size: 12px;
+            border: 1px solid #ff4444;
+            background: rgba(255, 68, 68, 0.1);
+            transition: all 0.2s;
+        }
+        .chat-delete-btn:hover {
+            background: #ff4444;
+            color: #000;
+        }
+        .chat-input-container {
+            border-top: 3px solid #ff9933;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ffcc66;
+            padding: 12px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .chat-input:focus {
+            outline: none;
+            border-color: #ffcc66;
+            box-shadow: 0 0 10px rgba(255, 153, 51, 0.3);
+        }
+        .chat-send-btn {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ff9933;
+            padding: 12px 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+        .chat-send-btn:hover {
+            background: #ff9933;
+            color: #000;
+        }
+        
+        @media (max-width: 768px) {
+            .chat-title {
+                font-size: 18px;
+            }
+            .chat-messages-container {
+                padding: 15px;
+            }
+            .chat-message {
+                padding: 10px;
+            }
+            .chat-input-container {
+                padding: 15px;
+                flex-wrap: wrap;
+            }
+            .chat-input {
+                flex: 1 1 100%;
+                margin-bottom: 10px;
+            }
+            .chat-send-btn {
+                flex: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1376,6 +1528,18 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    
+    <!-- Chat Page -->
+    <div class="chat-page" id="chatPage">
+        <div class="chat-header">
+            <div class="chat-title">PUBLIC CHAT</div>
+        </div>
+        <div class="chat-messages-container" id="chatMessagesContainer"></div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." maxlength="500" />
+            <button class="chat-send-btn" onclick="sendChatMessage()">SEND</button>
         </div>
     </div>
     
@@ -1939,6 +2103,97 @@
             hud.classList.toggle('active');
         };
         
+        // Generate chat username
+        if (!window.chatUsername) {
+            const randomNum = Math.floor(Math.random() * 9000) + 1000; // 1000-9999
+            window.chatUsername = `USER-${randomNum}`;
+        }
+        
+        window.sendChatMessage = async function() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            const { ref, push } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+            const chatMessagesRef = ref(window.firebaseDB, 'chatMessages');
+            
+            await push(chatMessagesRef, {
+                username: window.chatUsername,
+                text: text,
+                timestamp: Date.now(),
+                isAdmin: window.isAdmin || false,
+                userId: window.userId
+            });
+            
+            input.value = '';
+        };
+        
+        window.deleteChatMessage = async function(msgId) {
+            if (!window.isAdmin) return;
+            
+            const { ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
+            const msgRef = ref(window.firebaseDB, 'chatMessages/' + msgId);
+            await update(msgRef, {
+                deleted: true,
+                text: '[MESSAGE DELETED]'
+            });
+        };
+        
+        function setupChatPage() {
+            const { ref, onValue } = window.firebaseImports || {};
+            
+            // Import firebase functions if not already available
+            import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js').then(module => {
+                window.firebaseImports = module;
+                
+                const chatMessagesRef = module.ref(window.firebaseDB, 'chatMessages');
+                
+                module.onValue(chatMessagesRef, (snapshot) => {
+                    const messages = snapshot.val();
+                    const container = document.getElementById('chatMessagesContainer');
+                    container.innerHTML = '';
+                    
+                    if (messages) {
+                        const messageArray = Object.entries(messages).sort((a, b) => a[1].timestamp - b[1].timestamp);
+                        
+                        messageArray.forEach(([msgId, msg]) => {
+                            const msgDiv = document.createElement('div');
+                            msgDiv.className = 'chat-message' + (msg.deleted ? ' deleted' : '');
+                            
+                            const time = new Date(msg.timestamp).toLocaleTimeString();
+                            const usernameClass = msg.isAdmin ? 'admin' : '';
+                            const deleteBtn = window.isAdmin && !msg.deleted ? 
+                                `<span class="chat-delete-btn" onclick="deleteChatMessage('${msgId}')">DELETE</span>` : '';
+                            
+                            msgDiv.innerHTML = `
+                                <div class="chat-message-content">
+                                    <div class="chat-message-header">
+                                        <span class="chat-username ${usernameClass}">${msg.username}</span>
+                                        <span class="chat-timestamp">${time}</span>
+                                    </div>
+                                    <div class="chat-text">${msg.deleted ? '[MESSAGE DELETED]' : msg.text}</div>
+                                </div>
+                                ${deleteBtn}
+                            `;
+                            
+                            container.appendChild(msgDiv);
+                        });
+                        
+                        container.scrollTop = container.scrollHeight;
+                    }
+                });
+                
+                // Enter key to send
+                const chatInput = document.getElementById('chatInput');
+                chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        sendChatMessage();
+                    }
+                });
+            });
+        }
+        
         window.updateTotalTime = function() {
             const days = parseInt(document.getElementById('loadingDays').value) || 0;
             const hours = parseInt(document.getElementById('loadingHours').value) || 0;
@@ -2215,6 +2470,13 @@
             document.getElementById('tgmtPage').classList.add('active');
             document.getElementById('mainVideo').style.display = 'none';
             document.getElementById('bgAudio').pause();
+        }
+        
+        if (window.location.search.includes('chat')) {
+            document.getElementById('chatPage').classList.add('active');
+            document.getElementById('mainVideo').style.display = 'none';
+            document.getElementById('bgAudio').pause();
+            setupChatPage();
         }
         
         const sourceEngineMaps = [
