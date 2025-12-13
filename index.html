@@ -2115,84 +2115,92 @@
             
             if (!text) return;
             
-            const { ref, push } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
-            const chatMessagesRef = ref(window.firebaseDB, 'chatMessages');
+            const messagesRef = ref(database, 'chatMessages');
             
-            await push(chatMessagesRef, {
-                username: window.chatUsername,
-                text: text,
-                timestamp: Date.now(),
-                isAdmin: window.isAdmin || false,
-                userId: window.userId
-            });
-            
-            input.value = '';
+            try {
+                await push(messagesRef, {
+                    username: window.chatUsername,
+                    text: text,
+                    timestamp: Date.now(),
+                    isAdmin: window.isAdmin || false,
+                    userId: window.userId
+                });
+                
+                input.value = '';
+                console.log('Chat message sent');
+            } catch (error) {
+                console.error('Error sending chat message:', error);
+            }
         };
         
         window.deleteChatMessage = async function(msgId) {
             if (!window.isAdmin) return;
             
-            const { ref, update } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js');
-            const msgRef = ref(window.firebaseDB, 'chatMessages/' + msgId);
-            await update(msgRef, {
-                deleted: true,
-                text: '[MESSAGE DELETED]'
-            });
+            const msgRef = ref(database, 'chatMessages/' + msgId);
+            try {
+                await update(msgRef, {
+                    deleted: true,
+                    text: '[MESSAGE DELETED]'
+                });
+                console.log('Message deleted');
+            } catch (error) {
+                console.error('Error deleting message:', error);
+            }
         };
         
-        function setupChatPage() {
-            const { ref, onValue } = window.firebaseImports || {};
+        window.setupChatPage = function() {
+            const chatMessagesRef = ref(database, 'chatMessages');
             
-            // Import firebase functions if not already available
-            import('https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js').then(module => {
-                window.firebaseImports = module;
+            onValue(chatMessagesRef, (snapshot) => {
+                const messages = snapshot.val();
+                const container = document.getElementById('chatMessagesContainer');
+                container.innerHTML = '';
                 
-                const chatMessagesRef = module.ref(window.firebaseDB, 'chatMessages');
-                
-                module.onValue(chatMessagesRef, (snapshot) => {
-                    const messages = snapshot.val();
-                    const container = document.getElementById('chatMessagesContainer');
-                    container.innerHTML = '';
+                if (messages) {
+                    const messageArray = Object.entries(messages).sort((a, b) => a[1].timestamp - b[1].timestamp);
                     
-                    if (messages) {
-                        const messageArray = Object.entries(messages).sort((a, b) => a[1].timestamp - b[1].timestamp);
+                    messageArray.forEach(([msgId, msg]) => {
+                        const msgDiv = document.createElement('div');
+                        msgDiv.className = 'chat-message' + (msg.deleted ? ' deleted' : '');
                         
-                        messageArray.forEach(([msgId, msg]) => {
-                            const msgDiv = document.createElement('div');
-                            msgDiv.className = 'chat-message' + (msg.deleted ? ' deleted' : '');
-                            
-                            const time = new Date(msg.timestamp).toLocaleTimeString();
-                            const usernameClass = msg.isAdmin ? 'admin' : '';
-                            const deleteBtn = window.isAdmin && !msg.deleted ? 
-                                `<span class="chat-delete-btn" onclick="deleteChatMessage('${msgId}')">DELETE</span>` : '';
-                            
-                            msgDiv.innerHTML = `
-                                <div class="chat-message-content">
-                                    <div class="chat-message-header">
-                                        <span class="chat-username ${usernameClass}">${msg.username}</span>
-                                        <span class="chat-timestamp">${time}</span>
-                                    </div>
-                                    <div class="chat-text">${msg.deleted ? '[MESSAGE DELETED]' : msg.text}</div>
+                        const time = new Date(msg.timestamp).toLocaleTimeString();
+                        const usernameClass = msg.isAdmin ? 'admin' : '';
+                        const deleteBtn = window.isAdmin && !msg.deleted ? 
+                            `<span class="chat-delete-btn" onclick="deleteChatMessage('${msgId}')">DELETE</span>` : '';
+                        
+                        msgDiv.innerHTML = `
+                            <div class="chat-message-content">
+                                <div class="chat-message-header">
+                                    <span class="chat-username ${usernameClass}">${msg.username}</span>
+                                    <span class="chat-timestamp">${time}</span>
                                 </div>
-                                ${deleteBtn}
-                            `;
-                            
-                            container.appendChild(msgDiv);
-                        });
+                                <div class="chat-text">${msg.deleted ? '[MESSAGE DELETED]' : msg.text}</div>
+                            </div>
+                            ${deleteBtn}
+                        `;
                         
-                        container.scrollTop = container.scrollHeight;
-                    }
-                });
-                
-                // Enter key to send
-                const chatInput = document.getElementById('chatInput');
+                        container.appendChild(msgDiv);
+                    });
+                    
+                    container.scrollTop = container.scrollHeight;
+                } else {
+                    container.innerHTML = '<div style="color: #666; text-align: center; padding: 40px;">No messages yet. Be the first to chat!</div>';
+                }
+            });
+            
+            // Enter key to send
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput && !chatInput.dataset.listenerAdded) {
                 chatInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         sendChatMessage();
                     }
                 });
-            });
-        }
+                chatInput.dataset.listenerAdded = 'true';
+            }
+            
+            console.log('Chat page initialized');
+        };
         
         window.updateTotalTime = function() {
             const days = parseInt(document.getElementById('loadingDays').value) || 0;
@@ -2476,7 +2484,12 @@
             document.getElementById('chatPage').classList.add('active');
             document.getElementById('mainVideo').style.display = 'none';
             document.getElementById('bgAudio').pause();
-            setupChatPage();
+            // Setup will be called after Firebase is initialized
+            setTimeout(() => {
+                if (typeof setupChatPage === 'function') {
+                    setupChatPage();
+                }
+            }, 100);
         }
         
         const sourceEngineMaps = [
