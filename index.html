@@ -84,7 +84,6 @@
             box-shadow: 0 0 15px rgba(255, 153, 51, 0.5);
         }
         
-        /* Login Page */
         .login-page {
             position: fixed;
             top: 0;
@@ -175,7 +174,6 @@
             color: #000;
         }
         
-        /* Vote Panel */
         .vote-panel {
             position: fixed;
             top: 50%;
@@ -271,7 +269,6 @@
             margin-top: 10px;
         }
         
-        /* Admin Vote Control */
         .admin-vote-btn {
             position: fixed;
             top: 130px;
@@ -314,7 +311,6 @@
             color: #000;
         }
         
-        /* Video Control HUD */
         .video-control-hud {
             position: fixed;
             top: 50%;
@@ -364,7 +360,6 @@
             color: #000;
         }
         
-        /* Missing Texture Overlay */
         .missing-texture-overlay {
             position: fixed;
             top: 0;
@@ -475,7 +470,6 @@
             color: #000;
         }
         
-        /* Sound Control Panel */
         .admin-sound-panel {
             position: fixed;
             top: 50%;
@@ -533,7 +527,6 @@
             color: #000;
         }
         
-        /* Loading Bar Control Panel */
         .admin-loading-panel {
             position: fixed;
             top: 50%;
@@ -613,7 +606,6 @@
             font-size: 16px;
         }
         
-        /* Loading Bar Overlay */
         .loading-bar-overlay {
             position: fixed;
             top: 0;
@@ -725,7 +717,6 @@
             }
         }
         
-        /* Console/Chat */
         .console {
             position: fixed;
             bottom: 0;
@@ -903,7 +894,6 @@
             opacity: 1;
         }
         
-        /* Maps Page */
         .maps-page {
             position: fixed;
             top: 0;
@@ -950,7 +940,6 @@
             text-shadow: 0 0 10px rgba(255, 153, 51, 0.6);
         }
         
-        /* Data Page */
         .data-page {
             position: fixed;
             top: 0;
@@ -1015,7 +1004,6 @@
             text-shadow: 0 0 10px rgba(255, 68, 68, 0.6);
         }
         
-        /* Mobile Support */
         @media (max-width: 768px) {
             .console {
                 height: 40%;
@@ -1080,7 +1068,6 @@
             }
         }
         
-        /* TGMT Page */
         .tgmt-page {
             position: fixed;
             top: 0;
@@ -1265,6 +1252,73 @@
             }
         }
         
+        /* Username Entry Modal */
+        .username-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 4000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .username-modal.active {
+            display: flex;
+        }
+        .username-box {
+            background: rgba(20, 20, 20, 0.98);
+            border: 3px solid #ff9933;
+            padding: 40px;
+            font-family: 'Courier New', monospace;
+            color: #ff9933;
+            box-shadow: 0 0 30px rgba(255, 153, 51, 0.5);
+            max-width: 400px;
+            width: 90%;
+        }
+        .username-box h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+        .username-box input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ffcc66;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            text-align: center;
+        }
+        .username-box button {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ff9933;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+        .username-box button:hover {
+            background: #ff9933;
+            color: #000;
+        }
+        .username-error {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+        
         /* Chat Page */
         .chat-page {
             position: fixed;
@@ -1311,10 +1365,6 @@
         .chat-message:hover {
             background: rgba(255, 153, 51, 0.15);
         }
-        .chat-message.deleted {
-            background: rgba(255, 68, 68, 0.1);
-            border-left-color: #ff4444;
-        }
         .chat-message-content {
             flex: 1;
         }
@@ -1343,6 +1393,17 @@
             line-height: 1.5;
             word-wrap: break-word;
         }
+        .chat-image {
+            max-width: 300px;
+            max-height: 300px;
+            margin-top: 8px;
+            border: 2px solid #ff9933;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .chat-image:hover {
+            transform: scale(1.05);
+        }
         .chat-delete-btn {
             color: #ff4444;
             cursor: pointer;
@@ -1362,6 +1423,7 @@
             background: rgba(0, 0, 0, 0.95);
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
         .chat-input {
             flex: 1;
@@ -1393,6 +1455,43 @@
             background: #ff9933;
             color: #000;
         }
+        .chat-image-btn {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ff9933;
+            padding: 12px 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            font-weight: bold;
+            display: none;
+        }
+        .chat-image-btn:hover {
+            background: #ff9933;
+            color: #000;
+        }
+        .chat-delete-all-btn {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff4444;
+            color: #ff4444;
+            padding: 12px 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            font-weight: bold;
+            display: none;
+        }
+        .chat-delete-all-btn:hover {
+            background: #ff4444;
+            color: #000;
+        }
+        .chat-image-input {
+            display: none;
+        }
         
         @media (max-width: 768px) {
             .chat-title {
@@ -1412,8 +1511,11 @@
                 flex: 1 1 100%;
                 margin-bottom: 10px;
             }
-            .chat-send-btn {
+            .chat-send-btn,
+            .chat-image-btn,
+            .chat-delete-all-btn {
                 flex: 1;
+                padding: 10px 15px;
             }
         }
     </style>
@@ -1431,7 +1533,16 @@
         </div>
     </div>
     
-    <!-- Maps Page -->
+    <!-- Username Entry Modal -->
+    <div class="username-modal" id="usernameModal">
+        <div class="username-box">
+            <h2>ENTER USERNAME</h2>
+            <input type="text" id="usernameInput" placeholder="USERNAME" maxlength="20" />
+            <button onclick="confirmUsername()">CONFIRM</button>
+            <div class="username-error" id="usernameError">ERROR: INVALID USERNAME</div>
+        </div>
+    </div>
+
     <div class="maps-page" id="mapsPage">
         <div class="maps-title">DOORS</div>
         <div class="maps-terminal" id="mapsTerminal"></div>
@@ -1540,6 +1651,9 @@
         <div class="chat-input-container">
             <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." maxlength="500" />
             <button class="chat-send-btn" onclick="sendChatMessage()">SEND</button>
+            <button class="chat-image-btn" id="chatImageBtn" onclick="document.getElementById('chatImageInput').click()">UPLOAD IMAGE</button>
+            <button class="chat-delete-all-btn" id="chatDeleteAllBtn" onclick="deleteAllChatMessages()">DELETE ALL</button>
+            <input type="file" id="chatImageInput" class="chat-image-input" accept="image/*" onchange="handleImageUpload(event)" />
         </div>
     </div>
     
@@ -1550,10 +1664,8 @@
     <button class="admin-loading-btn" id="adminLoadingBtn" onclick="openAdminLoadingPanel()">LOADING BAR</button>
     <button class="admin-video-btn" id="adminVideoBtn" onclick="toggleVideoControlHud()">VIDEO CONTROL</button>
     
-    <!-- Missing Texture Overlay -->
     <div class="missing-texture-overlay" id="missingTextureOverlay"></div>
     
-    <!-- Loading Bar Overlay -->
     <div class="loading-bar-overlay" id="loadingBarOverlay">
         <div class="loading-bar-container">
             <div class="loading-bar-text">LOADING</div>
@@ -1565,7 +1677,6 @@
         </div>
     </div>
     
-    <!-- Video Control HUD (Admin only) -->
     <div class="video-control-hud" id="videoControlHud">
         <h3>VIDEO CONTROL</h3>
         <button onclick="switchVideo('water.mp4')" data-video="water.mp4">WATER</button>
@@ -1577,7 +1688,6 @@
         <button onclick="toggleVideoControlHud()" style="margin-top: 10px; background: rgba(255, 68, 68, 0.8); border-color: #ff4444;">CLOSE</button>
     </div>
     
-    <!-- Vote Panel (for users) -->
     <div class="vote-panel" id="votePanel">
         <h2>VOTE</h2>
         <div class="vote-question" id="voteQuestion">Loading...</div>
@@ -1589,7 +1699,6 @@
         <div class="vote-status" id="voteStatus"></div>
     </div>
     
-    <!-- Admin Vote Control Panel -->
     <div class="admin-vote-panel" id="adminVotePanel">
         <h2>VOTE CONTROL PANEL</h2>
         <textarea id="voteQuestionInput" placeholder="Enter vote question..."></textarea>
@@ -1599,7 +1708,6 @@
         <div class="vote-results" id="adminVoteResults" style="margin-top: 20px;"></div>
     </div>
     
-    <!-- Admin Sound Control Panel -->
     <div class="admin-sound-panel" id="adminSoundPanel">
         <h2>SOUND CONTROL PANEL</h2>
         <select id="soundSelect">
@@ -1620,7 +1728,6 @@
         <button onclick="closeAdminSoundPanel()">CLOSE</button>
     </div>
     
-    <!-- Admin Loading Bar Control Panel -->
     <div class="admin-loading-panel" id="adminLoadingPanel">
         <h2>LOADING BAR CONTROL</h2>
         <div class="time-inputs">
@@ -1652,7 +1759,6 @@
         <source src="windchime2.wav" type="audio/wav">
     </audio>
     
-    <!-- Console/Chat -->
     <div class="console" id="console">
         <div class="console-header">
             <span>SOURCE ENGINE CONSOLE</span>
@@ -1691,11 +1797,11 @@
         <source src="access_denied.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, set, onValue, onDisconnect, serverTimestamp, push, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getDatabase, ref, set, onValue, onDisconnect, serverTimestamp, push, update, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyCPj_IFALPhx8JL3tvdO-UzcsGorlx5czw",
@@ -1710,9 +1816,11 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const auth = getAuth(app);
+        const storage = getStorage(app);
         
         window.firebaseDB = database;
         window.firebaseAuth = auth;
+        window.firebaseStorage = storage;
         window.isAdmin = false;
 
         const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -1740,7 +1848,6 @@
             });
         }, 10000);
         
-        // Listen for sound triggers
         const soundTriggerRef = ref(database, 'soundTrigger');
         let lastSoundTimestamp = 0;
         
@@ -1754,7 +1861,6 @@
             }
         });
         
-        // Listen for active vote
         const voteRef = ref(database, 'vote');
         let lastVoteCount = 0;
         
@@ -1891,14 +1997,12 @@
             } catch (error) {
                 console.error('Login error:', error);
                 
-                // Play windchime2 first, then access denied
                 const chimeSound = document.getElementById('voteChimeSound');
                 const accessDeniedAudio = document.getElementById('accessDeniedAudio');
                 
                 chimeSound.currentTime = 0;
                 chimeSound.play().catch(e => console.log('Chime sound failed:', e));
                 
-                // Wait for chime to finish (approximately 0.5 seconds), then play access denied
                 setTimeout(() => {
                     accessDeniedAudio.currentTime = 0;
                     accessDeniedAudio.play().catch(e => console.log('Access denied sound failed:', e));
@@ -2103,11 +2207,33 @@
             hud.classList.toggle('active');
         };
         
-        // Generate chat username
-        if (!window.chatUsername) {
-            const randomNum = Math.floor(Math.random() * 9000) + 1000; // 1000-9999
-            window.chatUsername = `USER-${randomNum}`;
-        }
+        window.confirmUsername = function() {
+            const input = document.getElementById('usernameInput');
+            const username = input.value.trim().toUpperCase();
+            const errorDiv = document.getElementById('usernameError');
+            
+            if (!username) {
+                errorDiv.textContent = 'ERROR: USERNAME REQUIRED';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            if (username === 'SOURCEENGINE') {
+                errorDiv.textContent = 'ERROR: INVALID USERNAME';
+                errorDiv.style.display = 'block';
+                
+                const chimeSound = document.getElementById('voteChimeSound');
+                chimeSound.currentTime = 0;
+                chimeSound.play().catch(e => console.log('Error sound failed:', e));
+                
+                return;
+            }
+            
+            window.chatUsername = username;
+            localStorage.setItem('chatUsername', username);
+            document.getElementById('usernameModal').classList.remove('active');
+            console.log('Username set:', username);
+        };
         
         window.sendChatMessage = async function() {
             const input = document.getElementById('chatInput');
@@ -2116,10 +2242,11 @@
             if (!text) return;
             
             const messagesRef = ref(database, 'chatMessages');
+            const displayUsername = window.isAdmin ? 'SOURCEENGINE' : window.chatUsername;
             
             try {
                 await push(messagesRef, {
-                    username: window.chatUsername,
+                    username: displayUsername,
                     text: text,
                     timestamp: Date.now(),
                     isAdmin: window.isAdmin || false,
@@ -2138,13 +2265,57 @@
             
             const msgRef = ref(database, 'chatMessages/' + msgId);
             try {
-                await update(msgRef, {
-                    deleted: true,
-                    text: '[MESSAGE DELETED]'
-                });
+                await remove(msgRef);
                 console.log('Message deleted');
             } catch (error) {
                 console.error('Error deleting message:', error);
+            }
+        };
+        
+        window.deleteAllChatMessages = async function() {
+            if (!window.isAdmin) return;
+            
+            if (!confirm('Are you sure you want to delete ALL chat messages? This cannot be undone!')) return;
+            
+            const messagesRef = ref(database, 'chatMessages');
+            try {
+                await set(messagesRef, null);
+                console.log('All chat messages deleted');
+            } catch (error) {
+                console.error('Error deleting all messages:', error);
+            }
+        };
+        
+        window.handleImageUpload = async function(event) {
+            if (!window.isAdmin) return;
+            
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image too large! Maximum size is 5MB.');
+                return;
+            }
+            
+            try {
+                const imageRef = storageRef(storage, `chat-images/${Date.now()}_${file.name}`);
+                await uploadBytes(imageRef, file);
+                const imageUrl = await getDownloadURL(imageRef);
+                
+                const messagesRef = ref(database, 'chatMessages');
+                await push(messagesRef, {
+                    username: 'SOURCEENGINE',
+                    imageUrl: imageUrl,
+                    timestamp: Date.now(),
+                    isAdmin: true,
+                    userId: window.userId
+                });
+                
+                console.log('Image uploaded and sent');
+                event.target.value = '';
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                alert('Failed to upload image. Please try again.');
             }
         };
         
@@ -2161,12 +2332,19 @@
                     
                     messageArray.forEach(([msgId, msg]) => {
                         const msgDiv = document.createElement('div');
-                        msgDiv.className = 'chat-message' + (msg.deleted ? ' deleted' : '');
+                        msgDiv.className = 'chat-message';
                         
                         const time = new Date(msg.timestamp).toLocaleTimeString();
                         const usernameClass = msg.isAdmin ? 'admin' : '';
-                        const deleteBtn = window.isAdmin && !msg.deleted ? 
+                        const deleteBtn = window.isAdmin ? 
                             `<span class="chat-delete-btn" onclick="deleteChatMessage('${msgId}')">DELETE</span>` : '';
+                        
+                        let messageContent = '';
+                        if (msg.imageUrl) {
+                            messageContent = `<img src="${msg.imageUrl}" class="chat-image" alt="Shared image" onclick="window.open('${msg.imageUrl}', '_blank')" />`;
+                        } else if (msg.text) {
+                            messageContent = `<div class="chat-text">${msg.text}</div>`;
+                        }
                         
                         msgDiv.innerHTML = `
                             <div class="chat-message-content">
@@ -2174,7 +2352,7 @@
                                     <span class="chat-username ${usernameClass}">${msg.username}</span>
                                     <span class="chat-timestamp">${time}</span>
                                 </div>
-                                <div class="chat-text">${msg.deleted ? '[MESSAGE DELETED]' : msg.text}</div>
+                                ${messageContent}
                             </div>
                             ${deleteBtn}
                         `;
@@ -2188,7 +2366,6 @@
                 }
             });
             
-            // Enter key to send
             const chatInput = document.getElementById('chatInput');
             if (chatInput && !chatInput.dataset.listenerAdded) {
                 chatInput.addEventListener('keypress', (e) => {
@@ -2197,6 +2374,16 @@
                     }
                 });
                 chatInput.dataset.listenerAdded = 'true';
+            }
+            
+            const usernameInput = document.getElementById('usernameInput');
+            if (usernameInput && !usernameInput.dataset.listenerAdded) {
+                usernameInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        confirmUsername();
+                    }
+                });
+                usernameInput.dataset.listenerAdded = 'true';
             }
             
             console.log('Chat page initialized');
@@ -2257,7 +2444,6 @@
             console.log('Loading bar stopped');
         };
         
-        // Listen for loading bar state
         const loadingBarRef = ref(database, 'loadingBar');
         let loadingInterval = null;
         
@@ -2268,14 +2454,12 @@
             if (loadingState && loadingState.active) {
                 overlay.classList.add('active');
                 
-                const duration = loadingState.duration * 1000; // Convert to milliseconds
+                const duration = loadingState.duration * 1000;
                 const startTime = loadingState.startTime;
                 const totalBlocks = 10;
                 
-                // Clear any existing interval
                 if (loadingInterval) clearInterval(loadingInterval);
                 
-                // Update loading bar
                 loadingInterval = setInterval(() => {
                     const elapsed = Date.now() - startTime;
                     const progress = Math.min(elapsed / duration, 1);
@@ -2295,7 +2479,6 @@
                     document.getElementById('loadingBar').innerHTML = barText;
                     document.getElementById('loadingPercentage').textContent = percentage + '%';
                     
-                    // Calculate time remaining
                     const remaining = Math.max(0, duration - elapsed);
                     const remainingSeconds = Math.floor(remaining / 1000);
                     const remDays = Math.floor(remainingSeconds / 86400);
@@ -2306,12 +2489,10 @@
                     document.getElementById('loadingTimeRemaining').textContent = 
                         `Time remaining: ${remDays}d ${remHours}h ${remMinutes}m ${remSecs}s`;
                     
-                    // Auto-stop when complete
                     if (progress >= 1) {
                         clearInterval(loadingInterval);
                         setTimeout(async () => {
                             overlay.classList.remove('active');
-                            // Auto-clear from Firebase when complete
                             await set(loadingBarRef, { active: false });
                         }, 2000);
                     }
@@ -2338,6 +2519,8 @@
                 document.getElementById('textureControlBtn').style.display = 'block';
                 document.getElementById('adminLoadingBtn').style.display = 'block';
                 document.getElementById('adminVideoBtn').style.display = 'block';
+                document.getElementById('chatImageBtn').style.display = 'block';
+                document.getElementById('chatDeleteAllBtn').style.display = 'block';
                 console.log('Admin logged in:', user.email);
                 
                 setTimeout(() => {
@@ -2356,6 +2539,8 @@
                 document.getElementById('textureControlBtn').style.display = 'none';
                 document.getElementById('adminLoadingBtn').style.display = 'none';
                 document.getElementById('adminVideoBtn').style.display = 'none';
+                document.getElementById('chatImageBtn').style.display = 'none';
+                document.getElementById('chatDeleteAllBtn').style.display = 'none';
             }
         });
         
@@ -2484,7 +2669,16 @@
             document.getElementById('chatPage').classList.add('active');
             document.getElementById('mainVideo').style.display = 'none';
             document.getElementById('bgAudio').pause();
-            // Setup will be called after Firebase is initialized
+            
+            const savedUsername = localStorage.getItem('chatUsername');
+            if (!savedUsername && !window.isAdmin) {
+                setTimeout(() => {
+                    document.getElementById('usernameModal').classList.add('active');
+                }, 500);
+            } else if (savedUsername) {
+                window.chatUsername = savedUsername;
+            }
+            
             setTimeout(() => {
                 if (typeof setupChatPage === 'function') {
                     setupChatPage();
@@ -2626,8 +2820,6 @@
             scheduleNextLine();
         }
         
-        const targetDate = new Date('January 6, 2026 00:00:00').getTime();
-        
         function makeDraggable(element) {
             let isDragging = false;
             let currentX, currentY, initialX, initialY;
@@ -2764,30 +2956,6 @@
         }).catch(() => {
             audioBtn.textContent = 'CLICK TO START';
         });
-        
-        function updateCountdown() {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-            
-            if (distance < 0) {
-                document.getElementById('countdownTime').textContent = 'EVENT STARTED';
-                return;
-            }
-            
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
-            document.getElementById('countdownTime').textContent = 
-                String(days).padStart(2, '0') + ':' +
-                String(hours).padStart(2, '0') + ':' +
-                String(minutes).padStart(2, '0') + ':' +
-                String(seconds).padStart(2, '0');
-        }
-        
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
     </script>
 </body>
 </html>
