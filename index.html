@@ -707,6 +707,27 @@
             color: #000;
         }
         
+        .admin-video-btn {
+            position: fixed;
+            top: 330px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #ff9933;
+            padding: 8px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            z-index: 1000;
+            cursor: pointer;
+            border: 2px solid #ff9933;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            display: none;
+        }
+        .admin-video-btn:hover {
+            background: #ff9933;
+            color: #000;
+        }
+        
         @media (max-width: 768px) {
             .loading-bar-text {
                 font-size: 16px;
@@ -1384,6 +1405,7 @@
     <button class="admin-sound-btn" id="adminSoundBtn" onclick="openAdminSoundPanel()">SOUND CONTROL</button>
     <button class="texture-control-btn" id="textureControlBtn" onclick="toggleMissingTexture()">TOGGLE TEXTURE</button>
     <button class="admin-loading-btn" id="adminLoadingBtn" onclick="openAdminLoadingPanel()">LOADING BAR</button>
+    <button class="admin-video-btn" id="adminVideoBtn" onclick="toggleVideoControlHud()">VIDEO CONTROL</button>
     
     <!-- Missing Texture Overlay -->
     <div class="missing-texture-overlay" id="missingTextureOverlay"></div>
@@ -1409,6 +1431,7 @@
         <button onclick="switchVideo('city.mp4')" data-video="city.mp4">CITY</button>
         <button onclick="switchVideo('sighting.mp4')" data-video="sighting.mp4">SIGHTING</button>
         <button onclick="switchVideo('tree.mp4')" data-video="tree.mp4">TREE</button>
+        <button onclick="toggleVideoControlHud()" style="margin-top: 10px; background: rgba(255, 68, 68, 0.8); border-color: #ff4444;">CLOSE</button>
     </div>
     
     <!-- Vote Panel (for users) -->
@@ -1926,6 +1949,11 @@
             document.getElementById('adminLoadingPanel').classList.remove('active');
         };
         
+        window.toggleVideoControlHud = function() {
+            const hud = document.getElementById('videoControlHud');
+            hud.classList.toggle('active');
+        };
+        
         window.updateTotalTime = function() {
             const days = parseInt(document.getElementById('loadingDays').value) || 0;
             const hours = parseInt(document.getElementById('loadingHours').value) || 0;
@@ -2059,9 +2087,9 @@
                 document.getElementById('logoutBtn').style.display = 'block';
                 document.getElementById('adminVoteBtn').style.display = 'block';
                 document.getElementById('adminSoundBtn').style.display = 'block';
-                document.getElementById('videoControlHud').classList.add('active');
                 document.getElementById('textureControlBtn').style.display = 'block';
                 document.getElementById('adminLoadingBtn').style.display = 'block';
+                document.getElementById('adminVideoBtn').style.display = 'block';
                 console.log('Admin logged in:', user.email);
                 
                 setTimeout(() => {
@@ -2079,6 +2107,7 @@
                 document.getElementById('videoControlHud').classList.remove('active');
                 document.getElementById('textureControlBtn').style.display = 'none';
                 document.getElementById('adminLoadingBtn').style.display = 'none';
+                document.getElementById('adminVideoBtn').style.display = 'none';
             }
         });
         
