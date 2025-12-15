@@ -2287,37 +2287,43 @@
         };
         
         window.handleImageUpload = async function(event) {
-            if (!window.isAdmin) return;
-            
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            if (file.size > 5 * 1024 * 1024) {
-                alert('Image too large! Maximum size is 5MB.');
-                return;
-            }
-            
-            try {
-                const imageRef = storageRef(storage, `chat-images/${Date.now()}_${file.name}`);
-                await uploadBytes(imageRef, file);
-                const imageUrl = await getDownloadURL(imageRef);
-                
-                const messagesRef = ref(database, 'chatMessages');
-                await push(messagesRef, {
-                    username: 'SOURCEENGINE',
-                    imageUrl: imageUrl,
-                    timestamp: Date.now(),
-                    isAdmin: true,
-                    userId: window.userId
-                });
-                
-                console.log('Image uploaded and sent');
-                event.target.value = '';
-            } catch (error) {
-                console.error('Error uploading image:', error);
-                alert('Failed to upload image. Please try again.');
-            }
-        };
+    if (!window.isAdmin) return;
+    
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    if (file.size > 5 * 1024 * 1024) {
+        alert('Image too large! Maximum size is 5MB.');
+        return;
+    }
+    
+    try {
+        // Create storage reference for the image
+        const imageStorageRef = storageRef(storage, `chat-images/${Date.now()}_${file.name}`);
+        
+        // Upload the image
+        await uploadBytes(imageStorageRef, file);
+        
+        // Get the download URL
+        const imageUrl = await getDownloadURL(imageStorageRef);
+        
+        // Save message with image URL to database
+        const messagesRef = ref(database, 'chatMessages');
+        await push(messagesRef, {
+            username: 'SOURCEENGINE',
+            imageUrl: imageUrl,
+            timestamp: Date.now(),
+            isAdmin: true,
+            userId: window.userId
+        });
+        
+        console.log('Image uploaded successfully');
+        event.target.value = ''; // Reset file input
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        alert('Failed to upload image: ' + error.message);
+    }
+};
         
         window.setupChatPage = function() {
             const chatMessagesRef = ref(database, 'chatMessages');
