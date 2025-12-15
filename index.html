@@ -470,28 +470,216 @@
             color: #000;
         }
         
-        .admin-sound-panel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(20, 20, 20, 0.98);
-            border: 3px solid #ff9933;
-            padding: 30px;
-            font-family: 'Courier New', monospace;
-            color: #ff9933;
-            box-shadow: 0 0 30px rgba(255, 153, 51, 0.5);
-            z-index: 2600;
-            display: none;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            cursor: move;
-            resize: both;
-            min-width: 300px;
-            min-height: 200px;
-        }
+        
+/* ========== ENHANCED SOUND CONTROL PANEL ========== */
+.admin-sound-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(20, 20, 20, 0.98);
+    border: 3px solid #ff9933;
+    padding: 30px;
+    font-family: 'Courier New', monospace;
+    color: #ff9933;
+    box-shadow: 0 0 30px rgba(255, 153, 51, 0.5);
+    z-index: 2600;
+    display: none;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    cursor: move;
+    resize: both;
+    min-width: 400px;
+    min-height: 300px;
+}
+
+.admin-sound-panel.active {
+    display: block;
+}
+
+.admin-sound-panel h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+.admin-sound-panel label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 12px;
+    color: #ffcc66;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.admin-sound-panel select {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #ff9933;
+    color: #ffcc66;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+}
+
+.sound-controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.sound-control-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.sound-control-item input[type="number"],
+.sound-control-item input[type="range"] {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #ff9933;
+    color: #ffcc66;
+    padding: 10px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+}
+
+.sound-control-item input[type="range"] {
+    padding: 5px;
+    cursor: pointer;
+}
+
+.volume-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.volume-value {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffcc66;
+}
+
+.loop-forever-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 12px;
+    background: rgba(255, 153, 51, 0.1);
+    border: 2px solid #ff9933;
+}
+
+.loop-forever-container input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #ff9933;
+}
+
+.loop-forever-container label {
+    margin: 0;
+    cursor: pointer;
+    flex: 1;
+}
+
+.sound-action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.admin-sound-panel button {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #ff9933;
+    color: #ff9933;
+    padding: 12px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+}
+
+.admin-sound-panel button:hover {
+    background: #ff9933;
+    color: #000;
+}
+
+.admin-sound-panel button.stop-btn {
+    border-color: #ff4444;
+    color: #ff4444;
+}
+
+.admin-sound-panel button.stop-btn:hover {
+    background: #ff4444;
+    color: #000;
+}
+
+.admin-sound-panel button.close-btn {
+    grid-column: 1 / -1;
+    margin-top: 10px;
+}
+
+.current-playing {
+    background: rgba(68, 255, 68, 0.1);
+    border: 2px solid #44ff44;
+    padding: 12px;
+    margin-bottom: 20px;
+    display: none;
+}
+
+.current-playing.active {
+    display: block;
+}
+
+.current-playing-title {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.current-playing-info {
+    font-size: 14px;
+    color: #44ff44;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.current-playing-loops {
+    font-size: 12px;
+    color: #44ff44;
+    margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+    .admin-sound-panel {
+        max-width: 95%;
+        min-width: 300px;
+        padding: 20px;
+    }
+    
+    .sound-controls-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .sound-action-buttons {
+        grid-template-columns: 1fr;
+    }
+}
+
         .admin-sound-panel.active {
             display: block;
         }
@@ -1540,8 +1728,6 @@
             <div class="username-error" id="usernameError">ERROR: INVALID USERNAME</div>
         </div>
     </div>
-
-<!-- ========== PASTE PART 1 ABOVE THIS LINE ========== -->
     
     <!-- Maps Page -->
     <div class="maps-page" id="mapsPage">
@@ -1709,8 +1895,21 @@
         <div class="vote-results" id="adminVoteResults" style="margin-top: 20px;"></div>
     </div>
     
-    <div class="admin-sound-panel" id="adminSoundPanel">
+        <div class="admin-sound-panel" id="adminSoundPanel">
         <h2>SOUND CONTROL PANEL</h2>
+        
+        <!-- Current Playing Indicator -->
+        <div class="current-playing" id="currentPlaying">
+            <div class="current-playing-title">Currently Playing:</div>
+            <div class="current-playing-info">
+                <span id="currentSoundName">None</span>
+                <span id="currentSoundVolume">100%</span>
+            </div>
+            <div class="current-playing-loops" id="currentSoundLoops">Loop: 1 / 1</div>
+        </div>
+        
+        <!-- Sound Selection -->
+        <label for="soundSelect">Select Sound:</label>
         <select id="soundSelect">
             <option value="">-- Select Sound --</option>
             <option value="windchime2.wav">Windchime 2</option>
@@ -1725,10 +1924,39 @@
             <option value="blip.wav">Blip</option>
             <option value="content_downloaded.wav">Content Downloaded</option>
         </select>
-        <button onclick="playSelectedSound()">PLAY FOR ALL USERS</button>
-        <button onclick="closeAdminSoundPanel()">CLOSE</button>
+        
+        <!-- Sound Controls Grid -->
+        <div class="sound-controls-grid">
+            <!-- Volume Control -->
+            <div class="sound-control-item">
+                <div class="volume-display">
+                    <label for="soundVolume">Volume:</label>
+                    <span class="volume-value" id="volumeValue">100%</span>
+                </div>
+                <input type="range" id="soundVolume" min="0" max="100" value="100" oninput="updateVolumeDisplay()" />
+            </div>
+            
+            <!-- Loop Count -->
+            <div class="sound-control-item">
+                <label for="loopCount">Loop Count:</label>
+                <input type="number" id="loopCount" min="1" max="999" value="1" />
+            </div>
+        </div>
+        
+        <!-- Loop Forever Checkbox -->
+        <div class="loop-forever-container">
+            <input type="checkbox" id="loopForever" onchange="toggleLoopForever()" />
+            <label for="loopForever">Loop Forever (∞)</label>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="sound-action-buttons">
+            <button onclick="playSound()">▶ PLAY</button>
+            <button class="stop-btn" onclick="stopSound()">■ STOP</button>
+        </div>
+        
+        <button class="close-btn" onclick="closeAdminSoundPanel()">CLOSE</button>
     </div>
-    
     <div class="admin-loading-panel" id="adminLoadingPanel">
         <h2>LOADING BAR CONTROL</h2>
         <div class="time-inputs">
@@ -2155,29 +2383,7 @@
             document.getElementById('adminSoundPanel').classList.remove('active');
         };
         
-        window.playSelectedSound = async function() {
-            if (!window.isAdmin) return;
-            
-            const soundSelect = document.getElementById('soundSelect');
-            const soundFile = soundSelect.value;
-            
-            if (!soundFile) {
-                alert('Please select a sound!');
-                return;
-            }
-            
-            const triggerRef = ref(database, 'soundTrigger');
-            await set(triggerRef, {
-                soundFile: soundFile,
-                timestamp: Date.now()
-            });
-            
-            const player = document.getElementById('globalSoundPlayer');
-            player.src = soundFile;
-            player.play().catch(e => console.log('Local sound play failed:', e));
-            
-            console.log('Playing sound for all users:', soundFile);
-        };
+        
         
         window.toggleMissingTexture = async function() {
             if (!window.isAdmin) return;
@@ -2633,6 +2839,204 @@
             }
         });
         
+        
+        // ========== ENHANCED SOUND CONTROL SYSTEM ==========
+        
+        window.soundControlState = {
+            currentSound: null,
+            currentLoop: 0,
+            totalLoops: 1,
+            isPlaying: false,
+            volume: 1.0,
+            loopForever: false
+        };
+        
+        window.updateVolumeDisplay = function() {
+            const volumeSlider = document.getElementById('soundVolume');
+            const volumeValue = document.getElementById('volumeValue');
+            if (volumeSlider && volumeValue) {
+                volumeValue.textContent = volumeSlider.value + '%';
+            }
+        };
+        
+        window.toggleLoopForever = function() {
+            const loopForever = document.getElementById('loopForever');
+            const loopCount = document.getElementById('loopCount');
+            
+            if (loopForever && loopCount) {
+                if (loopForever.checked) {
+                    loopCount.disabled = true;
+                    loopCount.style.opacity = '0.5';
+                } else {
+                    loopCount.disabled = false;
+                    loopCount.style.opacity = '1';
+                }
+            }
+        };
+        
+        window.playSound = async function() {
+            if (!window.isAdmin) return;
+            
+            const soundSelect = document.getElementById('soundSelect');
+            const soundFile = soundSelect.value;
+            const volumeSlider = document.getElementById('soundVolume');
+            const loopCountInput = document.getElementById('loopCount');
+            const loopForeverCheckbox = document.getElementById('loopForever');
+            
+            if (!soundFile) {
+                alert('Please select a sound!');
+                return;
+            }
+            
+            const volume = parseInt(volumeSlider.value) / 100;
+            const loopCount = loopForeverCheckbox.checked ? -1 : parseInt(loopCountInput.value) || 1;
+            
+            const soundControlRef = ref(database, 'soundControl');
+            
+            try {
+                await set(soundControlRef, {
+                    soundFile: soundFile,
+                    volume: volume,
+                    loopCount: loopCount,
+                    timestamp: Date.now(),
+                    isPlaying: true
+                });
+                
+                console.log('Sound control updated:', {
+                    file: soundFile,
+                    volume: volume,
+                    loops: loopCount === -1 ? 'infinite' : loopCount
+                });
+                
+                updateCurrentPlayingDisplay(soundFile, volume, loopCount);
+                
+            } catch (error) {
+                console.error('Failed to play sound:', error);
+                alert('Error playing sound: ' + error.message);
+            }
+        };
+        
+        window.stopSound = async function() {
+            if (!window.isAdmin) return;
+            
+            const soundControlRef = ref(database, 'soundControl');
+            
+            try {
+                await set(soundControlRef, {
+                    isPlaying: false,
+                    timestamp: Date.now()
+                });
+                
+                const player = document.getElementById('globalSoundPlayer');
+                player.pause();
+                player.currentTime = 0;
+                
+                document.getElementById('currentPlaying').classList.remove('active');
+                
+                window.soundControlState.isPlaying = false;
+                window.soundControlState.currentLoop = 0;
+                
+                console.log('Sound stopped');
+                
+            } catch (error) {
+                console.error('Failed to stop sound:', error);
+            }
+        };
+        
+        window.updateCurrentPlayingDisplay = function(soundFile, volume, loopCount) {
+            const currentPlaying = document.getElementById('currentPlaying');
+            const soundName = document.getElementById('currentSoundName');
+            const soundVolume = document.getElementById('currentSoundVolume');
+            const soundLoops = document.getElementById('currentSoundLoops');
+            
+            const fileName = soundFile.split('/').pop().replace(/\.[^/.]+$/, "");
+            
+            soundName.textContent = fileName;
+            soundVolume.textContent = Math.round(volume * 100) + '%';
+            
+            if (loopCount === -1) {
+                soundLoops.textContent = 'Loop: ∞ (Forever)';
+            } else {
+                soundLoops.textContent = `Loop: 1 / ${loopCount}`;
+            }
+            
+            currentPlaying.classList.add('active');
+        };
+        
+        window.playSoundWithLoop = function() {
+            const player = document.getElementById('globalSoundPlayer');
+            const state = window.soundControlState;
+            
+            player.src = state.currentSound;
+            player.volume = state.volume;
+            
+            player.onended = null;
+            
+            player.onended = function() {
+                state.currentLoop++;
+                
+                if (window.isAdmin && state.totalLoops !== -1) {
+                    const soundLoops = document.getElementById('currentSoundLoops');
+                    if (soundLoops) {
+                        soundLoops.textContent = `Loop: ${state.currentLoop + 1} / ${state.totalLoops}`;
+                    }
+                }
+                
+                if (state.loopForever || state.currentLoop < state.totalLoops) {
+                    player.currentTime = 0;
+                    player.play().catch(e => console.log('Loop play failed:', e));
+                } else {
+                    state.isPlaying = false;
+                    if (window.isAdmin) {
+                        document.getElementById('currentPlaying').classList.remove('active');
+                    }
+                }
+            };
+            
+            player.play().catch(e => console.log('Sound play failed:', e));
+            
+            console.log('Playing sound:', {
+                file: state.currentSound,
+                volume: Math.round(state.volume * 100) + '%',
+                loops: state.loopForever ? '∞' : state.totalLoops
+            });
+        };
+        
+        const soundControlRef = ref(database, 'soundControl');
+        
+        onValue(soundControlRef, (snapshot) => {
+            const control = snapshot.val();
+            
+            if (!control || !control.isPlaying) {
+                const player = document.getElementById('globalSoundPlayer');
+                player.pause();
+                player.currentTime = 0;
+                window.soundControlState.isPlaying = false;
+                return;
+            }
+            
+            const { soundFile, volume, loopCount, timestamp } = control;
+            
+            if (timestamp > (window.soundControlState.lastTimestamp || 0)) {
+                window.soundControlState.lastTimestamp = timestamp;
+                window.soundControlState.currentSound = soundFile;
+                window.soundControlState.volume = volume;
+                window.soundControlState.totalLoops = loopCount;
+                window.soundControlState.currentLoop = 0;
+                window.soundControlState.loopForever = loopCount === -1;
+                window.soundControlState.isPlaying = true;
+                
+                playSoundWithLoop();
+            }
+        });
+        
+        setTimeout(() => {
+            if (typeof updateVolumeDisplay === 'function') {
+                updateVolumeDisplay();
+            }
+        }, 1000);
+        
+
         const missingTextureRef = ref(database, 'missingTexture');
         onValue(missingTextureRef, (snapshot) => {
             const textureState = snapshot.val();
