@@ -1393,17 +1393,8 @@
             line-height: 1.5;
             word-wrap: break-word;
         }
-        .chat-image {
-            max-width: 300px;
-            max-height: 300px;
-            margin-top: 8px;
-            border: 2px solid #ff9933;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .chat-image:hover {
-            transform: scale(1.05);
-        }
+        
+        
         .chat-delete-btn {
             color: #ff4444;
             cursor: pointer;
@@ -1471,33 +1462,11 @@
             background: #ff9933;
             color: #000;
         }
-        .chat-image-btn {
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #ff9933;
-            color: #ff9933;
-            padding: 12px 30px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            letter-spacing: 1px;
-            font-weight: bold;
-            display: none;
-        }
-        .chat-image-btn:hover {
-            background: #ff9933;
-            color: #000;
-        }
+        
+        
         /* NEW: Image upload visual feedback */
-        .chat-image-btn.uploading {
-            background: #ff9933 !important;
-            color: #000 !important;
-            pointer-events: none;
-            opacity: 0.7;
-        }
-        .chat-image-btn.uploading::after {
-            content: " ⏳";
-        }
+        
+        
         .chat-delete-all-btn {
             background: rgba(0, 0, 0, 0.8);
             border: 2px solid #ff4444;
@@ -1515,40 +1484,14 @@
             background: #ff4444;
             color: #000;
         }
-        .chat-image-input {
-            display: none;
-        }
+        
         
         /* NEW: Upload status notification */
-        .upload-status {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.95);
-            border: 2px solid #ff9933;
-            color: #ffcc66;
-            padding: 15px 25px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            z-index: 5000;
-            display: none;
-            letter-spacing: 1px;
-            box-shadow: 0 0 20px rgba(255, 153, 51, 0.5);
-        }
-        .upload-status.active {
-            display: block;
-            animation: pulse 1.5s infinite;
-        }
-        .upload-status.success {
-            border-color: #44ff44;
-            color: #44ff44;
-        }
-        .upload-status.error {
-            border-color: #ff4444;
-            color: #ff4444;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
+        
+        
+        
+        
+        
             50% { opacity: 0.7; }
         }
         
@@ -1572,18 +1515,8 @@
                 margin-bottom: 10px;
             }
             .chat-send-btn,
-            .chat-image-btn,
-            .chat-delete-all-btn {
-                flex: 1;
-                padding: 10px 15px;
-                min-width: 100px;
-            }
-            .upload-status {
-                bottom: 70px;
-                right: 10px;
-                font-size: 12px;
-                padding: 12px 20px;
-            }
+            
+            
         }
     </style>
 </head>
@@ -1607,6 +1540,7 @@
             <div class="username-error" id="usernameError">ERROR: INVALID USERNAME</div>
         </div>
     </div>
+
 <!-- ========== PASTE PART 1 ABOVE THIS LINE ========== -->
     
     <!-- Maps Page -->
@@ -1718,9 +1652,9 @@
         <div class="chat-input-container">
             <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." maxlength="500" />
             <button class="chat-send-btn" onclick="sendChatMessage()">SEND</button>
-            <button class="chat-image-btn" id="chatImageBtn" onclick="document.getElementById('chatImageInput').click()">UPLOAD IMAGE</button>
+            
             <button class="chat-delete-all-btn" id="chatDeleteAllBtn" onclick="deleteAllChatMessages()">DELETE ALL</button>
-            <input type="file" id="chatImageInput" class="chat-image-input" accept="image/*" onchange="handleImageUpload(event)" />
+            
         </div>
     </div>
     
@@ -1864,14 +1798,14 @@
         <source src="access_denied.mp3" type="audio/mpeg">
     </audio>
     
-    <!-- NEW: Upload Status Notification -->
-    <div class="upload-status" id="uploadStatus">UPLOADING IMAGE...</div>
+    
+    
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, set, get, onValue, onDisconnect, serverTimestamp, push, update, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+        
 
         const firebaseConfig = {
             apiKey: "AIzaSyCPj_IFALPhx8JL3tvdO-UzcsGorlx5czw",
@@ -1886,11 +1820,11 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const auth = getAuth(app);
-        const storage = getStorage(app);
+        
         
         window.firebaseDB = database;
         window.firebaseAuth = auth;
-        window.firebaseStorage = storage;
+        
         window.isAdmin = false;
 
         const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -2356,88 +2290,7 @@
             }
         };
         
-        // IMPROVED: Image upload with visual feedback
-        window.handleImageUpload = async function(event) {
-            if (!window.isAdmin) return;
-            
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            // Get UI elements
-            const uploadBtn = document.getElementById('chatImageBtn');
-            const statusDiv = document.getElementById('uploadStatus');
-            
-            // Validate file size
-            if (file.size > 5 * 1024 * 1024) {
-                statusDiv.textContent = 'ERROR: IMAGE TOO LARGE (MAX 5MB)';
-                statusDiv.className = 'upload-status active error';
-                setTimeout(() => {
-                    statusDiv.classList.remove('active');
-                }, 3000);
-                event.target.value = '';
-                return;
-            }
-            
-            try {
-                // Show uploading status
-                uploadBtn.classList.add('uploading');
-                statusDiv.textContent = `UPLOADING ${file.name}...`;
-                statusDiv.className = 'upload-status active';
-                
-                // Create storage reference for the image
-                const imageStorageRef = storageRef(storage, `chat-images/${Date.now()}_${file.name}`);
-                
-                // Upload the image
-                console.log('Uploading to Firebase Storage...');
-                await uploadBytes(imageStorageRef, file);
-                console.log('Upload complete, getting download URL...');
-                
-                // Get the download URL
-                const imageUrl = await getDownloadURL(imageStorageRef);
-                console.log('Download URL obtained:', imageUrl);
-                
-                // Update status
-                statusDiv.textContent = 'SAVING TO DATABASE...';
-                
-                // Save message with image URL to database
-                const messagesRef = ref(database, 'chatMessages');
-                await push(messagesRef, {
-                    username: 'SOURCEENGINE',
-                    imageUrl: imageUrl,
-                    timestamp: Date.now(),
-                    isAdmin: true,
-                    userId: window.userId
-                });
-                
-                // Show success
-                console.log('Image uploaded successfully');
-                statusDiv.textContent = '✓ IMAGE UPLOADED SUCCESSFULLY';
-                statusDiv.className = 'upload-status active success';
-                
-                // Reset after 2 seconds
-                setTimeout(() => {
-                    statusDiv.classList.remove('active');
-                    uploadBtn.classList.remove('uploading');
-                }, 2000);
-                
-                event.target.value = ''; // Reset file input
-                
-            } catch (error) {
-                console.error('Error uploading image:', error);
-                
-                // Show error
-                statusDiv.textContent = `ERROR: ${error.message}`;
-                statusDiv.className = 'upload-status active error';
-                uploadBtn.classList.remove('uploading');
-                
-                // Hide error after 5 seconds
-                setTimeout(() => {
-                    statusDiv.classList.remove('active');
-                }, 5000);
-                
-                event.target.value = '';
-            }
-        };
+        
         
         // NEW: Delete all messages from a user
         window.deleteAllUserMessages = async function(username) {
@@ -2676,7 +2529,7 @@
                 document.getElementById('textureControlBtn').style.display = 'block';
                 document.getElementById('adminLoadingBtn').style.display = 'block';
                 document.getElementById('adminVideoBtn').style.display = 'block';
-                document.getElementById('chatImageBtn').style.display = 'block';
+                
                 document.getElementById('chatDeleteAllBtn').style.display = 'block';
                 console.log('Admin logged in:', user.email);
                 
@@ -2696,7 +2549,7 @@
                 document.getElementById('textureControlBtn').style.display = 'none';
                 document.getElementById('adminLoadingBtn').style.display = 'none';
                 document.getElementById('adminVideoBtn').style.display = 'none';
-                document.getElementById('chatImageBtn').style.display = 'none';
+                
                 document.getElementById('chatDeleteAllBtn').style.display = 'none';
             }
         });
