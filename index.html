@@ -1488,6 +1488,16 @@
             background: #ff9933;
             color: #000;
         }
+        /* NEW: Image upload visual feedback */
+        .chat-image-btn.uploading {
+            background: #ff9933 !important;
+            color: #000 !important;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .chat-image-btn.uploading::after {
+            content: " ⏳";
+        }
         .chat-delete-all-btn {
             background: rgba(0, 0, 0, 0.8);
             border: 2px solid #ff4444;
@@ -1507,6 +1517,39 @@
         }
         .chat-image-input {
             display: none;
+        }
+        
+        /* NEW: Upload status notification */
+        .upload-status {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #ff9933;
+            color: #ffcc66;
+            padding: 15px 25px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            z-index: 5000;
+            display: none;
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(255, 153, 51, 0.5);
+        }
+        .upload-status.active {
+            display: block;
+            animation: pulse 1.5s infinite;
+        }
+        .upload-status.success {
+            border-color: #44ff44;
+            color: #44ff44;
+        }
+        .upload-status.error {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
         
         @media (max-width: 768px) {
@@ -1535,6 +1578,12 @@
                 padding: 10px 15px;
                 min-width: 100px;
             }
+            .upload-status {
+                bottom: 70px;
+                right: 10px;
+                font-size: 12px;
+                padding: 12px 20px;
+            }
         }
     </style>
 </head>
@@ -1559,7 +1608,7 @@
         </div>
     </div>
 
-    <!-- ========== PASTE PART 1 ABOVE THIS LINE ========== -->
+<!-- ========== PASTE PART 2 BELOW THIS LINE ========== --><!-- ========== PASTE PART 1 ABOVE THIS LINE ========== -->
     
     <!-- Maps Page -->
     <div class="maps-page" id="mapsPage">
@@ -1815,6 +1864,9 @@
     <audio id="accessDeniedAudio">
         <source src="access_denied.mp3" type="audio/mpeg">
     </audio>
+    
+    <!-- NEW: Upload Status Notification -->
+    <div class="upload-status" id="uploadStatus">UPLOADING IMAGE...</div>
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
@@ -2305,27 +2357,48 @@
             }
         };
         
-        // FIXED: Image upload function
+        // IMPROVED: Image upload with visual feedback
         window.handleImageUpload = async function(event) {
             if (!window.isAdmin) return;
             
             const file = event.target.files[0];
             if (!file) return;
             
+            // Get UI elements
+            const uploadBtn = document.getElementById('chatImageBtn');
+            const statusDiv = document.getElementById('uploadStatus');
+            
+            // Validate file size
             if (file.size > 5 * 1024 * 1024) {
-                alert('Image too large! Maximum size is 5MB.');
+                statusDiv.textContent = 'ERROR: IMAGE TOO LARGE (MAX 5MB)';
+                statusDiv.className = 'upload-status active error';
+                setTimeout(() => {
+                    statusDiv.classList.remove('active');
+                }, 3000);
+                event.target.value = '';
                 return;
             }
             
             try {
+                // Show uploading status
+                uploadBtn.classList.add('uploading');
+                statusDiv.textContent = `UPLOADING ${file.name}...`;
+                statusDiv.className = 'upload-status active';
+                
                 // Create storage reference for the image
                 const imageStorageRef = storageRef(storage, `chat-images/${Date.now()}_${file.name}`);
                 
                 // Upload the image
+                console.log('Uploading to Firebase Storage...');
                 await uploadBytes(imageStorageRef, file);
+                console.log('Upload complete, getting download URL...');
                 
                 // Get the download URL
                 const imageUrl = await getDownloadURL(imageStorageRef);
+                console.log('Download URL obtained:', imageUrl);
+                
+                // Update status
+                statusDiv.textContent = 'SAVING TO DATABASE...';
                 
                 // Save message with image URL to database
                 const messagesRef = ref(database, 'chatMessages');
@@ -2337,11 +2410,33 @@
                     userId: window.userId
                 });
                 
+                // Show success
                 console.log('Image uploaded successfully');
+                statusDiv.textContent = '✓ IMAGE UPLOADED SUCCESSFULLY';
+                statusDiv.className = 'upload-status active success';
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    statusDiv.classList.remove('active');
+                    uploadBtn.classList.remove('uploading');
+                }, 2000);
+                
                 event.target.value = ''; // Reset file input
+                
             } catch (error) {
                 console.error('Error uploading image:', error);
-                alert('Failed to upload image: ' + error.message);
+                
+                // Show error
+                statusDiv.textContent = `ERROR: ${error.message}`;
+                statusDiv.className = 'upload-status active error';
+                uploadBtn.classList.remove('uploading');
+                
+                // Hide error after 5 seconds
+                setTimeout(() => {
+                    statusDiv.classList.remove('active');
+                }, 5000);
+                
+                event.target.value = '';
             }
         };
         
@@ -2394,7 +2489,7 @@
                         const time = new Date(msg.timestamp).toLocaleTimeString();
                         const usernameClass = msg.isAdmin ? 'admin' : '';
                         
-                        // FIXED: Added "DELETE USER" button
+                        // Admin controls with "DELETE USER" button
                         const deleteBtn = window.isAdmin ? `
                             <div>
                                 <span class="chat-delete-btn" onclick="deleteChatMessage('${msgId}')">DELETE</span>
