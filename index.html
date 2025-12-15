@@ -1412,9 +1412,24 @@
             border: 1px solid #ff4444;
             background: rgba(255, 68, 68, 0.1);
             transition: all 0.2s;
+            margin-left: 5px;
         }
         .chat-delete-btn:hover {
             background: #ff4444;
+            color: #000;
+        }
+        .chat-delete-user-btn {
+            color: #ff8800;
+            cursor: pointer;
+            padding: 5px 10px;
+            font-size: 12px;
+            border: 1px solid #ff8800;
+            background: rgba(255, 136, 0, 0.1);
+            transition: all 0.2s;
+            margin-left: 5px;
+        }
+        .chat-delete-user-btn:hover {
+            background: #ff8800;
             color: #000;
         }
         .chat-input-container {
@@ -1433,6 +1448,7 @@
             padding: 12px 15px;
             font-family: 'Courier New', monospace;
             font-size: 14px;
+            min-width: 200px;
         }
         .chat-input:focus {
             outline: none;
@@ -1502,10 +1518,11 @@
             }
             .chat-message {
                 padding: 10px;
+                flex-direction: column;
+                gap: 10px;
             }
             .chat-input-container {
                 padding: 15px;
-                flex-wrap: wrap;
             }
             .chat-input {
                 flex: 1 1 100%;
@@ -1516,12 +1533,12 @@
             .chat-delete-all-btn {
                 flex: 1;
                 padding: 10px 15px;
+                min-width: 100px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Admin Login Page -->
     <div class="login-page" id="loginPage">
         <div class="login-box">
             <h2>ADMIN LOGIN</h2>
@@ -1533,7 +1550,6 @@
         </div>
     </div>
     
-    <!-- Username Entry Modal -->
     <div class="username-modal" id="usernameModal">
         <div class="username-box">
             <h2>ENTER USERNAME</h2>
@@ -1543,6 +1559,9 @@
         </div>
     </div>
 
+    <!-- ========== PASTE PART 1 ABOVE THIS LINE ========== -->
+    
+    <!-- Maps Page -->
     <div class="maps-page" id="mapsPage">
         <div class="maps-title">DOORS</div>
         <div class="maps-terminal" id="mapsTerminal"></div>
@@ -2286,44 +2305,76 @@
             }
         };
         
+        // FIXED: Image upload function
         window.handleImageUpload = async function(event) {
-    if (!window.isAdmin) return;
-    
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    if (file.size > 5 * 1024 * 1024) {
-        alert('Image too large! Maximum size is 5MB.');
-        return;
-    }
-    
-    try {
-        // Create storage reference for the image
-        const imageStorageRef = storageRef(storage, `chat-images/${Date.now()}_${file.name}`);
+            if (!window.isAdmin) return;
+            
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image too large! Maximum size is 5MB.');
+                return;
+            }
+            
+            try {
+                // Create storage reference for the image
+                const imageStorageRef = storageRef(storage, `chat-images/${Date.now()}_${file.name}`);
+                
+                // Upload the image
+                await uploadBytes(imageStorageRef, file);
+                
+                // Get the download URL
+                const imageUrl = await getDownloadURL(imageStorageRef);
+                
+                // Save message with image URL to database
+                const messagesRef = ref(database, 'chatMessages');
+                await push(messagesRef, {
+                    username: 'SOURCEENGINE',
+                    imageUrl: imageUrl,
+                    timestamp: Date.now(),
+                    isAdmin: true,
+                    userId: window.userId
+                });
+                
+                console.log('Image uploaded successfully');
+                event.target.value = ''; // Reset file input
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                alert('Failed to upload image: ' + error.message);
+            }
+        };
         
-        // Upload the image
-        await uploadBytes(imageStorageRef, file);
-        
-        // Get the download URL
-        const imageUrl = await getDownloadURL(imageStorageRef);
-        
-        // Save message with image URL to database
-        const messagesRef = ref(database, 'chatMessages');
-        await push(messagesRef, {
-            username: 'SOURCEENGINE',
-            imageUrl: imageUrl,
-            timestamp: Date.now(),
-            isAdmin: true,
-            userId: window.userId
-        });
-        
-        console.log('Image uploaded successfully');
-        event.target.value = ''; // Reset file input
-    } catch (error) {
-        console.error('Error uploading image:', error);
-        alert('Failed to upload image: ' + error.message);
-    }
-};
+        // NEW: Delete all messages from a user
+        window.deleteAllUserMessages = async function(username) {
+            if (!window.isAdmin) return;
+            
+            if (!confirm(`Delete ALL messages from ${username}? This cannot be undone!`)) return;
+            
+            try {
+                const messagesRef = ref(database, 'chatMessages');
+                const snapshot = await get(messagesRef);
+                
+                if (snapshot.exists()) {
+                    const messages = snapshot.val();
+                    const deletePromises = [];
+                    
+                    // Find and delete all messages from this user
+                    Object.entries(messages).forEach(([msgId, msg]) => {
+                        if (msg.username === username) {
+                            const msgRef = ref(database, `chatMessages/${msgId}`);
+                            deletePromises.push(remove(msgRef));
+                        }
+                    });
+                    
+                    await Promise.all(deletePromises);
+                    console.log(`Deleted all messages from ${username}`);
+                }
+            } catch (error) {
+                console.error('Error deleting user messages:', error);
+                alert('Failed to delete messages: ' + error.message);
+            }
+        };
         
         window.setupChatPage = function() {
             const chatMessagesRef = ref(database, 'chatMessages');
@@ -2342,8 +2393,14 @@
                         
                         const time = new Date(msg.timestamp).toLocaleTimeString();
                         const usernameClass = msg.isAdmin ? 'admin' : '';
-                        const deleteBtn = window.isAdmin ? 
-                            `<span class="chat-delete-btn" onclick="deleteChatMessage('${msgId}')">DELETE</span>` : '';
+                        
+                        // FIXED: Added "DELETE USER" button
+                        const deleteBtn = window.isAdmin ? `
+                            <div>
+                                <span class="chat-delete-btn" onclick="deleteChatMessage('${msgId}')">DELETE</span>
+                                <span class="chat-delete-user-btn" onclick="deleteAllUserMessages('${msg.username.replace(/'/g, "\\'")}')">DELETE USER</span>
+                            </div>
+                        ` : '';
                         
                         let messageContent = '';
                         if (msg.imageUrl) {
