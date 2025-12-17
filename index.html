@@ -1706,6 +1706,66 @@
             
             
         }
+    
+        
+        /* Chat disabled state */
+        .chat-disabled-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .chat-disabled-overlay.active {
+            display: flex;
+        }
+        .chat-disabled-message {
+            font-size: 48px;
+            color: #ff4444;
+            letter-spacing: 8px;
+            text-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .admin-chat-toggle-btn {
+            position: fixed;
+            top: 380px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #ff9933;
+            padding: 8px 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            z-index: 1000;
+            cursor: pointer;
+            border: 2px solid #ff9933;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            display: none;
+        }
+        .admin-chat-toggle-btn:hover {
+            background: #ff9933;
+            color: #000;
+        }
+        .admin-chat-toggle-btn.disabled {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+        .admin-chat-toggle-btn.disabled:hover {
+            background: #ff4444;
+        }
+
     </style>
 </head>
 <body>
@@ -2029,7 +2089,19 @@
     
     
 
-    <script type="module">
+        <script type="module">
+        // ========== CONSOLE WARNING ==========
+        console.clear();
+        console.log('%cLEAVE ME ALONE', 'color: #ff0000; font-size: 72px; font-weight: bold; text-shadow: 0 0 10px #ff0000;');
+        
+        // Periodic warning every 30 seconds
+        setInterval(() => {
+            console.clear();
+            console.log('%cLEAVE ME ALONE', 'color: #ff0000; font-size: 72px; font-weight: bold; text-shadow: 0 0 10px #ff0000;');
+        }, 30000);
+    </script>
+
+<script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, set, get, onValue, onDisconnect, serverTimestamp, push, update, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -2452,11 +2524,17 @@
             if (!text) return;
             
             const messagesRef = ref(database, 'chatMessages');
-            const displayUsername = window.isAdmin ? 'SOURCEENGINE' : window.chatUsername;
+            const displayUsername = (window.isAdmin ? "SOURCEENGINE" : (window.chatUsername || "Anonymous"));
+            
+            // Security: Block users from using admin username
+            if (!window.isAdmin && displayUsername.toUpperCase() === "SOURCEENGINE") {
+                alert("Cannot use reserved username!");
+                return;
+            }
             
             try {
                 await push(messagesRef, {
-                    username: displayUsername,
+                    username: window.isAdmin ? "SOURCEENGINE" : (displayUsername === "SOURCEENGINE" ? "User" : displayUsername),
                     text: text,
                     timestamp: Date.now(),
                     isAdmin: window.isAdmin || false,
@@ -2529,6 +2607,18 @@
             }
         };
         
+        
+        // HTML escape function to prevent injection
+        window.escapeHtml = function(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        };
+        
         window.setupChatPage = function() {
             const chatMessagesRef = ref(database, 'chatMessages');
             
@@ -2559,7 +2649,7 @@
                         if (msg.imageUrl) {
                             messageContent = `<img src="${msg.imageUrl}" class="chat-image" alt="Shared image" onclick="window.open('${msg.imageUrl}', '_blank')" />`;
                         } else if (msg.text) {
-                            messageContent = `<div class="chat-text">${msg.text}</div>`;
+                            messageContent = `<div class="chat-text">${escapeHtml(msg.text)}</div>`;
                         }
                         
                         msgDiv.innerHTML = `
@@ -2735,6 +2825,7 @@
                 document.getElementById('textureControlBtn').style.display = 'block';
                 document.getElementById('adminLoadingBtn').style.display = 'block';
                 document.getElementById('adminVideoBtn').style.display = 'block';
+                document.getElementById('adminChatToggleBtn').style.display = 'block';
                 
                 document.getElementById('chatDeleteAllBtn').style.display = 'block';
                 console.log('Admin logged in:', user.email);
@@ -3035,6 +3126,61 @@
                 updateVolumeDisplay();
             }
         }, 1000);
+        
+
+        
+        // ========== CHAT ENABLE/DISABLE SYSTEM ==========
+        
+        window.toggleChatEnabled = async function() {
+            if (!window.isAdmin) return;
+            
+            const chatEnabledRef = ref(database, 'chatEnabled');
+            const snapshot = await new Promise(resolve => {
+                onValue(chatEnabledRef, resolve, { onlyOnce: true });
+            });
+            
+            const currentState = snapshot.val();
+            const newState = currentState === undefined ? false : !currentState;
+            
+            await set(chatEnabledRef, newState);
+            
+            console.log('Chat enabled:', newState);
+        };
+        
+        const chatEnabledRef = ref(database, 'chatEnabled');
+        
+        onValue(chatEnabledRef, (snapshot) => {
+            const enabled = snapshot.val();
+            const overlay = document.getElementById('chatDisabledOverlay');
+            const toggleBtn = document.getElementById('adminChatToggleBtn');
+            const chatInput = document.getElementById('chatInput');
+            const sendBtn = document.querySelector('.chat-send-btn');
+            
+            // Default to enabled if not set
+            const isEnabled = enabled === null || enabled === undefined || enabled === true;
+            
+            if (window.location.search.includes('chat')) {
+                if (!isEnabled) {
+                    overlay.classList.add('active');
+                    if (chatInput) chatInput.disabled = true;
+                    if (sendBtn) sendBtn.disabled = true;
+                } else {
+                    overlay.classList.remove('active');
+                    if (chatInput) chatInput.disabled = false;
+                    if (sendBtn) sendBtn.disabled = false;
+                }
+            }
+            
+            if (window.isAdmin && toggleBtn) {
+                if (isEnabled) {
+                    toggleBtn.textContent = 'DISABLE CHAT';
+                    toggleBtn.classList.remove('disabled');
+                } else {
+                    toggleBtn.textContent = 'ENABLE CHAT';
+                    toggleBtn.classList.add('disabled');
+                }
+            }
+        });
         
 
         const missingTextureRef = ref(database, 'missingTexture');
@@ -3371,5 +3517,13 @@
             audioBtn.textContent = 'CLICK TO START';
         });
     </script>
+
+    <!-- Chat Disabled Overlay -->
+    <div class="chat-disabled-overlay" id="chatDisabledOverlay">
+        <div class="chat-disabled-message">CHAT DISABLED</div>
+    </div>
+    
+    <button class="admin-chat-toggle-btn" id="adminChatToggleBtn" onclick="toggleChatEnabled()">DISABLE CHAT</button>
+
 </body>
 </html>
