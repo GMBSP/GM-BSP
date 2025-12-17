@@ -2624,8 +2624,7 @@
                         const time = new Date(msg.timestamp).toLocaleTimeString();
                         const usernameClass = msg.isAdmin ? 'admin' : '';
                         
-                        // Admin controls with "DELETE USER" button
-                        // Delete buttons now created safely with DOM methods
+                        // Delete buttons created safely with DOM methods
                         
                         let messageContent = '';
                         if (msg.imageUrl) {
@@ -2889,15 +2888,47 @@
                         const time = new Date(msg.timestamp).toLocaleTimeString();
                         
                         if (msg.deleted) {
-                            msgDiv.innerHTML = `<div class="message-content"><span class="timestamp">[${time}]</span><span style="color: #ff4444;">ERROR</span></div>`;
+                            const contentDiv = document.createElement('div');
+                            contentDiv.className = 'message-content';
+                            
+                            const timestampSpan = document.createElement('span');
+                            timestampSpan.className = 'timestamp';
+                            timestampSpan.textContent = `[${time}]`;
+                            
+                            const errorSpan = document.createElement('span');
+                            errorSpan.style.color = '#ff4444';
+                            errorSpan.textContent = 'ERROR';
+                            
+                            contentDiv.appendChild(timestampSpan);
+                            contentDiv.appendChild(errorSpan);
+                            msgDiv.appendChild(contentDiv);
                         } else {
-                            // Delete buttons now created safely with DOM methods
-                            msgDiv.innerHTML = `
-                                <div class="message-content">
-                                    <span class="timestamp">[${time}]</span><span class="username">${msg.username}:</span>${msg.text}
-                                </div>
-                                ${deleteBtn}
-                            `;
+                            
+                            const contentDiv = document.createElement('div');
+                            contentDiv.className = 'message-content';
+                            
+                            const timestampSpan = document.createElement('span');
+                            timestampSpan.className = 'timestamp';
+                            timestampSpan.textContent = `[${time}]`;
+                            
+                            const usernameSpan = document.createElement('span');
+                            usernameSpan.className = 'username';
+                            usernameSpan.textContent = msg.username + ':';
+                            
+                            const textNode = document.createTextNode(msg.text);
+                            
+                            contentDiv.appendChild(timestampSpan);
+                            contentDiv.appendChild(usernameSpan);
+                            contentDiv.appendChild(textNode);
+                            msgDiv.appendChild(contentDiv);
+                            
+                            if (window.isAdmin) {
+                                const deleteBtn = document.createElement('span');
+                                deleteBtn.className = 'delete-btn';
+                                deleteBtn.textContent = '✕';
+                                deleteBtn.onclick = () => deleteMessage(msgId);
+                                msgDiv.appendChild(deleteBtn);
+                            }
                         }
                         messagesDiv.appendChild(msgDiv);
                     });
