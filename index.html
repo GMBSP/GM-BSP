@@ -1784,6 +1784,21 @@
             user-select: none;
         }
 
+    
+        .chat-close-btn {
+            background: none;
+            border: none;
+            color: #ff9933;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 10px;
+            transition: all 0.2s;
+        }
+        .chat-close-btn:hover {
+            color: #ff4444;
+            transform: scale(1.2);
+        }
+
     </style>
 </head>
 <body>
@@ -1911,6 +1926,7 @@
     <div class="chat-page" id="chatPage">
         <div class="chat-header">
             <div class="chat-title">PUBLIC CHAT</div>
+            <button class="chat-close-btn" onclick="closeChatPage()">✕</button>
         </div>
         <div class="chat-messages-container" id="chatMessagesContainer"></div>
         <div class="chat-input-container">
@@ -2179,7 +2195,14 @@
                 lastSoundTimestamp = trigger.timestamp;
                 const player = document.getElementById('globalSoundPlayer');
                 player.src = trigger.soundFile;
-                player.play().catch(e => console.log('Sound play failed:', e));
+                // Check global mute state
+            if (window.globalAudioMuted) {
+                player.muted = true;
+            } else {
+                player.muted = false;
+            }
+            
+            player.play().catch(e => console.log('Sound play failed:', e));
             }
         });
         
@@ -2637,6 +2660,12 @@
                 .replace(/'/g, "&#039;");
         };
         
+
+        window.closeChatPage = function() {
+            document.getElementById('chatPage').classList.remove('active');
+            window.history.pushState({}, '', window.location.pathname);
+        };
+        
         window.setupChatPage = function() {
             const chatMessagesRef = ref(database, 'chatMessages');
             
@@ -3015,6 +3044,8 @@
         
         // ========== ENHANCED SOUND CONTROL SYSTEM ==========
         
+        window.globalAudioMuted = false;
+        
         window.soundControlState = {
             currentSound: null,
             currentLoop: 0,
@@ -3165,6 +3196,13 @@
                     }
                 }
             };
+            
+            // Check global mute state
+            if (window.globalAudioMuted) {
+                player.muted = true;
+            } else {
+                player.muted = false;
+            }
             
             player.play().catch(e => console.log('Sound play failed:', e));
             
