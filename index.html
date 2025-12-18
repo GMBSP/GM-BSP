@@ -1931,7 +1931,7 @@
         <div class="chat-messages-container" id="chatMessagesContainer"></div>
         <div class="chat-input-container">
             <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." maxlength="500" />
-            <button class="chat-send-btn" onclick="playButtonSound('blip.wav'); sendChatMessage();">SEND</button>
+            <button class="chat-send-btn" onclick="playButtonSound('message.wav'); sendChatMessage();">SEND</button>
             
             <button class="chat-delete-all-btn" id="chatDeleteAllBtn" onclick="deleteAllChatMessages()">DELETE ALL</button>
             
@@ -1939,10 +1939,10 @@
     </div>
     
     <button class="logout-btn" id="logoutBtn" onclick="logoutAdmin()">LOGOUT</button>
-    <button class="admin-vote-btn" id="adminVoteBtn" onclick="playButtonSound('button9.wav'); openAdminVotePanel();">VOTE CONTROL</button>
-    <button class="admin-sound-btn" id="adminSoundBtn" onclick="playButtonSound('blip.wav'); openAdminSoundPanel();">SOUND CONTROL</button>
+    <button class="admin-vote-btn" id="adminVoteBtn" onclick="playButtonSound('button2.wav'); openAdminVotePanel();">VOTE CONTROL</button>
+    <button class="admin-sound-btn" id="adminSoundBtn" onclick="playButtonSound('button3.wav'); openAdminSoundPanel();">SOUND CONTROL</button>
     <button class="texture-control-btn" id="textureControlBtn" onclick="toggleMissingTexture()">TOGGLE TEXTURE</button>
-    <button class="admin-loading-btn" id="adminLoadingBtn" onclick="playButtonSound('blip.wav'); openAdminLoadingPanel();">LOADING BAR</button>
+    <button class="admin-loading-btn" id="adminLoadingBtn" onclick="playButtonSound('preroll.wav'); openAdminLoadingPanel();">LOADING BAR</button>
     <button class="admin-video-btn" id="adminVideoBtn" onclick="toggleVideoControlHud()">VIDEO CONTROL</button>
     
     <div class="missing-texture-overlay" id="missingTextureOverlay"></div>
@@ -1974,7 +1974,7 @@
         <div class="vote-question" id="voteQuestion">Loading...</div>
         <div class="vote-buttons">
             <button onclick="playButtonSound('friend_join.wav'); submitVote('yes');" id="yesBtn">YES</button>
-            <button onclick="playButtonSound('warning.wav'); submitVote('no');" id="noBtn">NO</button>
+            <button onclick="playButtonSound('wpn_denyselect.wav'); submitVote('no');" id="noBtn">NO</button>
         </div>
         <div class="vote-results" id="voteResults" style="display: none;"></div>
         <div class="vote-status" id="voteStatus"></div>
@@ -1985,7 +1985,7 @@
         <textarea id="voteQuestionInput" placeholder="Enter vote question..."></textarea>
         <button onclick="startVote()">START VOTE</button>
         <button class="danger" onclick="endVote()">END VOTE</button>
-        <button onclick="playButtonSound('postroll.wav'); closeAdminVotePanel();">CLOSE</button>
+        <button onclick="playButtonSound('ui_click.wav'); closeAdminVotePanel();">CLOSE</button>
         <div class="vote-results" id="adminVoteResults" style="margin-top: 20px;"></div>
     </div>
     
@@ -2017,6 +2017,13 @@
             <option value="postroll.wav">Postroll</option>
             <option value="blip.wav">Blip</option>
             <option value="content_downloaded.wav">Content Downloaded</option>
+            <option value="button3.wav">Button 3</option>
+            <option value="button18.wav">Button 18</option>
+            <option value="button2.wav">Button 2</option>
+            <option value="preroll.wav">Preroll</option>
+            <option value="message.wav">Message</option>
+            <option value="ui_click.wav">UI Click</option>
+            <option value="wpn_denyselect.wav">Weapon Deny</option>
         </select>
         
         <!-- Sound Controls Grid -->
@@ -2049,7 +2056,7 @@
             <button class="stop-btn" onclick="stopSound()">■ STOP</button>
         </div>
         
-        <button class="close-btn" onclick="playButtonSound('postroll.wav'); closeAdminSoundPanel();">CLOSE</button>
+        <button class="close-btn" onclick="playButtonSound('ui_click.wav'); closeAdminSoundPanel();">CLOSE</button>
     </div>
     <div class="admin-loading-panel" id="adminLoadingPanel">
         <h2>LOADING BAR CONTROL</h2>
@@ -2074,7 +2081,7 @@
         <div class="total-display" id="totalTimeDisplay">Total: 10 seconds</div>
         <button onclick="startLoadingBar()">START LOADING BAR</button>
         <button onclick="stopLoadingBar()">STOP LOADING BAR</button>
-        <button onclick="playButtonSound('postroll.wav'); closeAdminLoadingPanel();">CLOSE</button>
+        <button onclick="playButtonSound('ui_click.wav'); closeAdminLoadingPanel();">CLOSE</button>
     </div>
     
         <audio id="buttonSoundPlayer"></audio>
@@ -3339,13 +3346,19 @@
                 }
             }
             
-            if (window.isAdmin && toggleBtn) {
+            // Update toggle button for everyone (shows current state)
+            if (toggleBtn) {
                 if (isEnabled) {
                     toggleBtn.textContent = 'DISABLE CHAT';
                     toggleBtn.classList.remove('disabled');
                 } else {
                     toggleBtn.textContent = 'ENABLE CHAT';
                     toggleBtn.classList.add('disabled');
+                }
+                
+                // Only show button for admin
+                if (window.isAdmin) {
+                    toggleBtn.style.display = 'block';
                 }
             }
         });
@@ -3698,4 +3711,4 @@
     <div class="elements-warning" aria-hidden="true">LEAVE ME ALONE</div>
 
 </body>
-</html>
+    </html>
