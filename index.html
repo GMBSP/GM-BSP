@@ -12,6 +12,7 @@
             box-sizing: border-box;
             font-family: 'Courier New', monospace;
         }
+        /*I SEE YOU*/
         body {
             width: 100vw;
             height: 100vh;
@@ -56,6 +57,7 @@
             text-transform: uppercase;
             color: #ff9933;
         }
+        
         .counter-number {
             font-size: 32px;
             font-weight: bold;
@@ -1820,8 +1822,7 @@
             <button onclick="confirmUsername()">CONFIRM</button>
             <div class="username-error" id="usernameError">ERROR: INVALID USERNAME</div>
         </div>
-    </div>
-    
+    </div>  
     <!-- Maps Page -->
     <div class="maps-page" id="mapsPage">
         <div class="maps-title">DOORS</div>
@@ -2573,8 +2574,8 @@
                 onValue(chatEnabledRef, resolve, { onlyOnce: true });
             });
             
-            const enabled = snapshot.val();
-            const isEnabled = enabled === null || enabled === undefined || enabled === true;
+            const enabledValue = snapshot.val();
+            const isEnabled = enabledValue === false ? false : true;
             
             if (!isEnabled) {
                 console.log('Chat is currently disabled');
@@ -3301,24 +3302,28 @@
             });
             
             const currentState = snapshot.val();
-            const newState = currentState === undefined ? false : !currentState;
+            // If undefined/null, treat as enabled (true), so toggle to disabled (false)
+            // If true, toggle to false
+            // If false, toggle to true
+            const newState = (currentState === false) ? true : false;
             
             await set(chatEnabledRef, newState);
             
-            console.log('Chat enabled:', newState);
+            console.log('Chat toggled to:', newState ? 'ENABLED' : 'DISABLED');
         };
         
         const chatEnabledRef = ref(database, 'chatEnabled');
         
         onValue(chatEnabledRef, (snapshot) => {
-            const enabled = snapshot.val();
+            const enabledValue = snapshot.val();
             const overlay = document.getElementById('chatDisabledOverlay');
             const toggleBtn = document.getElementById('adminChatToggleBtn');
             const chatInput = document.getElementById('chatInput');
             const sendBtn = document.querySelector('.chat-send-btn');
             
-            // Default to enabled if not set
-            const isEnabled = enabled === null || enabled === undefined || enabled === true;
+            // Default to ENABLED if not set (true is enabled, false is disabled)
+            // If value is null/undefined/not set, default to true (enabled)
+            const isEnabled = enabledValue === false ? false : true;
             
             if (window.location.search.includes('chat')) {
                 if (!isEnabled) {
@@ -3711,4 +3716,4 @@
     <div class="elements-warning" aria-hidden="true">LEAVE ME ALONE</div>
 
 </body>
-    </html>
+</html>
