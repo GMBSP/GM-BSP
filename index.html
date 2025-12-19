@@ -1799,6 +1799,64 @@
             transform: scale(1.2);
         }
 
+    
+        /* Username Modal */
+        .username-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 4000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .username-modal.active {
+            display: flex;
+        }
+        .username-modal-content {
+            background: rgba(20, 20, 20, 0.98);
+            border: 3px solid #ff9933;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 153, 51, 0.5);
+        }
+        .username-modal-content h2 {
+            color: #ff9933;
+            font-size: 24px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        .username-modal-content input {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ffcc66;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .username-modal-content button {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff9933;
+            color: #ff9933;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+        }
+        .username-modal-content button:hover {
+            background: #ff9933;
+            color: #000;
+        }
+
     </style>
 </head>
 <body>
@@ -1920,6 +1978,15 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    
+    <!-- Username Modal -->
+    <div class="username-modal" id="usernameModal">
+        <div class="username-modal-content">
+            <h2>ENTER USERNAME</h2>
+            <input type="text" id="usernameInput" placeholder="Your username..." maxlength="20" />
+            <button onclick="confirmUsername()">CONFIRM</button>
         </div>
     </div>
     
