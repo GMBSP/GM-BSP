@@ -5,215 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Not Archived - The GM Tower Forums</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Verdana, Arial, sans-serif;
-            background: #e8e8e8;
-            color: #333;
-            font-size: 12px;
-            line-height: 1.5;
-        }
-
-        /* Header */
-        .header {
-            background: #2c5aa0;
-            border-bottom: 4px solid #1a3d6b;
-            padding: 20px 0;
-        }
-
-        .header-content {
-            max-width: 980px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .logo-img {
-            height: 60px;
-            width: auto;
-        }
-
-        /* Navigation bar - MOBILE ONLY */
-        .navbar {
-            background: #1a3d6b;
-            border-bottom: 2px solid #0d2744;
-            display: none;
-        }
-
-        .nav-content {
-            max-width: 980px;
-            margin: 0 auto;
-            padding: 0;
-        }
-
-        .nav-links {
-            list-style: none;
-            display: flex;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-links li {
-            border-right: 1px solid #0d2744;
-        }
-
-        .nav-links li:first-child {
-            border-left: 1px solid #0d2744;
-        }
-
-        .nav-links a {
-            display: block;
-            padding: 10px 20px;
-            color: #fff;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 11px;
-            text-transform: uppercase;
-        }
-
-        .nav-links a:hover {
-            background: #2c5aa0;
-        }
-
-        /* Main Container */
-        .container {
-            max-width: 980px;
-            margin: 20px auto;
-            padding: 0 10px;
-            min-height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .message-box {
-            background: #fff;
-            border: 1px solid #ccc;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .message-box h2 {
-            color: #1a3d6b;
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-
-        .message-box p {
-            color: #666;
-            font-size: 13px;
-            line-height: 1.8;
-            margin-bottom: 15px;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 8px 15px;
-            background: #2c5aa0;
-            color: #fff;
-            text-decoration: none;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .back-link:hover {
-            background: #1a3d6b;
-        }
-
-        /* Footer */
-        footer {
-            background: #1a3d6b;
-            color: #fff;
-            padding: 15px 0;
-            margin-top: 20px;
-            border-top: 4px solid #0d2744;
-        }
-
-        .footer-content {
-            max-width: 980px;
-            margin: 0 auto;
-            padding: 0 15px;
-            font-size: 11px;
-            text-align: center;
-        }
-
-        .footer-links {
-            margin: 10px 0;
-        }
-
-        .footer-links a {
-            color: #8db3e2;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
-
-        /* Mobile Only */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Verdana, Arial, sans-serif; background: #e8e8e8; color: #333; font-size: 12px; line-height: 1.5; }
+        .header { background: #2c5aa0; border-bottom: 4px solid #1a3d6b; padding: 20px 0; }
+        .header-content { max-width: 980px; margin: 0 auto; padding: 0 15px; }
+        .logo-img { height: 60px; width: auto; }
+        .navbar { background: #1a3d6b; border-bottom: 2px solid #0d2744; display: none; }
+        .nav-content { max-width: 980px; margin: 0 auto; padding: 0; }
+        .nav-links { list-style: none; display: flex; margin: 0; padding: 0; }
+        .nav-links li { border-right: 1px solid #0d2744; }
+        .nav-links li:first-child { border-left: 1px solid #0d2744; }
+        .nav-links a { display: block; padding: 10px 20px; color: #fff; text-decoration: none; font-weight: bold; font-size: 11px; text-transform: uppercase; }
+        .nav-links a:hover { background: #2c5aa0; }
+        .container { max-width: 980px; margin: 20px auto; padding: 0 10px; min-height: 400px; display: flex; align-items: center; justify-content: center; }
+        .message-box { background: #fff; border: 1px solid #ccc; padding: 40px; text-align: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
+        .message-box h2 { color: #1a3d6b; font-size: 18px; margin-bottom: 20px; }
+        .message-box p { color: #666; font-size: 13px; line-height: 1.8; margin-bottom: 15px; }
+        .back-link { display: inline-block; margin-top: 15px; padding: 8px 15px; background: #2c5aa0; color: #fff; text-decoration: none; font-size: 11px; font-weight: bold; }
+        .back-link:hover { background: #1a3d6b; }
+        footer { background: #1a3d6b; color: #fff; padding: 15px 0; margin-top: 20px; border-top: 4px solid #0d2744; }
+        .footer-content { max-width: 980px; margin: 0 auto; padding: 0 15px; font-size: 11px; text-align: center; }
+        .footer-links { margin: 10px 0; }
+        .footer-links a { color: #8db3e2; text-decoration: none; margin: 0 10px; }
+        .footer-links a:hover { text-decoration: underline; }
         @media (max-width: 768px) {
-            .navbar {
-                display: block !important;
-            }
-
-            .nav-links {
-                flex-wrap: wrap;
-            }
-
-            .message-box {
-                padding: 30px 20px;
-            }
+            .navbar { display: block !important; }
+            .nav-links { flex-wrap: wrap; }
+            .message-box { padding: 30px 20px; }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
     <div class="header">
         <div class="header-content">
-            <img src="TheGMTowerLogo.png" alt="The GM Tower" class="logo-img">
+            <a href="/"><img src="/TheGMTowerLogo.png" alt="The GM Tower" class="logo-img"></a>
         </div>
     </div>
-
-    <!-- Navigation - MOBILE ONLY -->
     <div class="navbar">
         <div class="nav-content">
             <ul class="nav-links">
-                <li><a href="TGMT.html">Home</a></li>
-                <li><a href="forums.html">Forums</a></li>
-                <li><a href="TGMT.html#gamemodes">Gamemodes</a></li>
-                <li><a href="TGMT.html#server-info">Server Info</a></li>
-                <li><a href="about.html">About</a></li>
+                <li><a href="/">Home</a></li>
+                <li><a href="/forums">Forums</a></li>
+                <li><a href="/#gamemodes">Gamemodes</a></li>
+                <li><a href="/#server-info">Server Info</a></li>
+                <li><a href="/about">About</a></li>
             </ul>
         </div>
     </div>
-
-    <!-- Main Container -->
     <div class="container">
         <div class="message-box">
             <h2>Content Not Archived</h2>
             <p>Sorry this forum/post wasn't archived!</p>
             <p>This content may have been lost during the server migration.</p>
-            <a href="forums.html" class="back-link">← BACK TO FORUMS</a>
+            <a href="/forums" class="back-link">← BACK TO FORUMS</a>
         </div>
     </div>
-
-    <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-links">
-                <a href="TGMT.html">Home</a> | 
-                <a href="forums.html">Forums</a> | 
+                <a href="/">Home</a> | 
+                <a href="/forums">Forums</a> | 
                 <a href="https://discord.gg/udE8zN5Gx7" target="_blank">Discord</a> | 
                 <a href="https://steamcommunity.com/groups/TheGMTower" target="_blank">Steam Group</a>
             </div>
-            <p>&copy; 2015 The GM Tower Community</p>
+            <p>&copy; 2012-2016 The GM Tower Community</p>
+            <p style="font-size: 10px; color: #8db3e2; margin-top: 5px;">Server Offline - Archive Only</p>
         </div>
     </footer>
 </body>
