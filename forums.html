@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The GM Tower Forums</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Verdana, Arial, sans-serif;
+            background: #e8e8e8;
+            color: #333;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* Header */
+        .header {
+            background: #2c5aa0;
+            border-bottom: 4px solid #1a3d6b;
+            padding: 20px 0;
+        }
+
+        .header-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .logo-img {
+            height: 60px;
+            width: auto;
+        }
+
+        /* Navigation bar - MOBILE ONLY */
+        .navbar {
+            background: #1a3d6b;
+            border-bottom: 2px solid #0d2744;
+            display: none;
+        }
+
+        .nav-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            border-right: 1px solid #0d2744;
+        }
+
+        .nav-links li:first-child {
+            border-left: 1px solid #0d2744;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 10px 20px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .nav-links a:hover {
+            background: #2c5aa0;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 980px;
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+
+        .page-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a3d6b;
+            margin-bottom: 10px;
+            padding: 8px 10px;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .breadcrumb {
+            font-size: 11px;
+            padding: 5px 10px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb a {
+            color: #2c5aa0;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Forum Category */
+        .forum-category {
+            margin-bottom: 20px;
+        }
+
+        .category-header {
+            background: #2c5aa0;
+            color: #fff;
+            padding: 8px 10px;
+            font-weight: bold;
+            font-size: 12px;
+            border: 1px solid #1a3d6b;
+        }
+
+        .forum-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .forum-table th {
+            background: #e8e8e8;
+            padding: 8px;
+            text-align: left;
+            font-size: 11px;
+            border: 1px solid #ccc;
+            font-weight: bold;
+        }
+
+        .forum-table td {
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            vertical-align: top;
+        }
+
+        .forum-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .forum-icon {
+            width: 60px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .forum-info {
+            width: 60%;
+        }
+
+        .forum-title {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .forum-title a {
+            color: #1a3d6b;
+            text-decoration: none;
+        }
+
+        .forum-title a:hover {
+            color: #2c5aa0;
+            text-decoration: underline;
+        }
+
+        .forum-desc {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .forum-stats {
+            width: 15%;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .forum-lastpost {
+            width: 25%;
+            font-size: 11px;
+        }
+
+        .lastpost-info {
+            line-height: 1.6;
+        }
+
+        .username {
+            font-weight: bold;
+            color: #2c5aa0;
+            text-decoration: none;
+        }
+
+        .username:hover {
+            text-decoration: underline;
+        }
+
+        .timestamp {
+            color: #666;
+            font-size: 10px;
+        }
+
+        /* Special styling for General forum */
+        .forum-special {
+            background: #fffacd !important;
+        }
+
+        .forum-special .forum-icon {
+            color: #cc6600;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a3d6b;
+            color: #fff;
+            padding: 15px 0;
+            margin-top: 20px;
+            border-top: 4px solid #0d2744;
+        }
+
+        .footer-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 15px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .footer-links {
+            margin: 10px 0;
+        }
+
+        .footer-links a {
+            color: #8db3e2;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                display: block !important;
+            }
+
+            .forum-stats, .forum-lastpost {
+                display: none;
+            }
+
+            .forum-info {
+                width: 100%;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <img src="TheGMTowerLogo.png" alt="The GM Tower" class="logo-img">
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navbar">
+        <div class="nav-content">
+            <ul class="nav-links">
+                <li><a href="TGMT.html">Home</a></li>
+                <li><a href="forums.html">Forums</a></li>
+                <li><a href="TGMT.html#gamemodes">Gamemodes</a></li>
+                <li><a href="TGMT.html#server-info">Server Info</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="page-title">The GM Tower Forums</div>
+        
+        <div class="breadcrumb">
+            <a href="TGMT.html">The GM Tower</a> &raquo; Forums
+        </div>
+
+        <!-- General Discussion Category -->
+        <div class="forum-category">
+            <div class="category-header">General Discussion</div>
+            <table class="forum-table">
+                <tr>
+                    <th style="width: 60px;"></th>
+                    <th>Forum</th>
+                    <th style="width: 15%; text-align: center;">Topics / Posts</th>
+                    <th style="width: 25%;">Last Post</th>
+                </tr>
+                <tr>
+                    <td class="forum-icon">[ANNOUNCE]</td>
+                    <td class="forum-info">
+                        <div class="forum-title"><a href="not-archived.html">Announcements</a></div>
+                        <div class="forum-desc">Server news and important updates</div>
+                    </td>
+                    <td class="forum-stats">
+                        <strong>87</strong> Topics<br>
+                        <strong>2,341</strong> Posts
+                    </td>
+                    <td class="forum-lastpost">
+                        <div class="lastpost-info">
+                            <a href="not-archived.html">Server Update - New Maps!</a><br>
+                            by <a href="#" class="username">MikeGM</a><br>
+                            <span class="timestamp">Feb 13, 2016 5:12 PM</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Gamemode Discussion Category -->
+        <div class="forum-category">
+            <div class="category-header">Gamemode Discussion</div>
+            <table class="forum-table">
+                <tr>
+                    <th style="width: 60px;"></th>
+                    <th>Forum</th>
+                    <th style="width: 15%; text-align: center;">Topics / Posts</th>
+                    <th style="width: 25%;">Last Post</th>
+                </tr>
+                <tr>
+                    <td class="forum-icon">[SANDBOX]</td>
+                    <td class="forum-info">
+                        <div class="forum-title"><a href="sandbox-builds.html">Sandbox</a></div>
+                        <div class="forum-desc">Share your builds and discuss sandbox gameplay</div>
+                    </td>
+                    <td class="forum-stats">
+                        <strong>892</strong> Topics<br>
+                        <strong>9,234</strong> Posts
+                    </td>
+                    <td class="forum-lastpost">
+                        <div class="lastpost-info">
+                            <a href="sandbox-builds.html">My latest contraption!</a><br>
+                            by <a href="#" class="username">VoidWalker85</a><br>
+                            <span class="timestamp">Jan 25, 2016 11:23 AM</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="forum-icon">[SANDBOX]</td>
+                    <td class="forum-info">
+                        <div class="forum-title"><a href="not-archived.html">Best build techniques?</a></div>
+                        <div class="forum-desc"></div>
+                    </td>
+                    <td class="forum-stats">
+                        <strong>234</strong> Replies
+                    </td>
+                    <td class="forum-lastpost">
+                        <div class="lastpost-info">
+                            by <a href="#" class="username">TerraByte</a><br>
+                            <span class="timestamp">Jan 15, 2016 3:45 PM</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="forum-icon">[SANDBOX]</td>
+                    <td class="forum-info">
+                        <div class="forum-title"><a href="not-archived.html">Physics gun tips and tricks</a></div>
+                        <div class="forum-desc"></div>
+                    </td>
+                    <td class="forum-stats">
+                        <strong>156</strong> Replies
+                    </td>
+                    <td class="forum-lastpost">
+                        <div class="lastpost-info">
+                            by <a href="#" class="username">QuantumLeap</a><br>
+                            <span class="timestamp">Dec 28, 2015 8:20 PM</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="forum-icon">[TTT]</td>
+                    <td class="forum-info">
+                        <div class="forum-title"><a href="ttt-strategies.html">TTT Discussion</a></div>
+                        <div class="forum-desc">Trouble in Terrorist Town strategies</div>
+                    </td>
+                    <td class="forum-stats">
+                        <strong>567</strong> Topics<br>
+                        <strong>7,123</strong> Posts
+                    </td>
+                    <td class="forum-lastpost">
+                        <div class="lastpost-info">
+                            <a href="ttt-strategies.html">Best traitor plays?</a><br>
+                            by <a href="#" class="username">CrimsonTrace</a><br>
+                            <span class="timestamp">Jan 20, 2016 9:45 AM</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="forum-icon">[TTT]</td>
+                    <td class="forum-info">
+                        <div class="forum-title"><a href="not-archived.html">How to spot traitors?</a></div>
+                        <div class="forum-desc"></div>
+                    </td>
+                    <td class="forum-stats">
+                        <strong>423</strong> Replies
+                    </td>
+                    <td class="forum-lastpost">
+                        <div class="lastpost-info">
+                            by <a href="#" class="username">PhaseShift_</a><br>
+                            <span class="timestamp">Jan 12, 2016 2:15 PM</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="forum-icon">[TTT]</td>
+                    <td class="forum-info">
+                        <div class="forum-title"><a href="not-archived.html">Detective weapon tier list</a></div>
+                        <div class="forum-desc"></div>
+                    </td>
+                    <td class="forum-stats">
+                        <strong>189</strong> Replies
+                    </td>
+                    <td class="forum-lastpost">
+                        <div class="lastpost-info">
+                            by <a href="#" class="username">NullPointer404</a><br>
+                            <span class="timestamp">Dec 22, 2015 5:30 PM</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="forum-icon">[ZS]</td>
+                    <td class="forum-info">
+                        <div class="forum-title"><a href="not-archived.html">Zombie Survival</a></div>
+                        <div class="forum-desc">Survival tips and gamemode-related discussion</div>
+                    </td>
+                    <td class="forum-stats">
+                        <strong>423</strong> Topics<br>
+                        <strong>5,892</strong> Posts
+                    </td>
+                    <td class="forum-lastpost">
+                        <div class="lastpost-info">
+                            <a href="not-archived.html">Best barricade spots?</a><br>
+                            by <a href="#" class="username">ReactorCore</a><br>
+                            <span class="timestamp">Jan 18, 2016 10:20 PM</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="forum-icon">[ZS]</td>
+                    <td class="forum-info">
+                        <div class="forum-title"><a href="not-archived.html">Weapon loadout strategies</a></div>
+                        <div class="forum-desc"></div>
+                    </td>
+                    <td class="forum-stats">
+                        <strong>312</strong> Replies
+                    </td>
+                    <td class="forum-lastpost">
+                        <div class="lastpost-info">
+                            by <a href="#" class="username">GhostProtocol</a><br>
+                            <span class="timestamp">Jan 6, 2016 4:55 PM</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="forum-icon">[ZS]</td>
+                    <td class="forum-info">
+                        <div class="forum-title"><a href="not-archived.html">Best maps for survival?</a></div>
+                        <div class="forum-desc"></div>
+                    </td>
+                    <td class="forum-stats">
+                        <strong>267</strong> Replies
+                    </td>
+                    <td class="forum-lastpost">
+                        <div class="lastpost-info">
+                            by <a href="#" class="username">WarpDrive88</a><br>
+                            <span class="timestamp">Dec 30, 2015 11:40 AM</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Community & Discovery Category -->
+        <div class="forum-category">
+            <div class="category-header">Community & Discovery</div>
+            <table class="forum-table">
+                <tr>
+                    <th style="width: 60px;"></th>
+                    <th>Forum</th>
+                    <th style="width: 15%; text-align: center;">Topics / Posts</th>
+                    <th style="width: 25%;">Last Post</th>
+                </tr>
+                <tr class="forum-special">
+                    <td class="forum-icon">[GENERAL]</td>
+                    <td class="forum-info">
+                        <div class="forum-title"><a href="general-forum.html">General</a></div>
+                        <div class="forum-desc">Talk normal nonsense with other people from the server!</div>
+                    </td>
+                    <td class="forum-stats">
+                        <strong>156</strong> Topics<br>
+                        <strong>2,847</strong> Posts
+                    </td>
+                    <td class="forum-lastpost">
+                        <div class="lastpost-info">
+                            <a href="general-forum.html">URGENT: Weird door appeared??</a><br>
+                            by <a href="#" class="username">NeonPhantom</a><br>
+                            <span class="timestamp">Feb 14, 2016 4:23 PM</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="forum-icon">[MEDIA]</td>
+                    <td class="forum-info">
+                        <div class="forum-title"><a href="not-archived.html">Screenshots & Videos</a></div>
+                        <div class="forum-desc">Share your best moments and creations</div>
+                    </td>
+                    <td class="forum-stats">
+                        <strong>734</strong> Topics<br>
+                        <strong>4,129</strong> Posts
+                    </td>
+                    <td class="forum-lastpost">
+                        <div class="lastpost-info">
+                            <a href="not-archived.html">Epic TTT round footage</a><br>
+                            by <a href="#" class="username">PixelNinja</a><br>
+                            <span class="timestamp">Jan 22, 2016 3:15 PM</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Support Category -->
+        <div class="forum-category">
+            <div class="category-header">Help & Support</div>
+            <table class="forum-table">
+                <tr>
+                    <th style="width: 60px;"></th>
+                    <th>Forum</th>
+                    <th style="width: 15%; text-align: center;">Topics / Posts</th>
+                    <th style="width: 25%;">Last Post</th>
+                </tr>
+                <tr>
+                    <td class="forum-icon">[HELP]</td>
+                    <td class="forum-info">
+                        <div class="forum-title"><a href="not-archived.html">Technical Support</a></div>
+                        <div class="forum-desc">Get help with connection issues and bugs</div>
+                    </td>
+                    <td class="forum-stats">
+                        <strong>312</strong> Topics<br>
+                        <strong>1,956</strong> Posts
+                    </td>
+                    <td class="forum-lastpost">
+                        <div class="lastpost-info">
+                            <a href="not-archived.html">Can't connect to server</a><br>
+                            by <a href="#" class="username">ByteCrusher</a><br>
+                            <span class="timestamp">Jan 16, 2016 12:05 PM</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="forum-icon">[APPEAL]</td>
+                    <td class="forum-info">
+                        <div class="forum-title"><a href="not-archived.html">Ban Appeals</a></div>
+                        <div class="forum-desc">Appeal your ban here</div>
+                    </td>
+                    <td class="forum-stats">
+                        <strong>89</strong> Topics<br>
+                        <strong>421</strong> Posts
+                    </td>
+                    <td class="forum-lastpost">
+                        <div class="lastpost-info">
+                            <a href="not-archived.html">Ban appeal - trolling</a><br>
+                            by <a href="#" class="username">ShadowGlitch</a><br>
+                            <span class="timestamp">Jan 10, 2016 7:43 PM</span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="TGMT.html">Home</a> | 
+                <a href="forums.html">Forums</a> | 
+                <a href="https://discord.gg/udE8zN5Gx7" target="_blank">Discord</a> | 
+                <a href="https://steamcommunity.com/groups/TheGMTower" target="_blank">Steam Group</a>
+            </div>
+            <p>&copy; 2012-2016 The GM Tower Community</p>
+            <p style="font-size: 10px; color: #8db3e2; margin-top: 5px;">Server Offline - Archive Only</p>
+        </div>
+    </footer>
+</body>
+</html>
