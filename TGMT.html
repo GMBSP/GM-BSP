@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The GM Tower - Garry's Mod Server</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Verdana, Arial, sans-serif;
+            background: #e8e8e8;
+            color: #333;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* Header */
+        .header {
+            background: #2c5aa0;
+            border-bottom: 4px solid #1a3d6b;
+            padding: 20px 0;
+        }
+
+        .header-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .logo-img {
+            height: 60px;
+            width: auto;
+        }
+
+        /* Navigation bar - MOBILE ONLY */
+        .navbar {
+            background: #1a3d6b;
+            border-bottom: 2px solid #0d2744;
+            display: none; /* Hidden by default on desktop */
+        }
+
+        .nav-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            border-right: 1px solid #0d2744;
+        }
+
+        .nav-links li:first-child {
+            border-left: 1px solid #0d2744;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 10px 20px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .nav-links a:hover {
+            background: #2c5aa0;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 980px;
+            margin: 20px auto;
+            background: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Sidebar */
+        .layout {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 180px;
+            background: #f5f5f5;
+            border-right: 1px solid #ddd;
+            padding: 15px 10px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #1a3d6b;
+            margin-bottom: 8px;
+            padding: 5px;
+            background: #ddd;
+            border: 1px solid #bbb;
+            text-transform: uppercase;
+        }
+
+        .sidebar-links {
+            list-style: none;
+        }
+
+        .sidebar-links li {
+            margin: 3px 0;
+        }
+
+        .sidebar-links a {
+            color: #2c5aa0;
+            text-decoration: none;
+            font-size: 11px;
+            padding: 2px 5px;
+            display: block;
+        }
+
+        .sidebar-links a:hover {
+            background: #e0e0e0;
+            text-decoration: underline;
+        }
+
+        /* Main Content */
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a3d6b;
+            margin-bottom: 5px;
+            border-bottom: 2px solid #2c5aa0;
+            padding-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .content-section {
+            margin: 20px 0;
+        }
+
+        .content-section h2 {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1a3d6b;
+            margin: 15px 0 10px 0;
+            padding: 5px;
+            background: #f0f0f0;
+            border-left: 4px solid #2c5aa0;
+        }
+
+        .content-section h3 {
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
+            margin: 12px 0 8px 0;
+        }
+
+        .content-section p {
+            margin: 8px 0;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #ffffcc;
+            border: 2px solid #cc9900;
+            padding: 10px;
+            margin: 15px 0;
+        }
+
+        .info-box-title {
+            font-weight: bold;
+            color: #cc6600;
+            margin-bottom: 8px;
+        }
+
+        /* Gamemode Table */
+        .gamemode-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .gamemode-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            vertical-align: top;
+        }
+
+        .gamemode-table .gamemode-header {
+            background: #2c5aa0;
+            color: #fff;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        .gamemode-table .featured {
+            background: #fff8dc;
+        }
+
+        .featured-badge {
+            background: #cc6600;
+            color: #fff;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .gamemode-table ul {
+            margin: 8px 0 0 15px;
+            padding: 0;
+        }
+
+        .gamemode-table li {
+            margin: 4px 0;
+            font-size: 11px;
+        }
+
+        /* Server Info Table */
+        .server-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .server-info-table th {
+            background: #2c5aa0;
+            color: #fff;
+            padding: 8px;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #1a3d6b;
+        }
+
+        .server-info-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            background: #fff;
+        }
+
+        .server-info-table tr:nth-child(even) td {
+            background: #f9f9f9;
+        }
+
+        /* Instructions */
+        ol {
+            margin: 10px 0 10px 25px;
+            padding: 0;
+        }
+
+        ol li {
+            margin: 6px 0;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a3d6b;
+            color: #fff;
+            padding: 15px 0;
+            margin-top: 20px;
+            border-top: 4px solid #0d2744;
+        }
+
+        .footer-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 15px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .footer-links {
+            margin: 10px 0;
+        }
+
+        .footer-links a {
+            color: #8db3e2;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                display: block !important; /* Show on mobile */
+            }
+
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+            }
+
+            .container {
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <img src="TheGMTowerLogo.png" alt="The GM Tower" class="logo-img">
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navbar">
+        <div class="nav-content">
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="forums.html">Forums</a></li>
+                <li><a href="#gamemodes">Gamemodes</a></li>
+                <li><a href="#server-info">Server Info</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="layout">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Navigation</div>
+                    <ul class="sidebar-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="forums.html">Forums</a></li>
+                        <li><a href="#gamemodes">Gamemodes</a></li>
+                        <li><a href="#server-info">Server Info</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Community</div>
+                    <ul class="sidebar-links">
+                        <li><a href="https://discord.gg/udE8zN5Gx7" target="_blank">Discord</a></li>
+                        <li><a href="https://steamcommunity.com/groups/TheGMTower" target="_blank">Steam Group</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="content" id="home">
+                <h1 class="page-title">Welcome to The GM Tower</h1>
+                <p class="subtitle">Garry's Mod Community Server - Established 2015</p>
+
+                <div class="info-box">
+                    <div class="info-box-title">Server Status: ONLINE</div>
+                    <p><b>The GM Tower</b> is a Garry's Mod community server featuring multiple gamemodes including Sandbox, Trouble in Terrorist Town (TTT), and Zombie Survival. Join our community and experience the best of GMod!</p>
+                </div>
+
+                <div class="content-section" id="gamemodes">
+                    <h2>Available Gamemodes</h2>
+                    
+                    <table class="gamemode-table">
+                        <tr class="featured">
+                            <td>
+                                <div class="featured-badge">★ MAIN GAMEMODE</div>
+                                <h3>Sandbox</h3>
+                                <p>The classic Garry's Mod experience. Build anything you can imagine with access to all props, tools, and weapons. No rules, no limits - just pure creativity.</p>
+                                <ul>
+                                    <li>Unlimited props and tools</li>
+                                    <li>Physics gun and tool gun</li>
+                                    <li>Spawn NPCs and vehicles</li>
+                                    <li>Save and share your creations</li>
+                                    <li>Workshop content support</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="gamemode-header">Trouble in Terrorist Town</div>
+                                <p>A social deduction gamemode where innocent players must identify and eliminate traitors among them before it's too late.</p>
+                                <ul>
+                                    <li>Detective role with special equipment</li>
+                                    <li>Traitor tools and weapons</li>
+                                    <li>Custom maps and roles</li>
+                                    <li>Voice chat for communication</li>
+                                    <li>Karma system for fair play</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="gamemode-header">Zombie Survival</div>
+                                <p>Survive waves of zombies with other players. Build barricades, work together, and fight for survival against increasingly difficult undead hordes.</p>
+                                <ul>
+                                    <li>Wave-based survival gameplay</li>
+                                    <li>Barricade building system</li>
+                                    <li>Multiple zombie types</li>
+                                    <li>Arsenal of weapons</li>
+                                    <li>Team-based cooperation</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="content-section" id="server-info">
+                    <h2>Server Information</h2>
+
+                    <table class="server-info-table">
+                        <tr>
+                            <th>Property</th>
+                            <th>Details</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Server Name</strong></td>
+                            <td>The GM Tower</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Game</strong></td>
+                            <td>Garry's Mod</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Main Gamemode</strong></td>
+                            <td>Sandbox</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Additional Gamemodes</strong></td>
+                            <td>TTT, Zombie Survival</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Max Players</strong></td>
+                            <td>32</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Region</strong></td>
+                            <td>North America</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Workshop</strong></td>
+                            <td>Auto-download enabled</td>
+                        </tr>
+                    </table>
+
+                    <h3>How to Connect</h3>
+                    <p>To join The GM Tower server:</p>
+                    <ol>
+                        <li>Launch Garry's Mod</li>
+                        <li>Open the server browser (View &gt; Servers)</li>
+                        <li>Search for "The GM Tower" in the Legacy Browser</li>
+                        <li>Double-click to connect or add to favorites</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#home">Home</a> | 
+                <a href="forums.html">Forums</a> | 
+                <a href="https://discord.gg/udE8zN5Gx7" target="_blank">Discord</a> | 
+                <a href="https://steamcommunity.com/groups/TheGMTower" target="_blank">Steam Group</a>
+            </div>
+            <p>&copy; 2015 The GM Tower Community</p>
+        </div>
+    </footer>
+</body>
+</html>
