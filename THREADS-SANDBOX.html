@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sandbox - The GM Tower Forums</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Verdana, Arial, sans-serif; background: #e8e8e8; color: #333; font-size: 12px; line-height: 1.5; }
+        .header { background: #2c5aa0; border-bottom: 4px solid #1a3d6b; padding: 20px 0; }
+        .header-content { max-width: 980px; margin: 0 auto; padding: 0 15px; }
+        .logo-img { height: 60px; width: auto; }
+        .navbar { background: #1a3d6b; border-bottom: 2px solid #0d2744; display: none; }
+        .nav-content { max-width: 980px; margin: 0 auto; padding: 0; }
+        .nav-links { list-style: none; display: flex; margin: 0; padding: 0; }
+        .nav-links li { border-right: 1px solid #0d2744; }
+        .nav-links li:first-child { border-left: 1px solid #0d2744; }
+        .nav-links a { display: block; padding: 10px 20px; color: #fff; text-decoration: none; font-weight: bold; font-size: 11px; text-transform: uppercase; }
+        .nav-links a:hover { background: #2c5aa0; }
+        .container { max-width: 980px; margin: 20px auto; padding: 0 10px; }
+        .page-title { font-size: 16px; font-weight: bold; color: #1a3d6b; margin-bottom: 10px; padding: 8px 10px; background: #fff; border: 1px solid #ccc; }
+        .breadcrumb { font-size: 11px; padding: 5px 10px; background: #f5f5f5; border: 1px solid #ddd; margin-bottom: 10px; }
+        .breadcrumb a { color: #2c5aa0; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .category-header { background: #2c5aa0; color: #fff; padding: 8px 10px; font-weight: bold; font-size: 12px; border: 1px solid #1a3d6b; margin-bottom: 10px; }
+        .forum-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #ccc; margin-bottom: 15px; }
+        .forum-table th { background: #e8e8e8; padding: 8px; text-align: left; font-size: 11px; border: 1px solid #ccc; font-weight: bold; }
+        .forum-table td { padding: 10px; border: 1px solid #e0e0e0; vertical-align: top; }
+        .forum-table tr:hover { background: #f9f9f9; }
+        .thread-icon { width: 40px; text-align: center; font-size: 18px; color: #666; }
+        .thread-info { width: 60%; }
+        .thread-title { font-weight: bold; font-size: 12px; margin-bottom: 4px; }
+        .thread-title a { color: #1a3d6b; text-decoration: none; }
+        .thread-title a:hover { color: #2c5aa0; text-decoration: underline; }
+        .thread-author { font-size: 11px; color: #666; }
+        .thread-stats { width: 15%; text-align: center; font-size: 11px; }
+        .thread-lastpost { width: 25%; font-size: 11px; }
+        .username { font-weight: bold; color: #2c5aa0; text-decoration: none; }
+        .username:hover { text-decoration: underline; }
+        .timestamp { color: #666; font-size: 10px; }
+        .pagination { background: #fff; border: 1px solid #ccc; padding: 10px; text-align: center; margin-top: 15px; }
+        .pagination a { display: inline-block; padding: 5px 10px; margin: 0 2px; background: #f5f5f5; border: 1px solid #ddd; color: #1a3d6b; text-decoration: none; font-size: 11px; }
+        .pagination a:hover { background: #2c5aa0; color: #fff; border-color: #1a3d6b; }
+        .pagination .active { background: #2c5aa0; color: #fff; border-color: #1a3d6b; font-weight: bold; }
+        .pagination .disabled { color: #999; cursor: not-allowed; }
+        .pagination .disabled:hover { background: #f5f5f5; color: #999; }
+        footer { background: #1a3d6b; color: #fff; padding: 15px 0; margin-top: 20px; border-top: 4px solid #0d2744; }
+        .footer-content { max-width: 980px; margin: 0 auto; padding: 0 15px; font-size: 11px; text-align: center; }
+        .footer-links { margin: 10px 0; }
+        .footer-links a { color: #8db3e2; text-decoration: none; margin: 0 10px; }
+        .footer-links a:hover { text-decoration: underline; }
+        @media (max-width: 768px) {
+            .navbar { display: block !important; }
+            .thread-stats, .thread-lastpost { display: none; }
+            .thread-info { width: 100%; }
+            .nav-links { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="/"><img src="/TheGMTowerLogo.png" alt="The GM Tower" class="logo-img"></a>
+        </div>
+    </div>
+    <div class="navbar">
+        <div class="nav-content">
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/forums">Forums</a></li>
+                <li><a href="/#gamemodes">Gamemodes</a></li>
+                <li><a href="/#server-info">Server Info</a></li>
+                <li><a href="/about">About</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <div class="page-title">Sandbox</div>
+        <div class="breadcrumb">
+            <a href="/">The GM Tower</a> &raquo; 
+            <a href="/forums">Forums</a> &raquo; 
+            Sandbox
+        </div>
+        
+        <div class="category-header">Sandbox Building & Creations - Page 1 of 3</div>
+        
+        <table class="forum-table">
+            <tr>
+                <th style="width: 40px;"></th>
+                <th>Thread / Thread Starter</th>
+                <th style="width: 15%; text-align: center;">Replies / Views</th>
+                <th style="width: 25%;">Last Post</th>
+            </tr>
+            <tr>
+                <td class="thread-icon"></td>
+                <td class="thread-info">
+                    <div class="thread-title"><a href="/sandbox-builds">My latest contraption!</a></div>
+                    <div class="thread-author">Started by <a href="#" class="username">PropKing</a>, Jan 25, 2016</div>
+                </td>
+                <td class="thread-stats"><strong>4</strong> Replies<br><strong>289</strong> Views</td>
+                <td class="thread-lastpost">
+                    by <a href="#" class="username">PropKing</a><br>
+                    <span class="timestamp">Jan 25, 2016 at 11:23 AM</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="thread-icon"></td>
+                <td class="thread-info">
+                    <div class="thread-title"><a href="/forums/sandbox/wire-help">help with wire mod?</a></div>
+                    <div class="thread-author">Started by <a href="#" class="username">Baby Wizard</a>, Jan 23, 2016</div>
+                </td>
+                <td class="thread-stats"><strong>67</strong> Replies<br><strong>1,234</strong> Views</td>
+                <td class="thread-lastpost">
+                    by <a href="#" class="username">Baby Wizard</a><br>
+                    <span class="timestamp">Jan 23, 2016 at 5:33 PM</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="thread-icon"></td>
+                <td class="thread-info">
+                    <div class="thread-title"><a href="/forums/sandbox/dupe-saves">anyone got good dupe saves?</a></div>
+                    <div class="thread-author">Started by <a href="#" class="username">DJ Taba Mix</a>, Jan 19, 2016</div>
+                </td>
+                <td class="thread-stats"><strong>112</strong> Replies<br><strong>1,892</strong> Views</td>
+                <td class="thread-lastpost">
+                    by <a href="#" class="username">DJ Taba Mix</a><br>
+                    <span class="timestamp">Jan 19, 2016 at 2:18 PM</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="thread-icon"></td>
+                <td class="thread-info">
+                    <div class="thread-title"><a href="/forums/sandbox/working-cars">how do u make working cars?</a></div>
+                    <div class="thread-author">Started by <a href="#" class="username">Tod Geist</a>, Jan 15, 2016</div>
+                </td>
+                <td class="thread-stats"><strong>93</strong> Replies<br><strong>1,567</strong> Views</td>
+                <td class="thread-lastpost">
+                    by <a href="#" class="username">Tod Geist</a><br>
+                    <span class="timestamp">Jan 15, 2016 at 7:42 AM</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="thread-icon"></td>
+                <td class="thread-info">
+                    <div class="thread-title"><a href="/forums/sandbox/prop-protection">best prop protection addon?</a></div>
+                    <div class="thread-author">Started by <a href="#" class="username">alhaXD225</a>, Jan 8, 2016</div>
+                </td>
+                <td class="thread-stats"><strong>45</strong> Replies<br><strong>678</strong> Views</td>
+                <td class="thread-lastpost">
+                    by <a href="#" class="username">alhaXD225</a><br>
+                    <span class="timestamp">Jan 8, 2016 at 11:05 PM</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="thread-icon"></td>
+                <td class="thread-info">
+                    <div class="thread-title"><a href="/not-archived">best way to learn advanced dupe?</a></div>
+                    <div class="thread-author">Started by <a href="#" class="username">Anjinhu</a>, Jan 5, 2016</div>
+                </td>
+                <td class="thread-stats"><strong>78</strong> Replies<br><strong>1,123</strong> Views</td>
+                <td class="thread-lastpost">
+                    by <a href="#" class="username">Saiko★Pie</a><br>
+                    <span class="timestamp">Jan 6, 2016 at 4:20 PM</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="thread-icon"></td>
+                <td class="thread-info">
+                    <div class="thread-title"><a href="/not-archived">share ur best builds here</a></div>
+                    <div class="thread-author">Started by <a href="#" class="username">RompeCucas</a>, Jan 3, 2016</div>
+                </td>
+                <td class="thread-stats"><strong>234</strong> Replies<br><strong>3,456</strong> Views</td>
+                <td class="thread-lastpost">
+                    by <a href="#" class="username">PropKing</a><br>
+                    <span class="timestamp">Jan 4, 2016 at 9:15 AM</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="thread-icon"></td>
+                <td class="thread-info">
+                    <div class="thread-title"><a href="/not-archived">thruster vs wheel collide, which is better?</a></div>
+                    <div class="thread-author">Started by <a href="#" class="username">German</a>, Dec 30, 2015</div>
+                </td>
+                <td class="thread-stats"><strong>167</strong> Replies<br><strong>2,234</strong> Views</td>
+                <td class="thread-lastpost">
+                    by <a href="#" class="username">Tod Geist</a><br>
+                    <span class="timestamp">Dec 31, 2015 at 6:45 PM</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="thread-icon"></td>
+                <td class="thread-info">
+                    <div class="thread-title"><a href="/not-archived">precision tool vs stacker</a></div>
+                    <div class="thread-author">Started by <a href="#" class="username">tupperware</a>, Dec 27, 2015</div>
+                </td>
+                <td class="thread-stats"><strong>89</strong> Replies<br><strong>1,345</strong> Views</td>
+                <td class="thread-lastpost">
+                    by <a href="#" class="username">alhaXD225</a><br>
+                    <span class="timestamp">Dec 28, 2015 at 3:30 PM</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="thread-icon"></td>
+                <td class="thread-info">
+                    <div class="thread-title"><a href="/not-archived">my house build took 6 hours</a></div>
+                    <div class="thread-author">Started by <a href="#" class="username">carvalhomartinswilliam26</a>, Dec 24, 2015</div>
+                </td>
+                <td class="thread-stats"><strong>56</strong> Replies<br><strong>892</strong> Views</td>
+                <td class="thread-lastpost">
+                    by <a href="#" class="username">Saiko★Pie</a><br>
+                    <span class="timestamp">Dec 25, 2015 at 11:20 AM</span>
+                </td>
+            </tr>
+        </table>
+        
+        <div class="pagination">
+            <a href="#" class="active">1</a>
+            <a href="/not-archived">2</a>
+            <a href="/not-archived">3</a>
+            <a href="/not-archived">Next →</a>
+        </div>
+        
+    </div>
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="/">Home</a> | 
+                <a href="/forums">Forums</a> | 
+                <a href="https://discord.gg/udE8zN5Gx7" target="_blank">Discord</a> | 
+                <a href="https://steamcommunity.com/groups/TheGMTower" target="_blank">Steam Group</a>
+            </div>
+            <p>&copy; 2012 The GM Tower Community</p>
+            <p style="font-size: 10px; color: #8db3e2; margin-top: 5px;">Server Offline - Archive Only</p>
+        </div>
+    </footer>
+</body>
+</html>
