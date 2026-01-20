@@ -280,12 +280,36 @@
             margin: 6px 0;
         }
 
+        /* Secret Door Link */
+        .secret-door {
+            text-align: center;
+            padding: 30px 0;
+            background: #f5f5f5;
+            border-top: 1px solid #ddd;
+        }
+
+        .secret-door a {
+            display: inline-block;
+            transition: opacity 0.3s ease;
+        }
+
+        .secret-door a:hover {
+            opacity: 0.7;
+        }
+
+        .secret-door img {
+            max-width: 200px;
+            height: auto;
+            border: 2px solid #ccc;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
         /* Footer */
         footer {
             background: #1a3d6b;
             color: #fff;
             padding: 15px 0;
-            margin-top: 20px;
+            margin-top: 0;
             border-top: 4px solid #0d2744;
         }
 
@@ -488,6 +512,13 @@
                     </ol>
                 </div>
             </div>
+        </div>
+
+        <!-- Secret Door Link -->
+        <div class="secret-door">
+            <a href="sourceexplorer.html" title="Enter the Source...">
+                <img src="half-life-door.gif" alt="Door">
+            </a>
         </div>
     </div>
 
