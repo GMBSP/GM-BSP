@@ -13,17 +13,19 @@
 
         body {
             font-family: Verdana, Arial, sans-serif;
-            background: #f5f0e0;
+            background: linear-gradient(135deg, #2c1810 0%, #5c4033 50%, #8b6914 100%);
+            background-attachment: fixed;
             color: #333;
             font-size: 12px;
             line-height: 1.5;
         }
 
-        /* Header - TF2 Yellow/Orange theme */
+        /* Header - TF2 Brown to Yellow gradient */
         .header {
-            background: #d9a441;
-            border-bottom: 4px solid #b8842f;
+            background: linear-gradient(90deg, #5c4033 0%, #8b6914 50%, #d9a441 100%);
+            border-bottom: 4px solid #2c1810;
             padding: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
         .header-content {
@@ -35,15 +37,19 @@
         .logo-text {
             font-size: 36px;
             font-weight: bold;
-            color: #2c1810;
-            text-shadow: 2px 2px 0px #f4d77e;
+            background: linear-gradient(90deg, #ffe8a8 0%, #f4d77e 50%, #fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             font-family: 'Arial Black', sans-serif;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
         }
 
         /* Navigation bar - MOBILE ONLY */
         .navbar {
-            background: #b8842f;
-            border-bottom: 2px solid #9a6b24;
+            background: linear-gradient(90deg, #5c4033 0%, #8b6914 100%);
+            border-bottom: 2px solid #2c1810;
             display: none; /* Hidden by default on desktop */
         }
 
@@ -98,8 +104,8 @@
 
         .sidebar {
             width: 180px;
-            background: #fef9f0;
-            border-right: 1px solid #e0d0a0;
+            background: linear-gradient(180deg, #f9f3e8 0%, #f4e4b0 100%);
+            border-right: 1px solid #8b6914;
             padding: 15px 10px;
         }
 
@@ -110,12 +116,13 @@
         .sidebar-title {
             font-size: 11px;
             font-weight: bold;
-            color: #8b6914;
+            color: #2c1810;
             margin-bottom: 8px;
             padding: 5px;
-            background: #f4e4b0;
-            border: 1px solid #d9a441;
+            background: linear-gradient(90deg, #d9a441 0%, #f4d77e 100%);
+            border: 1px solid #8b6914;
             text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .sidebar-links {
@@ -148,9 +155,11 @@
         .page-title {
             font-size: 18px;
             font-weight: bold;
-            color: #8b6914;
+            color: #2c1810;
             margin-bottom: 5px;
-            border-bottom: 2px solid #d9a441;
+            border-bottom: 3px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(90deg, #5c4033, #d9a441) border-box;
             padding-bottom: 5px;
         }
 
@@ -168,11 +177,12 @@
         .content-section h2 {
             font-size: 14px;
             font-weight: bold;
-            color: #8b6914;
+            color: #fff;
             margin: 15px 0 10px 0;
             padding: 5px;
-            background: #fef9f0;
+            background: linear-gradient(90deg, #5c4033 0%, #8b6914 100%);
             border-left: 4px solid #d9a441;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .content-section h3 {
@@ -204,23 +214,29 @@
 
         /* Server IP Box */
         .server-ip-box {
-            background: #fff8e0;
-            border: 2px solid #d9a441;
+            background: linear-gradient(135deg, #f9f3e8 0%, #ffe8a8 100%);
+            border: 3px solid transparent;
+            background: linear-gradient(135deg, #f9f3e8, #ffe8a8) padding-box,
+                        linear-gradient(90deg, #5c4033, #d9a441) border-box;
             padding: 15px;
             margin: 15px 0;
             text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
         }
 
         .server-ip {
             font-family: 'Courier New', monospace;
             font-size: 18px;
             font-weight: bold;
-            color: #8b6914;
-            padding: 10px;
-            background: #fff;
-            border: 1px solid #d9a441;
+            color: #2c1810;
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #fff 0%, #ffe8a8 100%);
+            border: 2px solid #8b6914;
             display: inline-block;
             margin-top: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
         }
 
         /* Gamemode Table */
@@ -237,11 +253,12 @@
         }
 
         .gamemode-table .gamemode-header {
-            background: #d9a441;
-            color: #2c1810;
+            background: linear-gradient(90deg, #5c4033 0%, #8b6914 100%);
+            color: #fff;
             font-weight: bold;
             font-size: 12px;
             padding: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .gamemode-table .featured {
@@ -276,12 +293,13 @@
         }
 
         .server-info-table th {
-            background: #d9a441;
-            color: #2c1810;
+            background: linear-gradient(90deg, #5c4033 0%, #8b6914 100%);
+            color: #fff;
             padding: 8px;
             text-align: left;
             font-weight: bold;
-            border: 1px solid #b8842f;
+            border: 1px solid #2c1810;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .server-info-table td {
@@ -304,37 +322,94 @@
             margin: 6px 0;
         }
 
-        /* Secret Door Link */
-        .secret-door {
+        /* Gallery Section */
+        .gallery-section {
+            margin: 20px 0;
+        }
+
+        .map-showcase {
+            margin: 20px 0;
             text-align: center;
-            padding: 30px 0;
-            background: #fef9f0;
-            border-top: 1px solid #e0d0a0;
         }
 
-        .secret-door a {
-            display: inline-block;
-            transition: opacity 0.3s ease;
-        }
-
-        .secret-door a:hover {
-            opacity: 0.7;
-        }
-
-        .secret-door img {
-            max-width: 120px;
+        .map-showcase img {
+            width: 100%;
+            max-width: 800px;
             height: auto;
-            border: 2px solid #d9a441;
-            box-shadow: 0 2px 8px rgba(217, 164, 65, 0.3);
+            border: 4px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(90deg, #5c4033, #d9a441) border-box;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            border-radius: 4px;
+        }
+
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .character-card {
+            background: linear-gradient(135deg, #f9f3e8 0%, #f4e4b0 100%);
+            border: 2px solid #8b6914;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        .character-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 8px 16px rgba(217, 164, 65, 0.5);
+            border-color: #d9a441;
+            background: linear-gradient(135deg, #fff 0%, #ffe8a8 100%);
+        }
+
+        .character-card img {
+            width: 100%;
+            height: auto;
+            max-width: 150px;
+            margin: 0 auto;
+            display: block;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+        }
+
+        .character-card h3 {
+            margin-top: 10px;
+            color: #2c1810;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .character-card.missing {
+            opacity: 0.6;
+            background: linear-gradient(135deg, #ddd 0%, #bbb 100%);
+        }
+
+        .character-card.missing h3 {
+            color: #666;
+        }
+
+        .character-card.missing::after {
+            content: "Coming Soon";
+            display: block;
+            font-size: 10px;
+            color: #999;
+            margin-top: 5px;
         }
 
         /* Footer */
         footer {
-            background: #b8842f;
+            background: linear-gradient(90deg, #2c1810 0%, #5c4033 100%);
             color: #fff;
             padding: 15px 0;
             margin-top: 0;
-            border-top: 4px solid #9a6b24;
+            border-top: 4px solid #d9a441;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.3);
         }
 
         .footer-content {
@@ -433,7 +508,7 @@
                 <div class="sidebar-section">
                     <div class="sidebar-title">Sister Servers</div>
                     <ul class="sidebar-links">
-                        <li><a href="index.html">The GM Tower</a></li>
+                        <li><a href="index">The GM Tower</a></li>
                     </ul>
                 </div>
             </div>
@@ -586,14 +661,56 @@
                         <li>Have fun and play fair!</li>
                     </ul>
                 </div>
-            </div>
-        </div>
 
-        <!-- Secret Door Link -->
-        <div class="secret-door">
-            <a href="sourceexplorer.html" title="Enter the Source...">
-                <img src="half-life-door.gif" alt="Door">
-            </a>
+                <div class="content-section gallery-section">
+                    <h2>Server Gallery</h2>
+                    
+                    <h3>Featured Map: 2Fort</h3>
+                    <div class="map-showcase">
+                        <img src="2fort.png" alt="2Fort - Classic CTF Map">
+                    </div>
+
+                    <h3 style="margin-top: 30px;">Meet the Classes</h3>
+                    <div class="character-grid">
+                        <div class="character-card missing">
+                            <img src="scout.png" alt="Scout" style="opacity: 0.3;">
+                            <h3>SCOUT</h3>
+                        </div>
+                        <div class="character-card">
+                            <img src="soldier.png" alt="Soldier">
+                            <h3>SOLDIER</h3>
+                        </div>
+                        <div class="character-card missing">
+                            <img src="pyro.png" alt="Pyro" style="opacity: 0.3;">
+                            <h3>PYRO</h3>
+                        </div>
+                        <div class="character-card">
+                            <img src="demo.png" alt="Demoman">
+                            <h3>DEMOMAN</h3>
+                        </div>
+                        <div class="character-card missing">
+                            <img src="heavy.png" alt="Heavy" style="opacity: 0.3;">
+                            <h3>HEAVY</h3>
+                        </div>
+                        <div class="character-card missing">
+                            <img src="engineer.png" alt="Engineer" style="opacity: 0.3;">
+                            <h3>ENGINEER</h3>
+                        </div>
+                        <div class="character-card missing">
+                            <img src="medic.png" alt="Medic" style="opacity: 0.3;">
+                            <h3>MEDIC</h3>
+                        </div>
+                        <div class="character-card">
+                            <img src="sniper.png" alt="Sniper">
+                            <h3>SNIPER</h3>
+                        </div>
+                        <div class="character-card missing">
+                            <img src="spy.png" alt="Spy" style="opacity: 0.3;">
+                            <h3>SPY</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -605,7 +722,7 @@
                 <a href="forums">Forums</a> | 
                 <a href="https://discord.gg/udE8zN5Gx7" target="_blank">Discord</a> | 
                 <a href="https://steamcommunity.com/groups/TheTF2Tower" target="_blank">Steam Group</a> |
-                <a href="index.html">The GM Tower</a>
+                <a href="index">The GM Tower</a>
             </div>
             <p>&copy; 2012 The Tower Community</p>
         </div>
