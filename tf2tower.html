@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The TF2 Tower - Team Fortress 2 Server</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Verdana, Arial, sans-serif;
+            background: #f5f0e0;
+            color: #333;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* Header - TF2 Yellow/Orange theme */
+        .header {
+            background: #d9a441;
+            border-bottom: 4px solid #b8842f;
+            padding: 20px 0;
+        }
+
+        .header-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .logo-text {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2c1810;
+            text-shadow: 2px 2px 0px #f4d77e;
+            font-family: 'Arial Black', sans-serif;
+        }
+
+        /* Navigation bar - MOBILE ONLY */
+        .navbar {
+            background: #b8842f;
+            border-bottom: 2px solid #9a6b24;
+            display: none; /* Hidden by default on desktop */
+        }
+
+        .nav-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            border-right: 1px solid #9a6b24;
+        }
+
+        .nav-links li:first-child {
+            border-left: 1px solid #9a6b24;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 10px 20px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .nav-links a:hover {
+            background: #d9a441;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 980px;
+            margin: 20px auto;
+            background: #fff;
+            border: 1px solid #d9a441;
+            box-shadow: 0 2px 5px rgba(217, 164, 65, 0.3);
+        }
+
+        /* Sidebar */
+        .layout {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 180px;
+            background: #fef9f0;
+            border-right: 1px solid #e0d0a0;
+            padding: 15px 10px;
+        }
+
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #8b6914;
+            margin-bottom: 8px;
+            padding: 5px;
+            background: #f4e4b0;
+            border: 1px solid #d9a441;
+            text-transform: uppercase;
+        }
+
+        .sidebar-links {
+            list-style: none;
+        }
+
+        .sidebar-links li {
+            margin: 3px 0;
+        }
+
+        .sidebar-links a {
+            color: #c97a1f;
+            text-decoration: none;
+            font-size: 11px;
+            padding: 2px 5px;
+            display: block;
+        }
+
+        .sidebar-links a:hover {
+            background: #f9eed0;
+            text-decoration: underline;
+        }
+
+        /* Main Content */
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #8b6914;
+            margin-bottom: 5px;
+            border-bottom: 2px solid #d9a441;
+            padding-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .content-section {
+            margin: 20px 0;
+        }
+
+        .content-section h2 {
+            font-size: 14px;
+            font-weight: bold;
+            color: #8b6914;
+            margin: 15px 0 10px 0;
+            padding: 5px;
+            background: #fef9f0;
+            border-left: 4px solid #d9a441;
+        }
+
+        .content-section h3 {
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
+            margin: 12px 0 8px 0;
+        }
+
+        .content-section p {
+            margin: 8px 0;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        /* Info Box - Online status with green */
+        .info-box {
+            background: #e8f5e0;
+            border: 2px solid #88cc66;
+            padding: 10px;
+            margin: 15px 0;
+        }
+
+        .info-box-title {
+            font-weight: bold;
+            color: #2d7a1f;
+            margin-bottom: 8px;
+        }
+
+        /* Server IP Box */
+        .server-ip-box {
+            background: #fff8e0;
+            border: 2px solid #d9a441;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .server-ip {
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: #8b6914;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #d9a441;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        /* Gamemode Table */
+        .gamemode-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .gamemode-table td {
+            border: 1px solid #e0d0a0;
+            padding: 10px;
+            vertical-align: top;
+        }
+
+        .gamemode-table .gamemode-header {
+            background: #d9a441;
+            color: #2c1810;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        .gamemode-table .featured {
+            background: #fffef8;
+        }
+
+        .featured-badge {
+            background: #c97a1f;
+            color: #fff;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .gamemode-table ul {
+            margin: 8px 0 0 15px;
+            padding: 0;
+        }
+
+        .gamemode-table li {
+            margin: 4px 0;
+            font-size: 11px;
+        }
+
+        /* Server Info Table */
+        .server-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .server-info-table th {
+            background: #d9a441;
+            color: #2c1810;
+            padding: 8px;
+            text-align: left;
+            font-weight: bold;
+            border: 1px solid #b8842f;
+        }
+
+        .server-info-table td {
+            padding: 8px;
+            border: 1px solid #e0d0a0;
+            background: #fff;
+        }
+
+        .server-info-table tr:nth-child(even) td {
+            background: #fefbf5;
+        }
+
+        /* Instructions */
+        ol {
+            margin: 10px 0 10px 25px;
+            padding: 0;
+        }
+
+        ol li {
+            margin: 6px 0;
+        }
+
+        /* Secret Door Link */
+        .secret-door {
+            text-align: center;
+            padding: 30px 0;
+            background: #fef9f0;
+            border-top: 1px solid #e0d0a0;
+        }
+
+        .secret-door a {
+            display: inline-block;
+            transition: opacity 0.3s ease;
+        }
+
+        .secret-door a:hover {
+            opacity: 0.7;
+        }
+
+        .secret-door img {
+            max-width: 120px;
+            height: auto;
+            border: 2px solid #d9a441;
+            box-shadow: 0 2px 8px rgba(217, 164, 65, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            background: #b8842f;
+            color: #fff;
+            padding: 15px 0;
+            margin-top: 0;
+            border-top: 4px solid #9a6b24;
+        }
+
+        .footer-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 15px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .footer-links {
+            margin: 10px 0;
+        }
+
+        .footer-links a {
+            color: #ffe8a8;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                display: block !important; /* Show on mobile */
+            }
+
+            .layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e0d0a0;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+            }
+
+            .container {
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-text">THE TF2 TOWER</div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navbar">
+        <div class="nav-content">
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="forums">Forums</a></li>
+                <li><a href="#gamemodes">Game Modes</a></li>
+                <li><a href="#server-info">Server Info</a></li>
+                <li><a href="about">About</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="layout">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Navigation</div>
+                    <ul class="sidebar-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="forums">Forums</a></li>
+                        <li><a href="#gamemodes">Game Modes</a></li>
+                        <li><a href="#server-info">Server Info</a></li>
+                        <li><a href="about">About</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Community</div>
+                    <ul class="sidebar-links">
+                        <li><a href="https://discord.gg/udE8zN5Gx7" target="_blank">Discord</a></li>
+                        <li><a href="https://steamcommunity.com/groups/TheTF2Tower" target="_blank">Steam Group</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Sister Servers</div>
+                    <ul class="sidebar-links">
+                        <li><a href="index.html">The GM Tower</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="content" id="home">
+                <h1 class="page-title">Welcome to The TF2 Tower</h1>
+                <p class="subtitle">Team Fortress 2 Community Server - Established 2015</p>
+
+                <div class="info-box">
+                    <div class="info-box-title">Server Status: ONLINE</div>
+                    <p><b>The TF2 Tower</b> is a Team Fortress 2 community server brought to you by the same team behind The GM Tower. Experience classic TF2 gameplay with a friendly community!</p>
+                </div>
+
+                <div class="server-ip-box">
+                    <p style="margin-bottom: 5px; font-weight: bold; color: #8b6914;">Connect Now:</p>
+                    <div class="server-ip">206.0.29.10:10137</div>
+                    <p style="margin-top: 10px; font-size: 11px; color: #666;">Copy and paste this IP into your TF2 console</p>
+                </div>
+
+                <div class="content-section" id="gamemodes">
+                    <h2>Available Game Modes</h2>
+                    
+                    <table class="gamemode-table">
+                        <tr class="featured">
+                            <td>
+                                <div class="featured-badge">★ MAIN MODE</div>
+                                <h3>Payload</h3>
+                                <p>Push the cart through enemy territory! BLU team escorts the bomb cart along a track while RED defends. Classic TF2 action with balanced gameplay.</p>
+                                <ul>
+                                    <li>Multiple checkpoint maps</li>
+                                    <li>Overtime mechanics</li>
+                                    <li>Team-based objective gameplay</li>
+                                    <li>Popular maps like Badwater and Upward</li>
+                                    <li>Auto-balancing enabled</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="gamemode-header">King of the Hill</div>
+                                <p>Fight for control of the central point! Fast-paced gameplay where both teams battle to capture and hold a single control point.</p>
+                                <ul>
+                                    <li>Quick, intense matches</li>
+                                    <li>Timer-based victory conditions</li>
+                                    <li>Classic KOTH maps</li>
+                                    <li>Perfect for all skill levels</li>
+                                    <li>Round-based scoring</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="gamemode-header">Capture the Flag</div>
+                                <p>Steal the enemy's intelligence briefcase and return it to your base while defending your own. Classic CTF with TF2 gameplay.</p>
+                                <ul>
+                                    <li>Symmetrical map design</li>
+                                    <li>Intelligence briefcase capture</li>
+                                    <li>Defensive and offensive strategies</li>
+                                    <li>Maps like 2Fort and Turbine</li>
+                                    <li>Team coordination required</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="gamemode-header">Attack/Defend</div>
+                                <p>BLU attacks multiple control points while RED defends. Time-limited rounds with strategic depth.</p>
+                                <ul>
+                                    <li>Sequential point capture</li>
+                                    <li>Asymmetrical gameplay</li>
+                                    <li>Dustbowl and Gorge maps</li>
+                                    <li>Strategic team play</li>
+                                    <li>Multiple stages</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="content-section" id="server-info">
+                    <h2>Server Information</h2>
+
+                    <table class="server-info-table">
+                        <tr>
+                            <th>Property</th>
+                            <th>Details</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Server Name</strong></td>
+                            <td>The TF2 Tower</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Game</strong></td>
+                            <td>Team Fortress 2</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Server IP</strong></td>
+                            <td><strong>206.0.29.10:10137</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Main Game Mode</strong></td>
+                            <td>Payload</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Additional Modes</strong></td>
+                            <td>KOTH, CTF, Attack/Defend</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Max Players</strong></td>
+                            <td>24</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Region</strong></td>
+                            <td>North America</td>
+                        </tr>
+                        <tr>
+                            <td><strong>All-Talk</strong></td>
+                            <td>Disabled (team chat only)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Crits</strong></td>
+                            <td>Random crits enabled</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Respawn Times</strong></td>
+                            <td>Standard/Competitive</td>
+                        </tr>
+                    </table>
+
+                    <h3>How to Connect</h3>
+                    <p>To join The TF2 Tower server:</p>
+                    <ol>
+                        <li>Launch Team Fortress 2</li>
+                        <li>Open the developer console (~ key)</li>
+                        <li>Type: <strong>connect 206.0.29.10:10137</strong></li>
+                        <li>Press Enter and you'll join the server!</li>
+                    </ol>
+                    <p style="margin-top: 10px;"><em>Tip: Add the server to your favorites for quick access!</em></p>
+                </div>
+
+                <div class="content-section">
+                    <h2>Server Rules</h2>
+                    <ul style="margin-left: 20px;">
+                        <li>Be respectful to all players</li>
+                        <li>No cheating, hacking, or exploiting</li>
+                        <li>No mic spam or chat spam</li>
+                        <li>No racist, sexist, or offensive language</li>
+                        <li>Listen to admin/moderator instructions</li>
+                        <li>Have fun and play fair!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Secret Door Link -->
+        <div class="secret-door">
+            <a href="sourceexplorer.html" title="Enter the Source...">
+                <img src="half-life-door.gif" alt="Door">
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#home">Home</a> | 
+                <a href="forums">Forums</a> | 
+                <a href="https://discord.gg/udE8zN5Gx7" target="_blank">Discord</a> | 
+                <a href="https://steamcommunity.com/groups/TheTF2Tower" target="_blank">Steam Group</a> |
+                <a href="index.html">The GM Tower</a>
+            </div>
+            <p>&copy; 2012 The Tower Community</p>
+        </div>
+    </footer>
+</body>
+</html>
