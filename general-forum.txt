@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URGENT: Weird door appeared?? - The GM Tower Forums</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Verdana, Arial, sans-serif;
+            background: #e8e8e8;
+            color: #333;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* Header */
+        .header {
+            background: #2c5aa0;
+            border-bottom: 4px solid #1a3d6b;
+            padding: 20px 0;
+        }
+
+        .header-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .logo-img {
+            height: 60px;
+            width: auto;
+        }
+
+        /* Navigation bar */
+        .navbar {
+            background: #1a3d6b;
+            border-bottom: 2px solid #0d2744;
+        }
+
+        .nav-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links li {
+            border-right: 1px solid #0d2744;
+        }
+
+        .nav-links li:first-child {
+            border-left: 1px solid #0d2744;
+        }
+
+        .nav-links a {
+            display: block;
+            padding: 10px 20px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .nav-links a:hover {
+            background: #2c5aa0;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 980px;
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+
+        .page-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a3d6b;
+            margin-bottom: 10px;
+            padding: 8px 10px;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .breadcrumb {
+            font-size: 11px;
+            padding: 5px 10px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb a {
+            color: #2c5aa0;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* Thread Post */
+        .post {
+            background: #fff;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            display: flex;
+        }
+
+        .post-author {
+            width: 180px;
+            background: #f5f5f5;
+            border-right: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .author-name {
+            font-weight: bold;
+            font-size: 13px;
+            color: #1a3d6b;
+            margin-bottom: 5px;
+        }
+
+        .author-avatar {
+            width: 80px;
+            height: 80px;
+            margin: 10px auto;
+            border: 2px solid #ccc;
+            overflow: hidden;
+        }
+
+        .author-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .author-title {
+            font-size: 10px;
+            color: #666;
+            font-style: italic;
+            margin: 5px 0;
+        }
+
+        .author-posts {
+            font-size: 10px;
+            color: #666;
+            margin: 3px 0;
+        }
+
+        .author-joined {
+            font-size: 10px;
+            color: #666;
+        }
+
+        .post-content {
+            flex: 1;
+            padding: 15px;
+        }
+
+        .post-header {
+            background: #e8e8e8;
+            padding: 5px 10px;
+            margin: -15px -15px 10px -15px;
+            border-bottom: 1px solid #ddd;
+            font-size: 11px;
+        }
+
+        .post-date {
+            color: #666;
+        }
+
+        .post-body {
+            line-height: 1.7;
+            margin: 10px 0;
+        }
+
+        .post-signature {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 10px;
+            color: #888;
+            font-style: italic;
+        }
+
+        .quote-box {
+            background: #f9f9f9;
+            border-left: 3px solid #2c5aa0;
+            padding: 10px;
+            margin: 10px 0;
+            font-style: italic;
+        }
+
+        .quote-header {
+            font-weight: bold;
+            color: #1a3d6b;
+            margin-bottom: 5px;
+        }
+
+        /* Special highlight for important posts */
+        .post-urgent {
+            border: 2px solid #cc6600;
+            box-shadow: 0 0 10px rgba(204, 102, 0, 0.3);
+        }
+
+        .post-urgent .post-header {
+            background: #fff8dc;
+            color: #cc6600;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a3d6b;
+            color: #fff;
+            padding: 15px 0;
+            margin-top: 20px;
+            border-top: 4px solid #0d2744;
+        }
+
+        .footer-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 15px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .footer-links {
+            margin: 10px 0;
+        }
+
+        .footer-links a {
+            color: #8db3e2;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .post {
+                flex-direction: column;
+            }
+
+            .post-author {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <img src="TheGMTowerLogo.png" alt="The GM Tower" class="logo-img">
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navbar">
+        <div class="nav-content">
+            <ul class="nav-links">
+                <li><a href="TGMT.html">Home</a></li>
+                <li><a href="forums.html">Forums</a></li>
+                <li><a href="TGMT.html#gamemodes">Gamemodes</a></li>
+                <li><a href="TGMT.html#server-info">Server Info</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="page-title">URGENT: Weird door appeared??</div>
+        
+        <div class="breadcrumb">
+            <a href="TGMT.html">The GM Tower</a> &raquo; 
+            <a href="forums.html">Forums</a> &raquo; 
+            <a href="forums.html">General</a> &raquo; 
+            URGENT: Weird door appeared??
+        </div>
+
+        <!-- First Post -->
+        <div class="post post-urgent">
+            <div class="post-author">
+                <div class="author-name">TheoIsEpic1002</div>
+                <div class="author-avatar">
+                    <img src="building.png" alt="TheoIsEpic1002">
+                </div>
+                <div class="author-title">Member</div>
+                <div class="author-posts">Posts: 47</div>
+                <div class="author-joined">Joined: Aug 2014</div>
+            </div>
+            <div class="post-content">
+                <div class="post-header">
+                    <strong>Posted:</strong> <span class="post-date">Dec 18, 2015 at 1:07 PM</span>
+                </div>
+                <div class="post-body">
+                    <p>ok so this is REALLY weird...</p>
+                    <p>i was just playing on the sandbox server like normal, building stuff in gm_thegmtower near the tower, and then i noticed this door that i've NEVER seen before. its not part of the map, i know that map like the back of my hand.</p>
+                    <p>the door is solid black and when i tried to open it nothing happened. tried to get closer but couldn't interact with it at all. noclip is disabled on sandbox so i couldn't check if its solid or not.</p>
+                    <p>has anyone else seen this??? where did it come from?? its freaking me out</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Post -->
+        <div class="post">
+            <div class="post-author">
+                <div class="author-name">ShadowReaper</div>
+                <div class="author-avatar">
+                    <img src="Spyava.jpg" alt="ShadowReaper">
+                </div>
+                <div class="author-title">Regular</div>
+                <div class="author-posts">Posts: 892</div>
+                <div class="author-joined">Joined: Jan 2013</div>
+            </div>
+            <div class="post-content">
+                <div class="post-header">
+                    <strong>Posted:</strong> <span class="post-date">Dec 18, 2015 at 1:23 PM</span>
+                </div>
+                <div class="post-body">
+                    <p>lol probably just a glitch dude. restart your game</p>
+                </div>
+                <div class="post-signature">
+                    - The shadow that strikes from darkness -
+                </div>
+            </div>
+        </div>
+
+        <!-- Third Post -->
+        <div class="post">
+            <div class="post-author">
+                <div class="author-name">MapWalker</div>
+                <div class="author-avatar">
+                    <img src="Scoutava.jpg" alt="MapWalker">
+                </div>
+                <div class="author-title">Explorer</div>
+                <div class="author-posts">Posts: 234</div>
+                <div class="author-joined">Joined: Mar 2015</div>
+            </div>
+            <div class="post-content">
+                <div class="post-header">
+                    <strong>Posted:</strong> <span class="post-date">Dec 18, 2015 at 1:45 PM</span>
+                </div>
+                <div class="post-body">
+                    <div class="quote-box">
+                        <div class="quote-header">TheoIsEpic1002 wrote:</div>
+                        the door is solid black and when i tried to open it nothing happened
+                    </div>
+                    <p>WAIT I'VE SEEN THIS TOO!!</p>
+                    <p>i thought i was going crazy. i saw it near the garage yesterday but when i told my friend to come look at it, it was gone. then it appeared again by the lake like 10 minutes later???</p>
+                    <p>where exactly did you see it on map?</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fourth Post -->
+        <div class="post">
+            <div class="post-author">
+                <div class="author-name">GlitchSeeker</div>
+                <div class="author-avatar">
+                    <img src="gordonfreeman.jpg" alt="GlitchSeeker">
+                </div>
+                <div class="author-title">Veteran</div>
+                <div class="author-posts">Posts: 1,456</div>
+                <div class="author-joined">Joined: Nov 2012</div>
+            </div>
+            <div class="post-content">
+                <div class="post-header">
+                    <strong>Posted:</strong> <span class="post-date">Dec 18, 2015 at 2:15 PM</span>
+                </div>
+                <div class="post-body">
+                    <p>this is interesting... i've been documenting weird stuff on the server for a while now and this is the first time i'm hearing about a "moving door"</p>
+                    <p>did anyone manage to get a screenshot?? or get the coordinates where you saw it?</p>
+                    <p>also TheoIsEpic1002, did you try spawning props near it to see if it reacts?</p>
+                </div>
+                <div class="post-signature">
+                    Finding bugs since 2012 | Check out my YouTube channel for GMod mysteries
+                </div>
+            </div>
+        </div>
+
+        <!-- Fifth Post -->
+        <div class="post">
+            <div class="post-author">
+                <div class="author-name">skeptical_sam</div>
+                <div class="author-avatar">
+                    <img src="Sniperava.jpg" alt="skeptical_sam">
+                </div>
+                <div class="author-title">Member</div>
+                <div class="author-posts">Posts: 156</div>
+                <div class="author-joined">Joined: Jun 2014</div>
+            </div>
+            <div class="post-content">
+                <div class="post-header">
+                    <strong>Posted:</strong> <span class="post-date">Dec 18, 2015 at 2:47 PM</span>
+                </div>
+                <div class="post-body">
+                    <p>u guys r all crazy lmao there is no door its just ur imagination or a bad addon</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sixth Post -->
+        <div class="post">
+            <div class="post-author">
+                <div class="author-name">TheoIsEpic1002</div>
+                <div class="author-avatar">
+                    <img src="building.png" alt="TheoIsEpic1002">
+                </div>
+                <div class="author-title">Member</div>
+                <div class="author-posts">Posts: 47</div>
+                <div class="author-joined">Joined: Aug 2014</div>
+            </div>
+            <div class="post-content">
+                <div class="post-header">
+                    <strong>Posted:</strong> <span class="post-date">Dec 18, 2015 at 3:21 PM</span>
+                </div>
+                <div class="post-body">
+                    <div class="quote-box">
+                        <div class="quote-header">GlitchSeeker wrote:</div>
+                        also TheoIsEpic1002, did you try spawning props near it to see if it reacts?
+                    </div>
+                    <p>yeah i tried spawning props and even shooting at it. nothing happened. its like its not even really there but i can SEE it clear as day</p>
+                    <p>@MapWalker i saw it in the back area, like behind one of the houses. but not exactly IN the map if that makes sense?? like it was just... there</p>
+                    <p>i'm gonna try to find it again and get a screenshot this time. i have fraps installed so i can record if it shows up</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seventh Post -->
+        <div class="post">
+            <div class="post-author">
+                <div class="author-name">JenS</div>
+                <div class="author-avatar">
+                    <img src="chell.jpg" alt="JenS">
+                </div>
+                <div class="author-title">Moderator</div>
+                <div class="author-posts">Posts: 3,421</div>
+                <div class="author-joined">Joined: Feb 2010</div>
+            </div>
+            <div class="post-content">
+                <div class="post-header">
+                    <strong>Posted:</strong> <span class="post-date">Dec 18, 2015 at 4:02 PM</span>
+                </div>
+                <div class="post-body">
+                    <p>Hey everyone,</p>
+                    <p>We've been getting multiple reports about this "door" appearing on different maps. Our server logs don't show any unusual addon activity or map modifications.</p>
+                    <p>If you encounter this door again, please DO NOT try to interact with it extensively. Just note the location and time and let us know.</p>
+                    <p>We're investigating this issue. Stay tuned.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Eighth Post -->
+        <div class="post">
+            <div class="post-author">
+                <div class="author-name">HeadCrabfan13</div>
+                <div class="author-avatar">
+                    <img src="crabfan13.png" alt="HeadCrabfan13">
+                </div>
+                <div class="author-title">Member</div>
+                <div class="author-posts">Posts: 89</div>
+                <div class="author-joined">Joined: Dec 2014</div>
+            </div>
+            <div class="post-content">
+                <div class="post-header">
+                    <strong>Posted:</strong> <span class="post-date">Dec 19, 2015 at 10:38 AM</span>
+                </div>
+                <div class="post-body">
+                    <p>ok so hear me out...</p>
+                    <p>what if this is an ARG or something?? like an easter egg the admins put in?? black doors appearing and disappearing... sounds like something out of a creepypasta lol</p>
+                    <p>i did some digging and found something weird. there's this file on the server files list that i've never seen before. it's called "SourceExplorer" or something like that??</p>
+                    <p>i'm not gonna link it here cause i'm not sure if its safe but if you search for it you'll find it. has a lot of ERROR messages when you try to look at it</p>
+                    <p>idk just a theory. but this is definitely weird</p>
+                </div>
+                <div class="post-signature">
+                    "Question everything" - staying curious since '14
+                </div>
+            </div>
+        </div>
+
+        <!-- Ninth Post -->
+        <div class="post">
+            <div class="post-author">
+                <div class="author-name">still_skeptical</div>
+                <div class="author-avatar">
+                    <img src="Soldierava.jpg" alt="still_skeptical">
+                </div>
+                <div class="author-title">Regular</div>
+                <div class="author-posts">Posts: 667</div>
+                <div class="author-joined">Joined: May 2013</div>
+            </div>
+            <div class="post-content">
+                <div class="post-header">
+                    <strong>Posted:</strong> <span class="post-date">Dec 19, 2015 at 11:19 AM</span>
+                </div>
+                <div class="post-body">
+                    <div class="quote-box">
+                        <div class="quote-header">HeadCrabfan13 wrote:</div>
+                        there's this file on the server files list that i've never seen before
+                    </div>
+                    <p>i looked it up and found it... what the hell is that??? some kind of experimental build?? the whole page is red and glitchy with a bunch of text scrolling</p>
+                    <p>is this official or is someone messing with us</p>
+                    <p>also it says something about downloading an .exe file?? kinda sketchy ngl</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tenth Post -->
+        <div class="post">
+            <div class="post-author">
+                <div class="author-name">MapWalker</div>
+                <div class="author-avatar">
+                    <img src="Scoutava.jpg" alt="MapWalker">
+                </div>
+                <div class="author-title">Explorer</div>
+                <div class="author-posts">Posts: 234</div>
+                <div class="author-joined">Joined: Mar 2015</div>
+            </div>
+            <div class="post-content">
+                <div class="post-header">
+                    <strong>Posted:</strong> <span class="post-date">Dec 20, 2015 at 2:03 PM</span>
+                </div>
+                <div class="post-body">
+                    <p>just saw the door again. got coordinates this time before it disappeared:</p>
+                    <p style="font-family: monospace; background: #f0f0f0; padding: 5px;">
+                        X: -3421.67<br>
+                        Y: 1889.45<br>
+                        Z: -127.03
+                    </p>
+                    <p>those coordinates don't match ANY known location on map. its like the door exists in between the map geometry or something</p>
+                    <p>also that SourceExplorer thing is really strange. the page talks about some kind of experimental game project but everything is corrupted with ERROR messages</p>
+                    <p>this is getting really weird guys...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Eleventh Post -->
+        <div class="post">
+            <div class="post-author">
+                <div class="author-name">MikeGM</div>
+                <div class="author-avatar">
+                    <img src="badwater.jpg" alt="MikeGM">
+                </div>
+                <div class="author-title">Administrator</div>
+                <div class="author-posts">Posts: 4,892</div>
+                <div class="author-joined">Joined: Jan 2010</div>
+            </div>
+            <div class="post-content">
+                <div class="post-header">
+                    <strong>Posted:</strong> <span class="post-date">Jan 8, 2016 at 9:15 AM</span>
+                </div>
+                <div class="post-body">
+                    <p>Update on this situation:</p>
+                    <p>We've been monitoring the server logs and there's no evidence of any unauthorized addons or modifications. The coordinates provided don't correspond to any entities in our database.</p>
+                    <p>Regarding the "SourceExplorer" file mentioned - we're looking into this. It's not something we've officially added to the server.</p>
+                    <p>If anyone has more information or experiences with this door, please let us know. We take these reports seriously.</p>
+                    <p>For now, consider this an ongoing investigation.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Twelfth Post - NEW RECENT POST -->
+        <div class="post">
+            <div class="post-author">
+                <div class="author-name">TheoIsEpic1002</div>
+                <div class="author-avatar">
+                    <img src="building.png" alt="TheoIsEpic1002">
+                </div>
+                <div class="author-title">Member</div>
+                <div class="author-posts">Posts: 47</div>
+                <div class="author-joined">Joined: Aug 2014</div>
+            </div>
+            <div class="post-content">
+                <div class="post-header">
+                    <strong>Posted:</strong> <span class="post-date">Feb 14, 2016 at 4:23 PM</span>
+                </div>
+                <div class="post-body">
+                    <p>ok i know this thread is old but i saw it again today</p>
+                    <p>same exact door. near the spawn area on thegmtower. still can't interact with it</p>
+                    <p>i tried taking a screenshot but when i looked at the file it was just black. like the door didn't even show up in the screenshot</p>
+                    <p>has anyone else experienced this recently?? i thought this was resolved but its clearly not</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="TGMT.html">Home</a> | 
+                <a href="forums.html">Forums</a> | 
+                <a href="https://discord.gg/udE8zN5Gx7" target="_blank">Discord</a> | 
+                <a href="https://steamcommunity.com/groups/TheGMTower" target="_blank">Steam Group</a>
+            </div>
+            <p>&copy; 2015 The GM Tower Community</p>
+        </div>
+    </footer>
+</body>
+</html>
