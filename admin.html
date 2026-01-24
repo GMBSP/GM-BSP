@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - The TF2 Tower</title>
+    <title>Tower Control Panel</title>
     <style>
         * {
             margin: 0;
@@ -221,23 +221,10 @@
         <p class="subtitle">The TF2 Tower Server Management</p>
 
         <div class="success-msg" id="successMsg">✅ Settings saved successfully!</div>
-        <div class="error-msg" id="errorMsg">❌ Please enter password</div>
+        <div class="error-msg" id="errorMsg">❌ Error occurred</div>
 
-        <!-- Login Section -->
-        <div id="loginSection">
-            <div class="form-group">
-                <label>Admin Password:</label>
-                <input type="password" id="loginPassword" placeholder="Enter admin password">
-            </div>
-            <button class="login-btn" onclick="login()">Login</button>
-            <div class="note">
-                <strong>Default Password:</strong> admin123<br>
-                (Change this in the code for security!)
-            </div>
-        </div>
-
-        <!-- Admin Panel (Hidden until login) -->
-        <div id="adminPanel" class="hidden">
+        <!-- Admin Panel (No login required) -->
+        <div id="adminPanel">
             <form id="adminForm" onsubmit="saveSettings(event)">
                 <div class="form-group">
                     <label>Server Status:</label>
@@ -333,23 +320,17 @@
             <div class="note">
                 <strong>Note:</strong> Changes will update immediately on the main page. All data is stored in your browser's localStorage.
             </div>
-
-            <button class="submit-btn" onclick="logout()" style="margin-top: 15px; background: #cc4444;">
-                🚪 LOGOUT
-            </button>
         </div>
 
         <a href="tf2tower" class="back-link">← Back to Main Page</a>
     </div>
 
     <script>
-        const ADMIN_PASSWORD = 'admin123'; // Change this to your secure password!
+        const ADMIN_PASSWORD = 'admin123'; // Legacy - no longer used
 
         // Check if already logged in
         window.onload = function() {
-            if (localStorage.getItem('tf2_admin_logged_in') === 'true') {
-                showAdminPanel();
-            }
+            // Admin panel shows directly now
             loadCurrentSettings();
         };
 
@@ -362,7 +343,7 @@
                 secretKeyPresses++;
                 
                 if (secretKeyPresses === 3) {
-                    window.location.href = 'admin';
+                    window.location.href = 'tower-control';
                 }
                 
                 clearTimeout(secretKeyTimer);
@@ -371,31 +352,6 @@
                 }, 2000);
             }
         });
-
-        function login() {
-            const password = document.getElementById('loginPassword').value;
-            
-            if (password === ADMIN_PASSWORD) {
-                localStorage.setItem('tf2_admin_logged_in', 'true');
-                showAdminPanel();
-                document.getElementById('errorMsg').style.display = 'none';
-            } else {
-                document.getElementById('errorMsg').textContent = '❌ Incorrect password';
-                document.getElementById('errorMsg').style.display = 'block';
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('tf2_admin_logged_in');
-            document.getElementById('loginSection').classList.remove('hidden');
-            document.getElementById('adminPanel').classList.add('hidden');
-            document.getElementById('loginPassword').value = '';
-        }
-
-        function showAdminPanel() {
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('adminPanel').classList.remove('hidden');
-        }
 
         function setStatus(status) {
             const onlineBtn = document.getElementById('onlineBtn');
