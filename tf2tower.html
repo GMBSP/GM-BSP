@@ -204,12 +204,14 @@
             border: 2px solid #88cc66;
             padding: 10px;
             margin: 15px 0;
+            transition: all 0.3s ease;
         }
 
         .info-box-title {
             font-weight: bold;
             color: #2d7a1f;
             margin-bottom: 8px;
+            transition: color 0.3s ease;
         }
 
         /* Server IP Box */
@@ -387,8 +389,9 @@
         .char-decor {
             position: absolute;
             pointer-events: none;
-            opacity: 0.15;
+            opacity: 0.6;
             z-index: 0;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
         }
 
         .container {
@@ -601,16 +604,61 @@
                 <h1 class="page-title">Welcome to The TF2 Tower</h1>
                 <p class="subtitle">Team Fortress 2 Community Server - Established 2015</p>
 
-                <div class="info-box">
-                    <div class="info-box-title">Server Status: ONLINE</div>
+                <div class="info-box" id="serverStatusBox">
+                    <div class="info-box-title" id="statusTitle">Server Status: ONLINE</div>
                     <p><b>The TF2 Tower</b> is a Team Fortress 2 community server brought to you by the same team behind The GM Tower. Experience classic TF2 gameplay with a friendly community!</p>
+                    <p id="serverMessage" style="margin-top: 10px; font-style: italic; display: none;"></p>
+                    <p id="playerCount" style="margin-top: 5px; font-weight: bold; display: none;"></p>
                 </div>
 
                 <div class="server-ip-box">
                     <p style="margin-bottom: 5px; font-weight: bold; color: #8b6914;">Connect Now:</p>
-                    <div class="server-ip">206.0.29.10:10137</div>
+                    <div class="server-ip" id="serverIpDisplay">206.0.29.10:10137</div>
                     <p style="margin-top: 10px; font-size: 11px; color: #666;">Copy and paste this IP into your TF2 console</p>
                 </div>
+
+                <script>
+                    // Load server settings from localStorage
+                    window.addEventListener('DOMContentLoaded', function() {
+                        const status = localStorage.getItem('tf2_server_status') || 'online';
+                        const ip = localStorage.getItem('tf2_server_ip') || '206.0.29.10:10137';
+                        const players = localStorage.getItem('tf2_current_players') || '';
+                        const message = localStorage.getItem('tf2_server_message') || '';
+
+                        // Update status
+                        const statusBox = document.getElementById('serverStatusBox');
+                        const statusTitle = document.getElementById('statusTitle');
+                        
+                        if (status === 'online') {
+                            statusBox.style.background = '#e8f5e0';
+                            statusBox.style.borderColor = '#88cc66';
+                            statusTitle.style.color = '#2d7a1f';
+                            statusTitle.textContent = 'Server Status: ONLINE';
+                        } else {
+                            statusBox.style.background = '#ffe0e0';
+                            statusBox.style.borderColor = '#ff6666';
+                            statusTitle.style.color = '#cc4444';
+                            statusTitle.textContent = 'Server Status: OFFLINE';
+                        }
+
+                        // Update IP
+                        document.getElementById('serverIpDisplay').textContent = ip;
+
+                        // Show player count if available
+                        if (players) {
+                            const playerCountEl = document.getElementById('playerCount');
+                            playerCountEl.textContent = '👥 Players: ' + players;
+                            playerCountEl.style.display = 'block';
+                        }
+
+                        // Show server message if available
+                        if (message) {
+                            const messageEl = document.getElementById('serverMessage');
+                            messageEl.textContent = '📢 ' + message;
+                            messageEl.style.display = 'block';
+                        }
+                    });
+                </script>
 
                 <div class="content-section" id="gamemodes">
                     <h2>Available Game Modes</h2>
@@ -786,7 +834,8 @@
                 <a href="forums">Forums</a> | 
                 <a href="https://discord.gg/udE8zN5Gx7" target="_blank">Discord</a> | 
                 <a href="https://steamcommunity.com/groups/TheTF2Tower" target="_blank">Steam Group</a> |
-                <a href="index">The GM Tower</a>
+                <a href="index">The GM Tower</a> |
+                <a href="admin" style="color: #ffaa44;">🔧 Admin</a>
             </div>
             <p>&copy; 2012 The Tower Community</p>
         </div>
