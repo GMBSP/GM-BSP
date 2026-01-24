@@ -3,182 +3,451 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forums - The GM Tower</title>
+    <title>The Tower - Community Forums</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Verdana, Arial, sans-serif; background: #e8e8e8; color: #333; font-size: 12px; line-height: 1.5; }
-        .header { background: #2c5aa0; border-bottom: 4px solid #1a3d6b; padding: 20px 0; }
-        .header-content { max-width: 980px; margin: 0 auto; padding: 0 15px; }
-        .logo-img { height: 60px; width: auto; }
-        .navbar { background: #1a3d6b; border-bottom: 2px solid #0d2744; display: none; }
-        .nav-content { max-width: 980px; margin: 0 auto; padding: 0; }
-        .nav-links { list-style: none; display: flex; margin: 0; padding: 0; }
-        .nav-links li { border-right: 1px solid #0d2744; }
-        .nav-links li:first-child { border-left: 1px solid #0d2744; }
-        .nav-links a { display: block; padding: 10px 20px; color: #fff; text-decoration: none; font-weight: bold; font-size: 11px; text-transform: uppercase; }
-        .nav-links a:hover { background: #2c5aa0; }
-        .container { max-width: 980px; margin: 20px auto; padding: 0 10px; }
-        .page-title { font-size: 16px; font-weight: bold; color: #1a3d6b; margin-bottom: 10px; padding: 8px 10px; background: #fff; border: 1px solid #ccc; }
-        .forum-table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #ccc; margin-bottom: 15px; }
-        .forum-table th { background: #e8e8e8; padding: 8px; text-align: left; font-size: 11px; border: 1px solid #ccc; font-weight: bold; }
-        .forum-table td { padding: 12px; border: 1px solid #e0e0e0; vertical-align: top; }
-        .forum-table tr:hover { background: #f9f9f9; }
-        .forum-icon { width: 50px; text-align: left; font-size: 11px; color: #666; font-weight: bold; padding-left: 15px; }
-        .forum-info { width: 60%; }
-        .forum-title { font-weight: bold; font-size: 13px; margin-bottom: 4px; }
-        .forum-title a { color: #1a3d6b; text-decoration: none; }
-        .forum-title a:hover { color: #2c5aa0; text-decoration: underline; }
-        .forum-desc { font-size: 11px; color: #666; margin-top: 4px; }
-        .forum-stats { width: 15%; text-align: center; font-size: 11px; }
-        .forum-lastpost { width: 25%; font-size: 11px; }
-        .lastpost-info { line-height: 1.6; }
-        .lastpost-info a { color: #2c5aa0; text-decoration: none; font-weight: bold; }
-        .lastpost-info a:hover { text-decoration: underline; }
-        .timestamp { color: #666; font-size: 10px; display: block; margin-top: 2px; }
-        footer { background: #1a3d6b; color: #fff; padding: 15px 0; margin-top: 20px; border-top: 4px solid #0d2744; }
-        .footer-content { max-width: 980px; margin: 0 auto; padding: 0 15px; font-size: 11px; text-align: center; }
-        .footer-links { margin: 10px 0; }
-        .footer-links a { color: #8db3e2; text-decoration: none; margin: 0 10px; }
-        .footer-links a:hover { text-decoration: underline; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Verdana, Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 50%, #3d3d3d 100%);
+            background-attachment: fixed;
+            color: #333;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(90deg, #2c5aa0 0%, #3d6bb5 50%, #5085d4 100%);
+            border-bottom: 4px solid #1a3d7a;
+            padding: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .logo-text {
+            font-size: 36px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #e8f4ff 0%, #b8d4ff 50%, #fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-family: 'Arial Black', sans-serif;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+        }
+
+        .subtitle {
+            color: #b8d4ff;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 980px;
+            margin: 20px auto;
+            background: #fff;
+            border: 1px solid #555;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Server Tabs */
+        .server-tabs {
+            display: flex;
+            background: linear-gradient(90deg, #2c2c2c 0%, #3d3d3d 100%);
+            border-bottom: 2px solid #555;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            color: #999;
+            border-right: 1px solid #555;
+            transition: all 0.3s ease;
+        }
+
+        .tab:last-child {
+            border-right: none;
+        }
+
+        .tab:hover {
+            background: #4d4d4d;
+            color: #fff;
+        }
+
+        .tab.active {
+            background: #fff;
+            color: #333;
+        }
+
+        .tab.gmod.active {
+            background: linear-gradient(180deg, #fff 0%, #e8f4ff 100%);
+            color: #2c5aa0;
+            border-bottom: 3px solid #2c5aa0;
+        }
+
+        .tab.tf2.active {
+            background: linear-gradient(180deg, #fff 0%, #fff8e0 100%);
+            color: #8b6914;
+            border-bottom: 3px solid #d9a441;
+        }
+
+        /* Content */
+        .content {
+            padding: 30px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #2c5aa0;
+        }
+
+        .page-title.tf2-theme {
+            color: #8b6914;
+            border-bottom-color: #d9a441;
+        }
+
+        /* Forum Posts */
+        .forum-post {
+            background: linear-gradient(135deg, #fff 0%, #f9f9f9 100%);
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .forum-post:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-color: #2c5aa0;
+        }
+
+        .forum-post.tf2-theme:hover {
+            border-color: #d9a441;
+        }
+
+        .forum-post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .forum-post-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin: 0;
+        }
+
+        .forum-post-title.tf2-theme {
+            color: #8b6914;
+        }
+
+        .forum-post-meta {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .forum-post-category {
+            padding: 5px 12px;
+            background: linear-gradient(90deg, #2c5aa0 0%, #3d6bb5 100%);
+            color: #fff;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .forum-post-category.announcement { background: linear-gradient(90deg, #5c4033 0%, #8b6914 100%); }
+        .forum-post-category.update { background: linear-gradient(90deg, #4a7c9e 0%, #5c9fc8 100%); }
+        .forum-post-category.event { background: linear-gradient(90deg, #d9534f 0%, #e86763 100%); }
+        .forum-post-category.maintenance { background: linear-gradient(90deg, #f0ad4e 0%, #f5c16e 100%); }
+        .forum-post-category.news { background: linear-gradient(90deg, #5cb85c 0%, #6cc76c 100%); }
+
+        .forum-post-content {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #333;
+            white-space: pre-wrap;
+            margin-top: 10px;
+        }
+
+        .server-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .server-badge.gmod {
+            background: #2c5aa0;
+            color: #fff;
+        }
+
+        .server-badge.tf2 {
+            background: #d9a441;
+            color: #2c1810;
+        }
+
+        .no-posts {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        .back-links {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+        }
+
+        .back-link {
+            color: #2c5aa0;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .back-link.tf2 {
+            color: #8b6914;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(90deg, #1a1a1a 0%, #2c2c2c 100%);
+            color: #fff;
+            padding: 20px 0;
+            margin-top: 0;
+            border-top: 4px solid #555;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .footer-content {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 15px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .footer-links {
+            margin: 10px 0;
+        }
+
+        .footer-links a {
+            color: #b8d4ff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .navbar { display: block !important; }
-            .forum-stats, .forum-lastpost { display: none; }
-            .forum-info { width: 100%; }
-            .nav-links { flex-wrap: wrap; }
+            .container {
+                margin: 10px;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .server-tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                border-right: none;
+                border-bottom: 1px solid #555;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
     <div class="header">
         <div class="header-content">
-            <a href="/"><img src="/TheGMTowerLogo.png" alt="The GM Tower" class="logo-img"></a>
+            <div class="logo-text">THE TOWER</div>
+            <div class="subtitle">Community Forums</div>
         </div>
     </div>
-    <div class="navbar">
-        <div class="nav-content">
-            <ul class="nav-links">
-                <li><a href="/">Home</a></li>
-                <li><a href="/forums">Forums</a></li>
-                <li><a href="/#gamemodes">Gamemodes</a></li>
-                <li><a href="/#server-info">Server Info</a></li>
-                <li><a href="/about">About</a></li>
-            </ul>
-        </div>
-    </div>
+
+    <!-- Main Container -->
     <div class="container">
-        <div class="page-title">The GM Tower Forums</div>
+        <!-- Server Tabs -->
+        <div class="server-tabs">
+            <div class="tab gmod active" onclick="switchServer('gmod')" id="gmodTab">
+                🎮 GM TOWER
+            </div>
+            <div class="tab tf2" onclick="switchServer('tf2')" id="tf2Tab">
+                🔫 TF2 TOWER
+            </div>
+            <div class="tab" onclick="switchServer('all')" id="allTab">
+                🌐 ALL POSTS
+            </div>
+        </div>
 
-        <table class="forum-table">
-            <tr>
-                <th style="width: 50px;"></th>
-                <th>Forum</th>
-                <th style="width: 15%; text-align: center;">Topics / Posts</th>
-                <th style="width: 25%;">Last Post</th>
-            </tr>
-            <tr>
-                <td class="forum-icon">[GENERAL]</td>
-                <td class="forum-info">
-                    <div class="forum-title"><a href="/forums/general">General Discussion</a></div>
-                    <div class="forum-desc">General GMod discussion and community topics</div>
-                </td>
-                <td class="forum-stats"><strong>423</strong> Topics<br><strong>5,234</strong> Posts</td>
-                <td class="forum-lastpost">
-                    <div class="lastpost-info">
-                        <a href="/general-forum">URGENT: Weird door appeared??</a><br>
-                        by <a href="#" class="username">TheoIsEpic1002</a><br>
-                        <span class="timestamp">Feb 14, 2016 4:23 PM</span>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="forum-icon">[SANDBOX]</td>
-                <td class="forum-info">
-                    <div class="forum-title"><a href="/forums/sandbox">Sandbox</a></div>
-                    <div class="forum-desc">Share your builds and discuss sandbox gameplay</div>
-                </td>
-                <td class="forum-stats"><strong>892</strong> Topics<br><strong>9,234</strong> Posts</td>
-                <td class="forum-lastpost">
-                    <div class="lastpost-info">
-                        <a href="/sandbox-builds">My latest contraption!</a><br>
-                        by <a href="#" class="username">PropKing</a><br>
-                        <span class="timestamp">Jan 25, 2016 11:23 AM</span>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="forum-icon">[TTT]</td>
-                <td class="forum-info">
-                    <div class="forum-title"><a href="/forums/ttt">TTT Discussion</a></div>
-                    <div class="forum-desc">Trouble in Terrorist Town strategies</div>
-                </td>
-                <td class="forum-stats"><strong>567</strong> Topics<br><strong>7,123</strong> Posts</td>
-                <td class="forum-lastpost">
-                    <div class="lastpost-info">
-                        <a href="/ttt-strategies">Best traitor plays?</a><br>
-                        by <a href="#" class="username">InnocentGuy</a><br>
-                        <span class="timestamp">Jan 20, 2016 2:15 PM</span>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="forum-icon">[ZS]</td>
-                <td class="forum-info">
-                    <div class="forum-title"><a href="/forums/zs">Zombie Survival</a></div>
-                    <div class="forum-desc">Survival tips and gamemode-related discussion</div>
-                </td>
-                <td class="forum-stats"><strong>234</strong> Topics<br><strong>3,456</strong> Posts</td>
-                <td class="forum-lastpost">
-                    <div class="lastpost-info">
-                        <a href="/not-archived">Best barricade spots?</a><br>
-                        by <a href="#" class="username">LastStanding</a><br>
-                        <span class="timestamp">Jan 18, 2016 10:20 PM</span>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="forum-icon">[MEDIA]</td>
-                <td class="forum-info">
-                    <div class="forum-title"><a href="/forums/media">Media & Showcases</a></div>
-                    <div class="forum-desc">Share videos, screenshots, and creations</div>
-                </td>
-                <td class="forum-stats"><strong>156</strong> Topics<br><strong>1,892</strong> Posts</td>
-                <td class="forum-lastpost">
-                    <div class="lastpost-info">
-                        <a href="/forums/media/prop-kill-compilation">my insane prop kill compilation lol</a><br>
-                        by <a href="#" class="username">santi1go2</a><br>
-                        <span class="timestamp">Jan 11, 2016 3:15 PM</span>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="forum-icon">[HELP]</td>
-                <td class="forum-info">
-                    <div class="forum-title"><a href="/forums/help">Help & Support</a></div>
-                    <div class="forum-desc">Get help with technical issues and game problems</div>
-                </td>
-                <td class="forum-stats"><strong>289</strong> Topics<br><strong>2,567</strong> Posts</td>
-                <td class="forum-lastpost">
-                    <div class="lastpost-info">
-                        <a href="/forums/help/missing-textures">missing textures everywhere help!!</a><br>
-                        by <a href="#" class="username">Baby Wizard</a><br>
-                        <span class="timestamp">Jan 5, 2016 10:12 PM</span>
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <!-- Content -->
+        <div class="content">
+            <h1 class="page-title" id="pageTitle">GM Tower Forums</h1>
+            
+            <div id="forumPosts">
+                <!-- Posts will be loaded here -->
+            </div>
 
+            <div class="back-links">
+                <a href="index" class="back-link">← Back to GM Tower</a>
+                <a href="tf2tower" class="back-link tf2">← Back to TF2 Tower</a>
+            </div>
+        </div>
     </div>
+
+    <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-links">
-                <a href="/">Home</a> | 
-                <a href="/forums">Forums</a> | 
-                <a href="https://discord.gg/udE8zN5Gx7" target="_blank">Discord</a> | 
-                <a href="https://steamcommunity.com/groups/TheGMTower" target="_blank">Steam Group</a>
+                <a href="index">GM Tower</a> | 
+                <a href="tf2tower">TF2 Tower</a> | 
+                <a href="https://discord.gg/udE8zN5Gx7" target="_blank">Discord</a>
             </div>
-            <p>&copy; 2012 The GM Tower Community</p>
-            <p style="font-size: 10px; color: #8db3e2; margin-top: 5px;">Server Offline - Archive Only</p>
+            <p>&copy; 2012 The Tower Community</p>
         </div>
     </footer>
+
+    <script>
+        let currentServer = 'gmod';
+
+        function switchServer(server) {
+            currentServer = server;
+
+            // Update tabs
+            document.getElementById('gmodTab').classList.remove('active');
+            document.getElementById('tf2Tab').classList.remove('active');
+            document.getElementById('allTab').classList.remove('active');
+
+            if (server === 'gmod') {
+                document.getElementById('gmodTab').classList.add('active');
+                document.getElementById('pageTitle').textContent = 'GM Tower Forums';
+                document.getElementById('pageTitle').classList.remove('tf2-theme');
+            } else if (server === 'tf2') {
+                document.getElementById('tf2Tab').classList.add('active');
+                document.getElementById('pageTitle').textContent = 'TF2 Tower Forums';
+                document.getElementById('pageTitle').classList.add('tf2-theme');
+            } else {
+                document.getElementById('allTab').classList.add('active');
+                document.getElementById('pageTitle').textContent = 'All Server Forums';
+                document.getElementById('pageTitle').classList.remove('tf2-theme');
+            }
+
+            loadForumPosts();
+        }
+
+        function loadForumPosts() {
+            // Load posts from both servers
+            const gmodPosts = JSON.parse(localStorage.getItem('gmod_forum_posts') || '[]').map(p => ({...p, server: 'gmod'}));
+            const tf2Posts = JSON.parse(localStorage.getItem('tf2_forum_posts') || '[]').map(p => ({...p, server: 'tf2'}));
+
+            let posts = [];
+            if (currentServer === 'gmod') {
+                posts = gmodPosts;
+            } else if (currentServer === 'tf2') {
+                posts = tf2Posts;
+            } else {
+                posts = [...gmodPosts, ...tf2Posts];
+            }
+
+            const forumContainer = document.getElementById('forumPosts');
+
+            if (posts.length === 0) {
+                forumContainer.innerHTML = '<div class="no-posts">No posts yet. Check back soon!</div>';
+                return;
+            }
+
+            // Sort posts by date (newest first)
+            posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const categoryIcons = {
+                announcement: '📢',
+                update: '🔄',
+                event: '🎉',
+                maintenance: '🔧',
+                news: '📰'
+            };
+
+            let html = '';
+            posts.forEach((post) => {
+                const icon = categoryIcons[post.category] || '📰';
+                const postDate = new Date(post.date).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+
+                const themeClass = post.server === 'tf2' ? 'tf2-theme' : '';
+                const serverBadge = currentServer === 'all' ? 
+                    `<span class="server-badge ${post.server}">${post.server === 'gmod' ? 'GM TOWER' : 'TF2 TOWER'}</span>` : '';
+
+                html += `
+                    <div class="forum-post ${themeClass}">
+                        <div class="forum-post-header">
+                            <div>
+                                <h3 class="forum-post-title ${themeClass}">
+                                    ${icon} ${post.title}${serverBadge}
+                                </h3>
+                                <div class="forum-post-meta">
+                                    📅 ${postDate}
+                                </div>
+                            </div>
+                            <span class="forum-post-category ${post.category}">
+                                ${post.category}
+                            </span>
+                        </div>
+                        <div class="forum-post-content">${post.content}</div>
+                    </div>
+                `;
+            });
+
+            forumContainer.innerHTML = html;
+        }
+
+        // Load posts on page load
+        window.addEventListener('DOMContentLoaded', loadForumPosts);
+    </script>
 </body>
 </html>
