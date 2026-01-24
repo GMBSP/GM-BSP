@@ -100,7 +100,6 @@
         .category-icon {
             text-align: center;
             font-size: 32px;
-            font-family: Arial, sans-serif;
         }
 
         .category-info h3 {
@@ -432,6 +431,14 @@
 
         function formatDate(timestamp) {
             const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+            if (days === 0) return 'Today';
+            if (days === 1) return 'Yesterday';
+            if (days < 7) return days + ' days ago';
+            
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
             return months[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
         }
