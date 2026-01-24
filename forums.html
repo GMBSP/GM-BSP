@@ -12,665 +12,66 @@
         }
 
         body {
-            font-family: Verdana, Arial, sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 50%, #3d3d3d 100%);
-            background-attachment: fixed;
-            color: #333;
-            font-size: 12px;
-            line-height: 1.5;
+            font-family: Verdana, Arial, Helvetica, sans-serif;
+            background: #e5e5e5;
+            color: #000;
+            font-size: 11px;
         }
 
-        /* Header */
-        .header {
-            background: linear-gradient(90deg, #2c5aa0 0%, #3d6bb5 50%, #5085d4 100%);
-            border-bottom: 4px solid #1a3d7a;
-            padding: 20px 0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .header-content {
-            max-width: 980px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .logo-text {
-            font-size: 36px;
-            font-weight: bold;
-            background: linear-gradient(90deg, #e8f4ff 0%, #b8d4ff 50%, #fff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            font-family: 'Arial Black', sans-serif;
-            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
-        }
-
-        .subtitle {
-            color: #b8d4ff;
-            margin-top: 5px;
-            font-size: 14px;
-        }
-
-        /* Container */
-        .container {
+        .wrapper {
             max-width: 980px;
             margin: 20px auto;
             background: #fff;
-            border: 1px solid #555;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-        }
-
-        /* Server Tabs */
-        .server-tabs {
-            display: flex;
-            background: linear-gradient(90deg, #2c2c2c 0%, #3d3d3d 100%);
-            border-bottom: 2px solid #555;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 15px;
-            text-align: center;
-            cursor: pointer;
-            font-weight: bold;
-            color: #999;
-            border-right: 1px solid #555;
-            transition: all 0.3s ease;
-        }
-
-        .tab:last-child {
-            border-right: none;
-        }
-
-        .tab:hover {
-            background: #4d4d4d;
-            color: #fff;
-        }
-
-        .tab.active {
-            background: #fff;
-            color: #333;
-        }
-
-        .tab.gmod.active {
-            background: linear-gradient(180deg, #fff 0%, #e8f4ff 100%);
-            color: #2c5aa0;
-            border-bottom: 3px solid #2c5aa0;
-        }
-
-        .tab.tf2.active {
-            background: linear-gradient(180deg, #fff 0%, #fff8e0 100%);
-            color: #8b6914;
-            border-bottom: 3px solid #d9a441;
-        }
-
-        /* Content */
-        .content {
-            padding: 30px;
-        }
-
-        .page-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c5aa0;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #2c5aa0;
-        }
-
-        .page-title.tf2-theme {
-            color: #8b6914;
-            border-bottom-color: #d9a441;
-        }
-
-        /* Forum Posts */
-        .forum-post {
-            background: linear-gradient(135deg, #fff 0%, #f9f9f9 100%);
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .forum-post:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-color: #2c5aa0;
-        }
-
-        .forum-post.tf2-theme:hover {
-            border-color: #d9a441;
-        }
-
-        .forum-post-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .forum-post-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #2c5aa0;
-            margin: 0;
-        }
-
-        .forum-post-title.tf2-theme {
-            color: #8b6914;
-        }
-
-        .forum-post-meta {
-            font-size: 11px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .forum-post-category {
-            padding: 5px 12px;
-            background: linear-gradient(90deg, #2c5aa0 0%, #3d6bb5 100%);
-            color: #fff;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-            white-space: nowrap;
-        }
-
-        .forum-post-category.announcement { background: linear-gradient(90deg, #5c4033 0%, #8b6914 100%); }
-        .forum-post-category.update { background: linear-gradient(90deg, #4a7c9e 0%, #5c9fc8 100%); }
-        .forum-post-category.event { background: linear-gradient(90deg, #d9534f 0%, #e86763 100%); }
-        .forum-post-category.maintenance { background: linear-gradient(90deg, #f0ad4e 0%, #f5c16e 100%); }
-        .forum-post-category.news { background: linear-gradient(90deg, #5cb85c 0%, #6cc76c 100%); }
-
-        .forum-post-content {
-            font-size: 13px;
-            line-height: 1.6;
-            color: #333;
-            white-space: pre-wrap;
-            margin-top: 10px;
-        }
-
-        .server-badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 3px;
-            font-size: 10px;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-
-        .server-badge.gmod {
-            background: #2c5aa0;
-            color: #fff;
-        }
-
-        .server-badge.tf2 {
-            background: #d9a441;
-            color: #2c1810;
-        }
-
-        .no-posts {
-            text-align: center;
-            padding: 60px 20px;
-            color: #999;
-            font-style: italic;
-            font-size: 14px;
-        }
-
-        .back-links {
-            display: flex;
-            gap: 20px;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 2px solid #ddd;
-        }
-
-        .back-link {
-            color: #2c5aa0;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 13px;
-        }
-
-        .back-link:hover {
-            text-decoration: underline;
-        }
-
-        .back-link.tf2 {
-            color: #8b6914;
-        }
-
-        /* Footer */
-        footer {
-            background: linear-gradient(90deg, #1a1a1a 0%, #2c2c2c 100%);
-            color: #fff;
-            padding: 20px 0;
-            margin-top: 0;
-            border-top: 4px solid #555;
-            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .footer-content {
-            max-width: 980px;
-            margin: 0 auto;
-            padding: 0 15px;
-            font-size: 11px;
-            text-align: center;
-        }
-
-        .footer-links {
-            margin: 10px 0;
-        }
-
-        .footer-links a {
-            color: #b8d4ff;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-            }
-
-            .content {
-                padding: 15px;
-            }
-
-            .server-tabs {
-                flex-direction: column;
-            }
-
-            .tab {
-                border-right: none;
-                border-bottom: 1px solid #555;
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Header -->
-    <div class="header">
-        <div class="header-content">
-            <div class="logo-text">THE TOWER</div>
-            <div class="subtitle">Community Forums</div>
-        </div>
-    </div>
-
-    <!-- Main Container -->
-    <div class="container">
-        <!-- Server Tabs -->
-        <div class="server-tabs">
-            <div class="tab gmod active" onclick="switchServer('gmod')" id="gmodTab">
-                🎮 GM TOWER
-            </div>
-            <div class="tab tf2" onclick="switchServer('tf2')" id="tf2Tab">
-                🔫 TF2 TOWER
-            </div>
-            <div class="tab" onclick="switchServer('all')" id="allTab">
-                🌐 ALL POSTS
-            </div>
-        </div>
-
-        <!-- Content -->
-        <div class="content">
-            <h1 class="page-title" id="pageTitle">GM Tower Forums</h1>
-            
-            <div id="forumPosts">
-                <!-- Posts will be loaded here -->
-            </div>
-
-            <div class="back-links">
-                <a href="index" class="back-link">← Back to GM Tower</a>
-                <a href="tf2tower" class="back-link tf2">← Back to TF2 Tower</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="index">GM Tower</a> | 
-                <a href="tf2tower">TF2 Tower</a> | 
-                <a href="https://discord.gg/udE8zN5Gx7" target="_blank">Discord</a>
-            </div>
-            <p>&copy; 2012 The Tower Community</p>
-        </div>
-    </footer>
-
-    <script>
-        let currentServer = 'gmod';
-
-        function initializeDefaultPosts() {
-            const gmodPosts = localStorage.getItem('gmod_forum_posts');
-            const tf2Posts = localStorage.getItem('tf2_forum_posts');
-
-            if (!gmodPosts || JSON.parse(gmodPosts).length === 0) {
-                const defaultGmodPosts = [
-                    {
-                        id: Date.now() - 10000,
-                        title: "The Weird Door in Construct",
-                        date: "2015-12-15",
-                        category: "news",
-                        content: "Has anyone else noticed the mysterious door that appeared in construct? It doesn't open and makes strange sounds when you get close. Some players are saying it's part of an ARG. What do you think?",
-                        server: "gmod",
-                        author: "mysterious_steve",
-                        replies: 47,
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: Date.now() - 9000,
-                        title: "Sandbox Build Competition This Weekend!",
-                        date: "2016-01-10",
-                        category: "event",
-                        content: "🏗️ Build Competition Alert!\n\nThis Saturday at 3 PM EST, we're hosting our monthly build competition!\n\nTheme: \"Futuristic City\"\nPrizes: Custom player models and VIP status\nTime limit: 2 hours\n\nSign up in Discord!",
-                        server: "gmod",
-                        author: "AdminJake",
-                        replies: 23,
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: Date.now() - 8000,
-                        title: "New TTT Maps Added",
-                        date: "2016-01-18",
-                        category: "update",
-                        content: "We've added 3 new TTT maps to the rotation:\n\n- ttt_minecraft_b5\n- ttt_clue_se\n- ttt_rooftops_a2_1\n\nCheck them out and let us know what you think!",
-                        server: "gmod",
-                        author: "ModSarah",
-                        replies: 12,
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: Date.now() - 7000,
-                        title: "Zombie Survival Tips for New Players",
-                        date: "2016-01-05",
-                        category: "announcement",
-                        content: "New to Zombie Survival? Here are some tips:\n\n1. Always barricade early\n2. Stick with your team\n3. Save ammo for later waves\n4. Use props to block doorways\n5. Communication is key!\n\nSee you on the server!",
-                        server: "gmod",
-                        author: "ProGamer2015",
-                        replies: 8,
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: Date.now() - 6000,
-                        title: "Server Restart - New Addons",
-                        date: "2016-01-20",
-                        category: "maintenance",
-                        content: "⚠️ The server will restart tonight at 11 PM EST.\n\nWe're installing:\n- New prop pack\n- Updated admin tools\n- Performance optimizations\n\nExpected downtime: 15 minutes",
-                        server: "gmod",
-                        author: "AdminJake",
-                        replies: 5,
-                        createdAt: new Date().toISOString()
-                    }
-                ];
-                localStorage.setItem('gmod_forum_posts', JSON.stringify(defaultGmodPosts));
-            }
-
-            if (!tf2Posts || JSON.parse(tf2Posts).length === 0) {
-                const defaultTf2Posts = [
-                    {
-                        id: Date.now() - 5000,
-                        title: "Welcome to The TF2 Tower!",
-                        date: "2016-01-15",
-                        category: "announcement",
-                        content: "🎮 Welcome to our TF2 community server!\n\nWe're a friendly server focused on classic TF2 gameplay. No random crits, no ads, just pure fun.\n\nJoin our Discord and say hi!",
-                        server: "tf2",
-                        author: "TF2Admin",
-                        replies: 31,
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: Date.now() - 4000,
-                        title: "New Map Rotation - January 2016",
-                        date: "2016-01-22",
-                        category: "update",
-                        content: "🗺️ Updated map rotation!\n\nPayload:\n- pl_upward\n- pl_badwater\n- pl_barnblitz\n\nKOTH:\n- koth_harvest\n- koth_viaduct\n- koth_lakeside\n\nVote for next week's maps in Discord!",
-                        server: "tf2",
-                        author: "MapMaster",
-                        replies: 18,
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: Date.now() - 3000,
-                        title: "Double XP Weekend!",
-                        date: "2016-01-26",
-                        category: "event",
-                        content: "🎉 DOUBLE XP THIS WEEKEND!\n\nSaturday & Sunday - ALL DAY\nAll game modes\nAll maps\n\nGrind your ranks and unlock new achievements!\n\nDon't miss out!",
-                        server: "tf2",
-                        author: "TF2Admin",
-                        replies: 42,
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: Date.now() - 2000,
-                        title: "Server Rules Update",
-                        date: "2016-01-12",
-                        category: "announcement",
-                        content: "📋 Quick reminder of our server rules:\n\n✅ Be respectful\n✅ No cheating/hacking\n✅ No mic spam\n✅ Have fun!\n\nBreaking rules = kick/ban\nAdmins are here to help!",
-                        server: "tf2",
-                        author: "ModMike",
-                        replies: 7,
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: Date.now() - 1000,
-                        title: "Looking for Admins!",
-                        date: "2016-01-08",
-                        category: "news",
-                        content: "🔍 We're looking for responsible players to join our admin team!\n\nRequirements:\n- 50+ hours on our server\n- Mature and fair\n- Active in community\n\nApply in Discord!",
-                        server: "tf2",
-                        author: "TF2Admin",
-                        replies: 15,
-                        createdAt: new Date().toISOString()
-                    }
-                ];
-                localStorage.setItem('tf2_forum_posts', JSON.stringify(defaultTf2Posts));
-            }
-        }
-
-        function switchServer(server) {
-            currentServer = server;
-
-            // Update tabs
-            document.getElementById('gmodTab').classList.remove('active');
-            document.getElementById('tf2Tab').classList.remove('active');
-            document.getElementById('allTab').classList.remove('active');
-
-            if (server === 'gmod') {
-                document.getElementById('gmodTab').classList.add('active');
-                document.getElementById('pageTitle').textContent = 'GM Tower Forums';
-                document.getElementById('pageTitle').classList.remove('tf2-theme');
-            } else if (server === 'tf2') {
-                document.getElementById('tf2Tab').classList.add('active');
-                document.getElementById('pageTitle').textContent = 'TF2 Tower Forums';
-                document.getElementById('pageTitle').classList.add('tf2-theme');
-            } else {
-                document.getElementById('allTab').classList.add('active');
-                document.getElementById('pageTitle').textContent = 'All Server Forums';
-                document.getElementById('pageTitle').classList.remove('tf2-theme');
-            }
-
-            loadForumPosts();
-        }
-
-        function loadForumPosts() {
-            // Load posts from both servers
-            const gmodPosts = JSON.parse(localStorage.getItem('gmod_forum_posts') || '[]').map(p => ({...p, server: 'gmod'}));
-            const tf2Posts = JSON.parse(localStorage.getItem('tf2_forum_posts') || '[]').map(p => ({...p, server: 'tf2'}));
-
-            let posts = [];
-            if (currentServer === 'gmod') {
-                posts = gmodPosts;
-            } else if (currentServer === 'tf2') {
-                posts = tf2Posts;
-            } else {
-                posts = [...gmodPosts, ...tf2Posts];
-            }
-
-            const forumContainer = document.getElementById('forumPosts');
-
-            if (posts.length === 0) {
-                forumContainer.innerHTML = '<div class="no-posts">No posts yet. Check back soon!</div>';
-                return;
-            }
-
-            // Sort posts by date (newest first)
-            posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            const categoryIcons = {
-                announcement: '📢',
-                update: '🔄',
-                event: '🎉',
-                maintenance: '🔧',
-                news: '📰'
-            };
-
-            let html = '';
-            posts.forEach((post) => {
-                const icon = categoryIcons[post.category] || '📰';
-                const postDate = new Date(post.date).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-
-                const themeClass = post.server === 'tf2' ? 'tf2-theme' : '';
-                const serverBadge = currentServer === 'all' ? 
-                    `<span class="server-badge ${post.server}">${post.server === 'gmod' ? 'GM TOWER' : 'TF2 TOWER'}</span>` : '';
-
-                html += `
-                    <div class="forum-post ${themeClass}">
-                        <div class="forum-post-header">
-                            <div>
-                                <h3 class="forum-post-title ${themeClass}">
-                                    ${icon} ${post.title}${serverBadge}
-                                </h3>
-                                <div class="forum-post-meta">
-                                    📅 ${postDate} · by ${post.author || 'Anonymous'} · ${post.replies || 0} replies
-                                </div>
-                            </div>
-                            <span class="forum-post-category ${post.category}">
-                                ${post.category}
-                            </span>
-                        </div>
-                        <div class="forum-post-content">${post.content}</div>
-                    </div>
-                `;
-            });
-
-            forumContainer.innerHTML = html;
-        }
-
-        // Initialize default posts
-        initializeDefaultPosts();
-
-        // Load posts on page load
-        window.addEventListener('DOMContentLoaded', loadForumPosts);
-    </script>
-</body>
-</html>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Verdana, Arial, Helvetica, sans-serif;
-            background: #e5e5e5;
-            color: #333;
-            font-size: 12px;
+            border: 1px solid #bbb;
         }
 
         /* Header */
-        .header {
-            background: #2d5a8f;
-            border-bottom: 3px solid #1a3a5f;
-            padding: 12px 0;
+        .forum-header {
+            background: #2c5aa0;
+            padding: 10px 15px;
+            border-bottom: 3px solid #1a3d7a;
         }
 
-        .header-content {
-            max-width: 980px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .logo {
+        .forum-title {
             color: #fff;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
         }
 
-        .tagline {
+        .forum-subtitle {
             color: #b8d4ff;
-            font-size: 11px;
+            font-size: 10px;
             margin-top: 2px;
         }
 
         /* Navigation */
         .navbar {
             background: #3d6bb5;
-            border-bottom: 1px solid #2d5a8f;
+            padding: 5px 15px;
+            border-bottom: 1px solid #2c5aa0;
         }
 
-        .nav-content {
-            max-width: 980px;
-            margin: 0 auto;
-        }
-
-        .nav-links {
-            list-style: none;
-            display: flex;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-links li {
-            border-right: 1px solid #2d5a8f;
-        }
-
-        .nav-links a {
-            display: block;
-            padding: 7px 14px;
+        .navbar a {
             color: #fff;
             text-decoration: none;
-            font-size: 11px;
+            margin-right: 15px;
+            font-size: 10px;
         }
 
-        .nav-links a:hover {
-            background: #4d7bc5;
-        }
-
-        /* Container */
-        .container {
-            max-width: 980px;
-            margin: 15px auto;
-            background: #fff;
-            border: 1px solid #bbb;
+        .navbar a:hover {
+            text-decoration: underline;
         }
 
         /* Breadcrumb */
         .breadcrumb {
             background: #f0f0f0;
-            border-bottom: 1px solid #ccc;
-            padding: 6px 12px;
-            font-size: 11px;
+            padding: 6px 15px;
+            border-bottom: 1px solid #ddd;
+            font-size: 10px;
         }
 
         .breadcrumb a {
-            color: #2d5a8f;
+            color: #2c5aa0;
             text-decoration: none;
         }
 
@@ -678,157 +79,109 @@
             text-decoration: underline;
         }
 
-        /* Forum Header */
-        .forum-header {
-            background: #d0dce8;
-            border-bottom: 1px solid #b0c0d0;
-            padding: 8px 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* Category List */
+        .category-list {
+            border-top: 1px solid #ddd;
         }
 
-        .forum-title {
-            font-size: 14px;
-            font-weight: bold;
-            color: #2d5a8f;
-        }
-
-        .server-tabs {
-            display: flex;
-            gap: 3px;
-        }
-
-        .server-tab {
-            padding: 4px 10px;
-            background: #fff;
-            border: 1px solid #aaa;
+        .category {
+            border-bottom: 1px solid #ddd;
+            display: grid;
+            grid-template-columns: 50px 1fr 150px;
+            padding: 12px;
             cursor: pointer;
-            font-size: 11px;
+            transition: background 0.2s;
         }
 
-        .server-tab:hover {
-            background: #f5f5f5;
+        .category:hover {
+            background: #f9f9f9;
         }
 
-        .server-tab.active {
-            background: #2d5a8f;
-            color: #fff;
-            border-color: #2d5a8f;
+        .category-icon {
+            text-align: center;
+            font-size: 32px;
+            font-family: Arial, sans-serif;
         }
 
-        /* Thread List Table */
-        .thread-list-table {
-            width: 100%;
-            border-collapse: collapse;
+        .category-info h3 {
+            font-size: 13px;
+            color: #2c5aa0;
+            margin-bottom: 3px;
         }
 
-        .thread-header-row {
+        .category-desc {
+            font-size: 10px;
+            color: #666;
+        }
+
+        .category-stats {
+            font-size: 10px;
+            color: #666;
+            text-align: right;
+        }
+
+        .stat-number {
+            font-weight: bold;
+            color: #2c5aa0;
+        }
+
+        /* Thread List */
+        .thread-list {
+            display: none;
+        }
+
+        .thread-list.active {
+            display: block;
+        }
+
+        .thread-header {
             background: #e0e0e0;
-            font-size: 11px;
+            padding: 8px 12px;
+            font-size: 10px;
             font-weight: bold;
-            color: #555;
-        }
-
-        .thread-header-row th {
-            padding: 6px 8px;
-            text-align: left;
             border-bottom: 1px solid #ccc;
+            display: grid;
+            grid-template-columns: 40px 1fr 100px 150px;
         }
 
-        .thread-row {
-            border-bottom: 1px solid #e0e0e0;
+        .thread {
+            border-bottom: 1px solid #e5e5e5;
+            padding: 10px 12px;
             cursor: pointer;
+            display: grid;
+            grid-template-columns: 40px 1fr 100px 150px;
+            transition: background 0.2s;
         }
 
-        .thread-row:hover {
-            background: #f8f8f8;
-        }
-
-        .thread-row td {
-            padding: 8px;
-            font-size: 11px;
+        .thread:hover {
+            background: #f9f9f9;
         }
 
         .thread-icon {
-            width: 40px;
             text-align: center;
             font-size: 20px;
         }
 
-        .thread-title-col {
+        .thread-title {
+            font-size: 12px;
+            color: #2c5aa0;
             font-weight: bold;
-            color: #2d5a8f;
+            margin-bottom: 3px;
         }
 
-        .thread-starter {
+        .thread-author {
             font-size: 10px;
             color: #666;
-            margin-top: 2px;
         }
 
-        .thread-category {
-            width: 100px;
+        .thread-replies {
             text-align: center;
+            font-size: 11px;
         }
 
-        .category-tag {
-            display: inline-block;
-            padding: 2px 6px;
-            background: #2d5a8f;
-            color: #fff;
-            font-size: 9px;
-            text-transform: uppercase;
-        }
-
-        .thread-replies-col {
-            width: 70px;
-            text-align: center;
-        }
-
-        .reply-count {
-            font-weight: bold;
-            color: #2d5a8f;
-            font-size: 13px;
-        }
-
-        .thread-lastpost-col {
-            width: 140px;
+        .thread-lastpost {
             font-size: 10px;
-        }
-
-        .lastpost-date {
             color: #666;
-        }
-
-        .lastpost-user {
-            color: #2d5a8f;
-            font-weight: bold;
-        }
-
-        .server-indicator {
-            display: inline-block;
-            padding: 1px 5px;
-            font-size: 9px;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-
-        .server-indicator.gmod {
-            background: #5085d4;
-            color: #fff;
-        }
-
-        .server-indicator.tf2 {
-            background: #d9a441;
-            color: #000;
-        }
-
-        .no-threads {
-            padding: 30px;
-            text-align: center;
-            color: #999;
-            font-style: italic;
         }
 
         /* Thread View */
@@ -845,11 +198,11 @@
             display: inline-block;
             padding: 5px 10px;
             background: #e0e0e0;
-            border: 1px solid #aaa;
-            color: #333;
+            border: 1px solid #ccc;
+            color: #000;
             text-decoration: none;
-            font-size: 11px;
-            margin-bottom: 12px;
+            font-size: 10px;
+            margin-bottom: 10px;
             cursor: pointer;
         }
 
@@ -857,323 +210,346 @@
             background: #d0d0d0;
         }
 
-        .thread-post {
+        .post {
             border: 1px solid #ccc;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+            background: #fff;
         }
 
         .post-header {
             background: #e8e8e8;
             padding: 6px 10px;
             border-bottom: 1px solid #ccc;
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
+            font-size: 10px;
         }
 
         .post-author {
             font-weight: bold;
-            color: #2d5a8f;
+            color: #2c5aa0;
         }
 
         .post-date {
             color: #666;
+            float: right;
         }
 
-        .post-content {
+        .post-body {
             padding: 12px;
+            font-size: 11px;
             line-height: 1.5;
             white-space: pre-wrap;
         }
 
         /* Footer */
-        .footer {
+        .forum-footer {
             background: #3d6bb5;
-            color: #fff;
-            padding: 12px 0;
-            margin-top: 15px;
-            border-top: 3px solid #2d5a8f;
-        }
-
-        .footer-content {
-            max-width: 980px;
-            margin: 0 auto;
-            padding: 0 15px;
-            font-size: 10px;
+            padding: 10px 15px;
+            border-top: 3px solid #2c5aa0;
             text-align: center;
+            color: #fff;
+            font-size: 10px;
         }
 
-        .footer-links {
-            margin-bottom: 8px;
-        }
-
-        .footer-links a {
+        .forum-footer a {
             color: #b8d4ff;
             text-decoration: none;
             margin: 0 8px;
         }
 
-        .footer-links a:hover {
-            text-decoration: underline;
+        .no-threads {
+            padding: 30px;
+            text-align: center;
+            color: #999;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <div class="logo">THE TOWER FORUMS</div>
-            <div class="tagline">Community Discussion Board</div>
+    <div class="wrapper">
+        <div class="forum-header">
+            <div class="forum-title">THE TOWER FORUMS</div>
+            <div class="forum-subtitle">Community Discussion</div>
         </div>
-    </div>
 
-    <div class="navbar">
-        <div class="nav-content">
-            <ul class="nav-links">
-                <li><a href="index">GM Tower Home</a></li>
-                <li><a href="tf2tower">TF2 Tower Home</a></li>
-                <li><a href="#">Forums</a></li>
-                <li><a href="https://discord.gg/udE8zN5Gx7">Discord</a></li>
-            </ul>
+        <div class="navbar">
+            <a href="index">GM Tower Home</a>
+            <a href="tf2tower">TF2 Tower Home</a>
+            <a href="forums">Forums</a>
+            <a href="https://discord.gg/udE8zN5Gx7">Discord</a>
         </div>
-    </div>
 
-    <div class="container">
         <div class="breadcrumb">
-            <a href="index">Home</a> &gt; <a href="#">Forums</a> &gt; <span id="currentBreadcrumb">All Discussions</span>
+            <span id="breadcrumb">
+                <a href="index">Home</a> &gt; Forums
+            </span>
         </div>
 
-        <!-- Thread List -->
-        <div id="threadList">
-            <div class="forum-header">
-                <div class="forum-title" id="forumTitle">All Discussions</div>
-                <div class="server-tabs">
-                    <div class="server-tab active" onclick="filterThreads('all')" id="tabAll">All</div>
-                    <div class="server-tab" onclick="filterThreads('gmod')" id="tabGmod">GM Tower</div>
-                    <div class="server-tab" onclick="filterThreads('tf2')" id="tabTf2">TF2 Tower</div>
+        <!-- Category List -->
+        <div id="categoryList" class="category-list">
+            <div class="category" onclick="openCategory('general')">
+                <div class="category-icon">💭</div>
+                <div class="category-info">
+                    <h3>General Discussion</h3>
+                    <div class="category-desc">Talk about anything Tower related</div>
+                </div>
+                <div class="category-stats">
+                    <div><span class="stat-number" id="general-threads">0</span> Threads</div>
+                    <div><span class="stat-number" id="general-posts">0</span> Posts</div>
                 </div>
             </div>
 
-            <table class="thread-list-table">
-                <tr class="thread-header-row">
-                    <th width="40"></th>
-                    <th>Thread / Thread Starter</th>
-                    <th width="100">Category</th>
-                    <th width="70">Replies</th>
-                    <th width="140">Last Post</th>
-                </tr>
-                <tbody id="threadTableBody">
-                    <!-- Threads loaded here -->
-                </tbody>
-            </table>
+            <div class="category" onclick="openCategory('announcements')">
+                <div class="category-icon">!</div>
+                <div class="category-info">
+                    <h3>Announcements</h3>
+                    <div class="category-desc">Official server announcements and updates</div>
+                </div>
+                <div class="category-stats">
+                    <div><span class="stat-number" id="announcements-threads">0</span> Threads</div>
+                    <div><span class="stat-number" id="announcements-posts">0</span> Posts</div>
+                </div>
+            </div>
+
+            <div class="category" onclick="openCategory('gameservers')">
+                <div class="category-icon">»</div>
+                <div class="category-info">
+                    <h3>Game Servers</h3>
+                    <div class="category-desc">GM Tower and TF2 Tower discussion</div>
+                </div>
+                <div class="category-stats">
+                    <div><span class="stat-number" id="gameservers-threads">0</span> Threads</div>
+                    <div><span class="stat-number" id="gameservers-posts">0</span> Posts</div>
+                </div>
+            </div>
+
+            <div class="category" onclick="openCategory('support')">
+                <div class="category-icon">?</div>
+                <div class="category-info">
+                    <h3>Help & Support</h3>
+                    <div class="category-desc">Get help with server issues</div>
+                </div>
+                <div class="category-stats">
+                    <div><span class="stat-number" id="support-threads">0</span> Threads</div>
+                    <div><span class="stat-number" id="support-posts">0</span> Posts</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thread List -->
+        <div id="threadList" class="thread-list">
+            <div style="padding: 10px; background: #f0f0f0; border-bottom: 1px solid #ccc;">
+                <span class="back-btn" onclick="backToCategories()">← Back to Forum Categories</span>
+            </div>
+            <div class="thread-header">
+                <div></div>
+                <div>Thread</div>
+                <div>Replies</div>
+                <div>Last Post</div>
+            </div>
+            <div id="threadListContainer"></div>
         </div>
 
         <!-- Thread View -->
         <div id="threadView" class="thread-view">
-            <span class="back-btn" onclick="backToList()">← Back to Thread List</span>
+            <span class="back-btn" onclick="backToThreads()">← Back to Threads</span>
             <div id="threadContent"></div>
         </div>
-    </div>
 
-    <div class="footer">
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="index">GM Tower</a> |
-                <a href="tf2tower">TF2 Tower</a> |
-                <a href="https://discord.gg/udE8zN5Gx7">Discord</a>
-            </div>
-            <p>&copy; 2012-2016 The Tower Community</p>
+        <div class="forum-footer">
+            <a href="index">GM Tower</a> |
+            <a href="tf2tower">TF2 Tower</a> |
+            <a href="https://discord.gg/udE8zN5Gx7">Discord</a>
+            <div style="margin-top: 5px;">&copy; 2012 The Tower Community</div>
         </div>
     </div>
 
     <script>
-        let currentFilter = 'all';
+        let currentCategory = null;
+        let currentThread = null;
 
+        // Initialize with default threads
         function initDefaults() {
-            const gmodPosts = localStorage.getItem('gmod_forum_posts');
-            const tf2Posts = localStorage.getItem('tf2_forum_posts');
-
-            if (!gmodPosts || JSON.parse(gmodPosts).length === 0) {
-                localStorage.setItem('gmod_forum_posts', JSON.stringify([
+            if (!localStorage.getItem('forum_threads')) {
+                const defaultThreads = [
                     {
-                        id: 1450137600000,
-                        title: "The Weird Door in Construct",
-                        date: "2015-12-15",
-                        category: "news",
-                        content: "Has anyone else noticed the mysterious door that appeared in construct? It doesn't open and makes strange sounds when you get close. Some players are saying it's part of an ARG. What do you think?",
-                        server: "gmod",
-                        author: "mysterious_steve",
-                        replies: 47
+                        id: 1,
+                        category: 'general',
+                        title: 'The Weird Door in Construct',
+                        author: 'mysterious_steve',
+                        date: new Date('2015-12-15').getTime(),
+                        replies: 47,
+                        content: "Has anyone else noticed the mysterious door that appeared in construct? It doesn't open and makes strange sounds when you get close. Some players are saying it's part of an ARG. What do you think?"
                     },
                     {
-                        id: 1452441600000,
-                        title: "Sandbox Build Competition This Weekend!",
-                        date: "2016-01-10",
-                        category: "event",
-                        content: "Build Competition Alert!\n\nThis Saturday at 3 PM EST, we're hosting our monthly build competition!\n\nTheme: \"Futuristic City\"\nPrizes: Custom player models and VIP status\nTime limit: 2 hours\n\nSign up in Discord!",
-                        server: "gmod",
-                        author: "AdminJake",
-                        replies: 23
+                        id: 2,
+                        category: 'announcements',
+                        title: 'Welcome to The Tower!',
+                        author: 'AdminJake',
+                        date: new Date('2015-11-20').getTime(),
+                        replies: 23,
+                        content: "Welcome to The Tower community!\n\nWe're glad to have you here. Please read the rules and have fun!\n\n- The Admin Team"
                     },
                     {
-                        id: 1453132800000,
-                        title: "New TTT Maps Added",
-                        date: "2016-01-18",
-                        category: "update",
-                        content: "We've added 3 new TTT maps to the rotation:\n\n- ttt_minecraft_b5\n- ttt_clue_se\n- ttt_rooftops_a2_1\n\nCheck them out and let us know what you think!",
-                        server: "gmod",
-                        author: "ModSarah",
-                        replies: 12
+                        id: 3,
+                        category: 'gameservers',
+                        title: 'Sandbox Build Competition This Weekend!',
+                        author: 'ModSarah',
+                        date: new Date('2016-01-10').getTime(),
+                        replies: 18,
+                        content: "Build Competition Alert!\n\nThis Saturday at 3 PM EST, we're hosting our monthly build competition!\n\nTheme: 'Futuristic City'\nPrizes: Custom player models and VIP status\nTime limit: 2 hours\n\nSign up in Discord!"
+                    },
+                    {
+                        id: 4,
+                        category: 'gameservers',
+                        title: 'New TTT Maps Added',
+                        author: 'AdminJake',
+                        date: new Date('2016-01-18').getTime(),
+                        replies: 12,
+                        content: "We've added 3 new TTT maps to the rotation:\n\n- ttt_minecraft_b5\n- ttt_clue_se\n- ttt_rooftops_a2_1\n\nCheck them out and let us know what you think!"
+                    },
+                    {
+                        id: 5,
+                        category: 'support',
+                        title: 'How do I connect to the server?',
+                        author: 'newbie123',
+                        date: new Date('2016-01-05').getTime(),
+                        replies: 5,
+                        content: "Hey guys, I'm new to GMod. How do I connect to The GM Tower server?\n\nThanks!"
+                    },
+                    {
+                        id: 6,
+                        category: 'general',
+                        title: 'Best moments from last night',
+                        author: 'ProGamer2015',
+                        date: new Date('2016-01-22').getTime(),
+                        replies: 31,
+                        content: "Last night on TTT was INSANE! That round where everyone was accusing Jake of being the traitor but it turned out to be Sarah all along... epic!\n\nWhat were your favorite moments?"
                     }
-                ]));
-            }
-
-            if (!tf2Posts || JSON.parse(tf2Posts).length === 0) {
-                localStorage.setItem('tf2_forum_posts', JSON.stringify([
-                    {
-                        id: 1452825600000,
-                        title: "Welcome to The TF2 Tower!",
-                        date: "2016-01-15",
-                        category: "announcement",
-                        content: "Welcome to our TF2 community server!\n\nWe're a friendly server focused on classic TF2 gameplay. No random crits, no ads, just pure fun.\n\nJoin our Discord and say hi!",
-                        server: "tf2",
-                        author: "TF2Admin",
-                        replies: 31
-                    },
-                    {
-                        id: 1453420800000,
-                        title: "New Map Rotation - January 2016",
-                        date: "2016-01-22",
-                        category: "update",
-                        content: "Updated map rotation!\n\nPayload:\n- pl_upward\n- pl_badwater\n- pl_barnblitz\n\nKOTH:\n- koth_harvest\n- koth_viaduct\n- koth_lakeside\n\nVote for next week's maps in Discord!",
-                        server: "tf2",
-                        author: "MapMaster",
-                        replies: 18
-                    }
-                ]));
+                ];
+                localStorage.setItem('forum_threads', JSON.stringify(defaultThreads));
             }
         }
 
-        function filterThreads(filter) {
-            currentFilter = filter;
-
-            document.getElementById('tabAll').classList.remove('active');
-            document.getElementById('tabGmod').classList.remove('active');
-            document.getElementById('tabTf2').classList.remove('active');
-
-            if (filter === 'all') {
-                document.getElementById('tabAll').classList.add('active');
-                document.getElementById('forumTitle').textContent = 'All Discussions';
-                document.getElementById('currentBreadcrumb').textContent = 'All Discussions';
-            } else if (filter === 'gmod') {
-                document.getElementById('tabGmod').classList.add('active');
-                document.getElementById('forumTitle').textContent = 'GM Tower Forums';
-                document.getElementById('currentBreadcrumb').textContent = 'GM Tower';
-            } else {
-                document.getElementById('tabTf2').classList.add('active');
-                document.getElementById('forumTitle').textContent = 'TF2 Tower Forums';
-                document.getElementById('currentBreadcrumb').textContent = 'TF2 Tower';
-            }
-
-            loadThreads();
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return months[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear();
         }
 
-        function loadThreads() {
-            const gmodPosts = JSON.parse(localStorage.getItem('gmod_forum_posts') || '[]');
-            const tf2Posts = JSON.parse(localStorage.getItem('tf2_forum_posts') || '[]');
+        function updateStats() {
+            const threads = JSON.parse(localStorage.getItem('forum_threads') || '[]');
+            
+            const categories = ['general', 'announcements', 'gameservers', 'support'];
+            categories.forEach(cat => {
+                const catThreads = threads.filter(t => t.category === cat);
+                const threadCount = catThreads.length;
+                const postCount = catThreads.reduce((sum, t) => sum + (t.replies || 0), 0) + threadCount;
+                
+                document.getElementById(cat + '-threads').textContent = threadCount;
+                document.getElementById(cat + '-posts').textContent = postCount;
+            });
+        }
 
-            let posts = [];
-            if (currentFilter === 'gmod') {
-                posts = gmodPosts.map(p => ({...p, server: 'gmod'}));
-            } else if (currentFilter === 'tf2') {
-                posts = tf2Posts.map(p => ({...p, server: 'tf2'}));
-            } else {
-                posts = [...gmodPosts.map(p => ({...p, server: 'gmod'})), ...tf2Posts.map(p => ({...p, server: 'tf2'}))];
-            }
+        function openCategory(category) {
+            currentCategory = category;
+            const threads = JSON.parse(localStorage.getItem('forum_threads') || '[]');
+            const catThreads = threads.filter(t => t.category === category);
 
-            const tbody = document.getElementById('threadTableBody');
+            document.getElementById('categoryList').style.display = 'none';
+            document.getElementById('threadList').classList.add('active');
 
-            if (posts.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="no-threads">No threads yet. Check back soon!</td></tr>';
+            const categoryNames = {
+                general: 'General Discussion',
+                announcements: 'Announcements',
+                gameservers: 'Game Servers',
+                support: 'Help & Support'
+            };
+
+            document.getElementById('breadcrumb').innerHTML = 
+                '<a href="#" onclick="backToCategories(); return false;">Forums</a> &gt; ' + categoryNames[category];
+
+            if (catThreads.length === 0) {
+                document.getElementById('threadListContainer').innerHTML = 
+                    '<div class="no-threads">No threads in this category yet.</div>';
                 return;
             }
 
-            posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            const icons = {
-                announcement: '📢',
-                update: '🔄',
-                event: '🎉',
-                maintenance: '🔧',
-                news: '📰'
-            };
+            catThreads.sort((a, b) => b.date - a.date);
 
             let html = '';
-            posts.forEach(post => {
-                const icon = icons[post.category] || '📋';
-                const date = new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-                const serverTag = currentFilter === 'all' ? `<span class="server-indicator ${post.server}">${post.server === 'gmod' ? 'GMOD' : 'TF2'}</span>` : '';
-
+            catThreads.forEach(thread => {
+                const icon = thread.category === 'announcements' ? '►' : '•';
                 html += `
-                    <tr class="thread-row" onclick="viewThread(${post.id}, '${post.server}')">
-                        <td class="thread-icon">${icon}</td>
-                        <td>
-                            <div class="thread-title-col">${post.title}${serverTag}</div>
-                            <div class="thread-starter">by <strong>${post.author || 'Anonymous'}</strong>, ${date}</div>
-                        </td>
-                        <td class="thread-category">
-                            <span class="category-tag">${post.category}</span>
-                        </td>
-                        <td class="thread-replies-col">
-                            <div class="reply-count">${post.replies || 0}</div>
-                        </td>
-                        <td class="thread-lastpost-col">
-                            <div class="lastpost-date">${date}</div>
-                            <div class="lastpost-user">by ${post.author || 'Anonymous'}</div>
-                        </td>
-                    </tr>
+                    <div class="thread" onclick="openThread(${thread.id})">
+                        <div class="thread-icon">${icon}</div>
+                        <div>
+                            <div class="thread-title">${thread.title}</div>
+                            <div class="thread-author">by ${thread.author}</div>
+                        </div>
+                        <div class="thread-replies">${thread.replies || 0}</div>
+                        <div class="thread-lastpost">
+                            ${formatDate(thread.date)}<br>
+                            by ${thread.author}
+                        </div>
+                    </div>
                 `;
             });
 
-            tbody.innerHTML = html;
+            document.getElementById('threadListContainer').innerHTML = html;
         }
 
-        function viewThread(id, server) {
-            const key = server === 'gmod' ? 'gmod_forum_posts' : 'tf2_forum_posts';
-            const posts = JSON.parse(localStorage.getItem(key) || '[]');
-            const post = posts.find(p => p.id === id);
+        function openThread(id) {
+            const threads = JSON.parse(localStorage.getItem('forum_threads') || '[]');
+            const thread = threads.find(t => t.id === id);
+            
+            if (!thread) return;
 
-            if (!post) return;
+            currentThread = thread;
 
-            const date = new Date(post.date).toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+            document.getElementById('threadList').classList.remove('active');
+            document.getElementById('threadView').classList.add('active');
+
+            const categoryNames = {
+                general: 'General Discussion',
+                announcements: 'Announcements',
+                gameservers: 'Game Servers',
+                support: 'Help & Support'
+            };
+
+            document.getElementById('breadcrumb').innerHTML = 
+                '<a href="#" onclick="backToCategories(); return false;">Forums</a> &gt; ' +
+                '<a href="#" onclick="backToThreads(); return false;">' + categoryNames[thread.category] + '</a> &gt; ' +
+                thread.title;
 
             document.getElementById('threadContent').innerHTML = `
-                <h2 style="color: #2d5a8f; margin-bottom: 12px; font-size: 16px;">${post.title}</h2>
-                <div class="thread-post">
+                <h2 style="color: #2c5aa0; margin-bottom: 15px; font-size: 16px;">${thread.title}</h2>
+                <div class="post">
                     <div class="post-header">
-                        <span class="post-author">${post.author || 'Anonymous'}</span>
-                        <span class="post-date">${date}</span>
+                        <span class="post-author">${thread.author}</span>
+                        <span class="post-date">${formatDate(thread.date)}</span>
                     </div>
-                    <div class="post-content">${post.content}</div>
+                    <div class="post-body">${thread.content}</div>
                 </div>
             `;
-
-            document.getElementById('threadList').style.display = 'none';
-            document.getElementById('threadView').classList.add('active');
         }
 
-        function backToList() {
-            document.getElementById('threadList').style.display = 'block';
+        function backToCategories() {
+            document.getElementById('threadList').classList.remove('active');
             document.getElementById('threadView').classList.remove('active');
+            document.getElementById('categoryList').style.display = 'block';
+            document.getElementById('breadcrumb').innerHTML = '<a href="index">Home</a> &gt; Forums';
+            currentCategory = null;
+            currentThread = null;
+        }
+
+        function backToThreads() {
+            document.getElementById('threadView').classList.remove('active');
+            document.getElementById('threadList').classList.add('active');
+            openCategory(currentCategory);
         }
 
         initDefaults();
-        loadThreads();
+        updateStats();
     </script>
 </body>
 </html>
