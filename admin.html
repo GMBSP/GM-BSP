@@ -285,6 +285,14 @@
                     <h3 style="color: #2c1810; font-size: 14px; margin-bottom: 15px;">✏️ Create New Post</h3>
                     
                     <div class="form-group">
+                        <label>Server:</label>
+                        <select id="postServer">
+                            <option value="tf2">🔫 TF2 Tower</option>
+                            <option value="gmod">🎮 GM Tower</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label>Post Title:</label>
                         <input type="text" id="postTitle" placeholder="e.g., New Map Rotation Added!">
                     </div>
@@ -344,6 +352,25 @@
             }
             loadCurrentSettings();
         };
+
+        // Secret admin access: Press Ctrl+Shift+A three times quickly
+        let secretKeyPresses = 0;
+        let secretKeyTimer = null;
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                secretKeyPresses++;
+                
+                if (secretKeyPresses === 3) {
+                    window.location.href = 'admin';
+                }
+                
+                clearTimeout(secretKeyTimer);
+                secretKeyTimer = setTimeout(() => {
+                    secretKeyPresses = 0;
+                }, 2000);
+            }
+        });
 
         function login() {
             const password = document.getElementById('loginPassword').value;
@@ -436,19 +463,23 @@
         // ===== FORUM POST MANAGEMENT =====
 
         function loadForumPosts() {
-            const posts = JSON.parse(localStorage.getItem('tf2_forum_posts') || '[]');
+            // Load posts from both servers
+            const gmodPosts = JSON.parse(localStorage.getItem('gmod_forum_posts') || '[]').map(p => ({...p, server: 'gmod'}));
+            const tf2Posts = JSON.parse(localStorage.getItem('tf2_forum_posts') || '[]').map(p => ({...p, server: 'tf2'}));
+            const allPosts = [...gmodPosts, ...tf2Posts];
+
             const postsList = document.getElementById('postsList');
 
-            if (posts.length === 0) {
+            if (allPosts.length === 0) {
                 postsList.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">No posts yet. Create your first post above!</p>';
                 return;
             }
 
             // Sort posts by date (newest first)
-            posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+            allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             let html = '';
-            posts.forEach((post, index) => {
+            allPosts.forEach((post, globalIndex) => {
                 const categoryIcons = {
                     announcement: '📢',
                     update: '🔄',
@@ -457,12 +488,16 @@
                     news: '📰'
                 };
 
+                const serverBadge = post.server === 'gmod' ? 
+                    '<span style="background: #2c5aa0; color: #fff; padding: 2px 8px; border-radius: 3px; font-size: 10px; margin-left: 10px;">GM TOWER</span>' :
+                    '<span style="background: #d9a441; color: #2c1810; padding: 2px 8px; border-radius: 3px; font-size: 10px; margin-left: 10px;">TF2 TOWER</span>';
+
                 html += `
                     <div style="border: 1px solid #e0d0a0; padding: 15px; margin-bottom: 15px; border-radius: 4px; background: #fefbf5;">
                         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
                             <div style="flex: 1;">
                                 <h4 style="margin: 0 0 5px 0; color: #2c1810; font-size: 14px;">
-                                    ${categoryIcons[post.category] || '📰'} ${post.title}
+                                    ${categoryIcons[post.category] || '📰'} ${post.title}${serverBadge}
                                 </h4>
                                 <p style="margin: 0; font-size: 11px; color: #8b6914;">
                                     ${new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
@@ -472,10 +507,10 @@
                                 </p>
                             </div>
                             <div style="display: flex; gap: 5px;">
-                                <button onclick="editForumPost(${index})" style="padding: 5px 10px; background: #8b6914; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-size: 11px;">
+                                <button onclick="editForumPost('${post.server}', ${post.id})" style="padding: 5px 10px; background: #8b6914; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-size: 11px;">
                                     ✏️ Edit
                                 </button>
-                                <button onclick="deleteForumPost(${index})" style="padding: 5px 10px; background: #cc4444; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-size: 11px;">
+                                <button onclick="deleteForumPost('${post.server}', ${post.id})" style="padding: 5px 10px; background: #cc4444; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-size: 11px;">
                                     🗑️ Delete
                                 </button>
                             </div>
@@ -491,6 +526,7 @@
         }
 
         function addForumPost() {
+            const server = document.getElementById('postServer').value;
             const title = document.getElementById('postTitle').value.trim();
             const date = document.getElementById('postDate').value;
             const category = document.getElementById('postCategory').value;
@@ -501,7 +537,8 @@
                 return;
             }
 
-            const posts = JSON.parse(localStorage.getItem('tf2_forum_posts') || '[]');
+            const storageKey = server === 'gmod' ? 'gmod_forum_posts' : 'tf2_forum_posts';
+            const posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
             
             posts.push({
                 id: Date.now(),
@@ -509,20 +546,22 @@
                 date: date,
                 category: category,
                 content: content,
+                server: server,
                 createdAt: new Date().toISOString()
             });
 
-            localStorage.setItem('tf2_forum_posts', JSON.stringify(posts));
+            localStorage.setItem(storageKey, JSON.stringify(posts));
 
             // Clear form
             document.getElementById('postTitle').value = '';
             document.getElementById('postDate').value = '';
             document.getElementById('postContent').value = '';
             document.getElementById('postCategory').value = 'announcement';
+            document.getElementById('postServer').value = 'tf2';
 
             // Show success
             const successMsg = document.getElementById('successMsg');
-            successMsg.textContent = '✅ Post created successfully!';
+            successMsg.textContent = `✅ Post created for ${server === 'gmod' ? 'GM Tower' : 'TF2 Tower'}!`;
             successMsg.style.display = 'block';
             setTimeout(() => {
                 successMsg.style.display = 'none';
@@ -532,19 +571,25 @@
             loadForumPosts();
         }
 
-        function editForumPost(index) {
-            const posts = JSON.parse(localStorage.getItem('tf2_forum_posts') || '[]');
-            const post = posts[index];
+        function editForumPost(server, postId) {
+            const storageKey = server === 'gmod' ? 'gmod_forum_posts' : 'tf2_forum_posts';
+            const posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            const postIndex = posts.findIndex(p => p.id === postId);
+            
+            if (postIndex === -1) return;
+            
+            const post = posts[postIndex];
 
             // Fill form with post data
+            document.getElementById('postServer').value = post.server;
             document.getElementById('postTitle').value = post.title;
             document.getElementById('postDate').value = post.date;
             document.getElementById('postCategory').value = post.category;
             document.getElementById('postContent').value = post.content;
 
             // Delete old post
-            posts.splice(index, 1);
-            localStorage.setItem('tf2_forum_posts', JSON.stringify(posts));
+            posts.splice(postIndex, 1);
+            localStorage.setItem(storageKey, JSON.stringify(posts));
 
             // Reload list
             loadForumPosts();
@@ -553,14 +598,19 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function deleteForumPost(index) {
+        function deleteForumPost(server, postId) {
             if (!confirm('Are you sure you want to delete this post?')) {
                 return;
             }
 
-            const posts = JSON.parse(localStorage.getItem('tf2_forum_posts') || '[]');
-            posts.splice(index, 1);
-            localStorage.setItem('tf2_forum_posts', JSON.stringify(posts));
+            const storageKey = server === 'gmod' ? 'gmod_forum_posts' : 'tf2_forum_posts';
+            const posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            const postIndex = posts.findIndex(p => p.id === postId);
+            
+            if (postIndex === -1) return;
+            
+            posts.splice(postIndex, 1);
+            localStorage.setItem(storageKey, JSON.stringify(posts));
 
             // Show success
             const successMsg = document.getElementById('successMsg');
