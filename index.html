@@ -280,6 +280,70 @@
             margin: 6px 0;
         }
 
+        /* Forum Posts */
+        .forum-post {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            border: 2px solid #2c5aa0;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .forum-post:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(44, 90, 160, 0.3);
+        }
+
+        .forum-post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .forum-post-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #2c5aa0;
+            margin: 0;
+        }
+
+        .forum-post-meta {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .forum-post-category {
+            padding: 3px 10px;
+            background: linear-gradient(90deg, #2c5aa0 0%, #3d6bb5 100%);
+            color: #fff;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .forum-post-content {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #333;
+            white-space: pre-wrap;
+            margin-top: 10px;
+        }
+
+        .no-posts {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-style: italic;
+        }
+
         /* Footer */
         footer {
             background: #1a3d6b;
@@ -494,6 +558,13 @@
                         <li>Double-click to connect or add to favorites</li>
                     </ol>
                 </div>
+
+                <div class="content-section" id="forumSection">
+                    <h2>📰 Latest News & Announcements</h2>
+                    <div id="forumPosts">
+                        <!-- Forum posts will be loaded here -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -510,5 +581,87 @@
             <p>&copy; 2012 The GM Tower Community</p>
         </div>
     </footer>
+
+    <script>
+        // Load forum posts
+        loadForumPosts();
+
+        function loadForumPosts() {
+            const posts = JSON.parse(localStorage.getItem('gmod_forum_posts') || '[]');
+            const forumContainer = document.getElementById('forumPosts');
+
+            if (posts.length === 0) {
+                forumContainer.innerHTML = '<div class="no-posts">No announcements yet. Check back soon!</div>';
+                return;
+            }
+
+            // Sort posts by date (newest first)
+            posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const categoryIcons = {
+                announcement: '📢',
+                update: '🔄',
+                event: '🎉',
+                maintenance: '🔧',
+                news: '📰'
+            };
+
+            const categoryColors = {
+                announcement: '#2c5aa0',
+                update: '#4a7c9e',
+                event: '#d9534f',
+                maintenance: '#f0ad4e',
+                news: '#5cb85c'
+            };
+
+            let html = '';
+            posts.forEach((post) => {
+                const icon = categoryIcons[post.category] || '📰';
+                const postDate = new Date(post.date).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+
+                html += `
+                    <div class="forum-post">
+                        <div class="forum-post-header">
+                            <div>
+                                <h3 class="forum-post-title">${icon} ${post.title}</h3>
+                                <div class="forum-post-meta">
+                                    📅 ${postDate}
+                                </div>
+                            </div>
+                            <span class="forum-post-category" style="background: ${categoryColors[post.category] || '#2c5aa0'};">
+                                ${post.category}
+                            </span>
+                        </div>
+                        <div class="forum-post-content">${post.content}</div>
+                    </div>
+                `;
+            });
+
+            forumContainer.innerHTML = html;
+        }
+
+        // Secret admin access: Press Ctrl+Shift+A three times quickly
+        let secretKeyPresses = 0;
+        let secretKeyTimer = null;
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                secretKeyPresses++;
+                
+                if (secretKeyPresses === 3) {
+                    window.location.href = 'admin';
+                }
+                
+                clearTimeout(secretKeyTimer);
+                secretKeyTimer = setTimeout(() => {
+                    secretKeyPresses = 0;
+                }, 2000);
+            }
+        });
+    </script>
 </body>
 </html>
