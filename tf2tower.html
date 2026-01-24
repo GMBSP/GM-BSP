@@ -783,6 +783,25 @@
 
                         forumContainer.innerHTML = html;
                     }
+
+                    // Secret admin access: Press Ctrl+Shift+A three times quickly
+                    let secretKeyPresses = 0;
+                    let secretKeyTimer = null;
+                    
+                    document.addEventListener('keydown', function(e) {
+                        if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                            secretKeyPresses++;
+                            
+                            if (secretKeyPresses === 3) {
+                                window.location.href = 'admin';
+                            }
+                            
+                            clearTimeout(secretKeyTimer);
+                            secretKeyTimer = setTimeout(() => {
+                                secretKeyPresses = 0;
+                            }, 2000);
+                        }
+                    });
                 </script>
 
                 <div class="content-section" id="gamemodes">
@@ -966,8 +985,7 @@
                 <a href="forums">Forums</a> | 
                 <a href="https://discord.gg/udE8zN5Gx7" target="_blank">Discord</a> | 
                 <a href="https://steamcommunity.com/groups/TheTF2Tower" target="_blank">Steam Group</a> |
-                <a href="index">The GM Tower</a> |
-                <a href="admin" style="color: #ffaa44;">🔧 Admin</a>
+                <a href="index">The GM Tower</a>
             </div>
             <p>&copy; 2012 The Tower Community</p>
         </div>
