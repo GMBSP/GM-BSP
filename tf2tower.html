@@ -723,6 +723,65 @@
                         }
                     });
 
+                    // Initialize default posts if none exist
+                    function initializeDefaultPosts() {
+                        const tf2Posts = localStorage.getItem('tf2_forum_posts');
+
+                        if (!tf2Posts || JSON.parse(tf2Posts).length === 0) {
+                            const defaultTf2Posts = [
+                                {
+                                    id: Date.now() - 5000,
+                                    title: "Welcome to The TF2 Tower!",
+                                    date: "2025-01-15",
+                                    category: "announcement",
+                                    content: "🎮 Welcome to our TF2 community server!\n\nWe're a friendly server focused on classic TF2 gameplay. No random crits, no ads, just pure fun.\n\nJoin our Discord and say hi!",
+                                    server: "tf2",
+                                    createdAt: new Date().toISOString()
+                                },
+                                {
+                                    id: Date.now() - 4000,
+                                    title: "New Map Rotation - January 2025",
+                                    date: "2025-01-22",
+                                    category: "update",
+                                    content: "🗺️ Updated map rotation!\n\nPayload:\n- pl_upward\n- pl_badwater\n- pl_barnblitz\n\nKOTH:\n- koth_harvest\n- koth_viaduct\n- koth_lakeside\n\nVote for next week's maps in Discord!",
+                                    server: "tf2",
+                                    createdAt: new Date().toISOString()
+                                },
+                                {
+                                    id: Date.now() - 3000,
+                                    title: "Double XP Weekend!",
+                                    date: "2025-01-26",
+                                    category: "event",
+                                    content: "🎉 DOUBLE XP THIS WEEKEND!\n\nSaturday & Sunday - ALL DAY\nAll game modes\nAll maps\n\nGrind your ranks and unlock new achievements!\n\nDon't miss out!",
+                                    server: "tf2",
+                                    createdAt: new Date().toISOString()
+                                },
+                                {
+                                    id: Date.now() - 2000,
+                                    title: "Server Rules Update",
+                                    date: "2025-01-12",
+                                    category: "announcement",
+                                    content: "📋 Quick reminder of our server rules:\n\n✅ Be respectful\n✅ No cheating/hacking\n✅ No mic spam\n✅ Have fun!\n\nBreaking rules = kick/ban\nAdmins are here to help!",
+                                    server: "tf2",
+                                    createdAt: new Date().toISOString()
+                                },
+                                {
+                                    id: Date.now() - 1000,
+                                    title: "Looking for Admins!",
+                                    date: "2025-01-08",
+                                    category: "news",
+                                    content: "🔍 We're looking for responsible players to join our admin team!\n\nRequirements:\n- 50+ hours on our server\n- Mature and fair\n- Active in community\n\nApply in Discord!",
+                                    server: "tf2",
+                                    createdAt: new Date().toISOString()
+                                }
+                            ];
+                            localStorage.setItem('tf2_forum_posts', JSON.stringify(defaultTf2Posts));
+                        }
+                    }
+
+                    // Initialize default posts
+                    initializeDefaultPosts();
+
                     // Load forum posts
                     loadForumPosts();
 
