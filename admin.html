@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - The TF2 Tower</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Verdana, Arial, sans-serif;
+            background: linear-gradient(135deg, #2c1810 0%, #5c4033 50%, #8b6914 100%);
+            background-attachment: fixed;
+            color: #fff;
+            font-size: 12px;
+            line-height: 1.5;
+            padding: 40px 20px;
+        }
+
+        .admin-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #f9f3e8 0%, #f4e4b0 100%);
+            border: 3px solid #d9a441;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            color: #2c1810;
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-align: center;
+            background: linear-gradient(90deg, #5c4033 0%, #8b6914 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8b6914;
+            margin-bottom: 30px;
+            font-size: 11px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #2c1810;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #d9a441;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: Verdana, Arial, sans-serif;
+            background: #fff;
+            color: #2c1810;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .status-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .status-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #8b6914;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+        }
+
+        .status-btn.online {
+            background: #e8f5e0;
+            color: #2d7a1f;
+            border-color: #88cc66;
+        }
+
+        .status-btn.online.active {
+            background: #88cc66;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .status-btn.offline {
+            background: #ffe0e0;
+            color: #cc4444;
+            border-color: #ff6666;
+        }
+
+        .status-btn.offline.active {
+            background: #ff6666;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #5c4033 0%, #8b6914 100%);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(90deg, #8b6914 0%, #d9a441 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .success-msg,
+        .error-msg {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .success-msg {
+            background: #e8f5e0;
+            color: #2d7a1f;
+            border: 2px solid #88cc66;
+        }
+
+        .error-msg {
+            background: #ffe0e0;
+            color: #cc4444;
+            border: 2px solid #ff6666;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #8b6914;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .login-section {
+            text-align: center;
+        }
+
+        .login-btn {
+            padding: 12px 40px;
+            background: linear-gradient(90deg, #5c4033 0%, #8b6914 100%);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(90deg, #8b6914 0%, #d9a441 100%);
+        }
+
+        .note {
+            background: #fff8e0;
+            border: 2px solid #d9a441;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-size: 11px;
+            color: #8b6914;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>🔧 ADMIN PANEL</h1>
+        <p class="subtitle">The TF2 Tower Server Management</p>
+
+        <div class="success-msg" id="successMsg">✅ Settings saved successfully!</div>
+        <div class="error-msg" id="errorMsg">❌ Please enter password</div>
+
+        <!-- Login Section -->
+        <div id="loginSection">
+            <div class="form-group">
+                <label>Admin Password:</label>
+                <input type="password" id="loginPassword" placeholder="Enter admin password">
+            </div>
+            <button class="login-btn" onclick="login()">Login</button>
+            <div class="note">
+                <strong>Default Password:</strong> admin123<br>
+                (Change this in the code for security!)
+            </div>
+        </div>
+
+        <!-- Admin Panel (Hidden until login) -->
+        <div id="adminPanel" class="hidden">
+            <form id="adminForm" onsubmit="saveSettings(event)">
+                <div class="form-group">
+                    <label>Server Status:</label>
+                    <div class="status-toggle">
+                        <button type="button" class="status-btn online" id="onlineBtn" onclick="setStatus('online')">
+                            🟢 ONLINE
+                        </button>
+                        <button type="button" class="status-btn offline" id="offlineBtn" onclick="setStatus('offline')">
+                            🔴 OFFLINE
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Server IP:</label>
+                    <input type="text" id="serverIp" placeholder="206.0.29.10:10137" value="206.0.29.10:10137">
+                </div>
+
+                <div class="form-group">
+                    <label>Current Players:</label>
+                    <input type="text" id="currentPlayers" placeholder="e.g., 12/24">
+                </div>
+
+                <div class="form-group">
+                    <label>Server Message:</label>
+                    <textarea id="serverMessage" placeholder="Optional message to display on the main page"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Map Rotation:</label>
+                    <input type="text" id="mapRotation" placeholder="e.g., 2Fort, Badwater, Upward">
+                </div>
+
+                <button type="submit" class="submit-btn">💾 SAVE CHANGES</button>
+            </form>
+
+            <div class="note">
+                <strong>Note:</strong> Changes will update immediately on the main page. All data is stored in your browser's localStorage.
+            </div>
+
+            <button class="submit-btn" onclick="logout()" style="margin-top: 15px; background: #cc4444;">
+                🚪 LOGOUT
+            </button>
+        </div>
+
+        <a href="tf2tower" class="back-link">← Back to Main Page</a>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = 'admin123'; // Change this to your secure password!
+
+        // Check if already logged in
+        window.onload = function() {
+            if (localStorage.getItem('tf2_admin_logged_in') === 'true') {
+                showAdminPanel();
+            }
+            loadCurrentSettings();
+        };
+
+        function login() {
+            const password = document.getElementById('loginPassword').value;
+            
+            if (password === ADMIN_PASSWORD) {
+                localStorage.setItem('tf2_admin_logged_in', 'true');
+                showAdminPanel();
+                document.getElementById('errorMsg').style.display = 'none';
+            } else {
+                document.getElementById('errorMsg').textContent = '❌ Incorrect password';
+                document.getElementById('errorMsg').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('tf2_admin_logged_in');
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('loginPassword').value = '';
+        }
+
+        function showAdminPanel() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('adminPanel').classList.remove('hidden');
+        }
+
+        function setStatus(status) {
+            const onlineBtn = document.getElementById('onlineBtn');
+            const offlineBtn = document.getElementById('offlineBtn');
+            
+            if (status === 'online') {
+                onlineBtn.classList.add('active');
+                offlineBtn.classList.remove('active');
+            } else {
+                offlineBtn.classList.add('active');
+                onlineBtn.classList.remove('active');
+            }
+        }
+
+        function loadCurrentSettings() {
+            // Load saved settings
+            const status = localStorage.getItem('tf2_server_status') || 'online';
+            const ip = localStorage.getItem('tf2_server_ip') || '206.0.29.10:10137';
+            const players = localStorage.getItem('tf2_current_players') || '';
+            const message = localStorage.getItem('tf2_server_message') || '';
+            const maps = localStorage.getItem('tf2_map_rotation') || '';
+
+            // Set form values
+            setStatus(status);
+            document.getElementById('serverIp').value = ip;
+            document.getElementById('currentPlayers').value = players;
+            document.getElementById('serverMessage').value = message;
+            document.getElementById('mapRotation').value = maps;
+        }
+
+        function saveSettings(event) {
+            event.preventDefault();
+
+            // Get current status
+            const status = document.getElementById('onlineBtn').classList.contains('active') ? 'online' : 'offline';
+            const ip = document.getElementById('serverIp').value;
+            const players = document.getElementById('currentPlayers').value;
+            const message = document.getElementById('serverMessage').value;
+            const maps = document.getElementById('mapRotation').value;
+
+            // Save to localStorage
+            localStorage.setItem('tf2_server_status', status);
+            localStorage.setItem('tf2_server_ip', ip);
+            localStorage.setItem('tf2_current_players', players);
+            localStorage.setItem('tf2_server_message', message);
+            localStorage.setItem('tf2_map_rotation', maps);
+
+            // Show success message
+            const successMsg = document.getElementById('successMsg');
+            successMsg.style.display = 'block';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+
+            console.log('Settings saved:', { status, ip, players, message, maps });
+        }
+
+        // Allow Enter key to login
+        document.getElementById('loginPassword')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
+    </script>
+</body>
+</html>
