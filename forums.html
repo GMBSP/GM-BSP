@@ -448,6 +448,119 @@
 
         // Load posts on page load
         window.addEventListener('DOMContentLoaded', loadForumPosts);
+
+        // Initialize default posts if none exist
+        function initializeDefaultPosts() {
+            const gmodPosts = localStorage.getItem('gmod_forum_posts');
+            const tf2Posts = localStorage.getItem('tf2_forum_posts');
+
+            // Default GM Tower posts
+            if (!gmodPosts || JSON.parse(gmodPosts).length === 0) {
+                const defaultGmodPosts = [
+                    {
+                        id: Date.now() - 10000,
+                        title: "The Weird Door in Construct",
+                        date: "2024-12-15",
+                        category: "news",
+                        content: "Has anyone else noticed the mysterious door that appeared in construct? It doesn't open and makes strange sounds when you get close. Some players are saying it's part of an ARG. What do you think?",
+                        server: "gmod",
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: Date.now() - 9000,
+                        title: "Sandbox Build Competition This Weekend!",
+                        date: "2025-01-10",
+                        category: "event",
+                        content: "🏗️ Build Competition Alert!\n\nThis Saturday at 3 PM EST, we're hosting our monthly build competition!\n\nTheme: \"Futuristic City\"\nPrizes: Custom player models and VIP status\nTime limit: 2 hours\n\nSign up in Discord!",
+                        server: "gmod",
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: Date.now() - 8000,
+                        title: "New TTT Maps Added",
+                        date: "2025-01-18",
+                        category: "update",
+                        content: "We've added 3 new TTT maps to the rotation:\n\n- ttt_minecraft_b5\n- ttt_clue_se\n- ttt_rooftops_a2_1\n\nCheck them out and let us know what you think!",
+                        server: "gmod",
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: Date.now() - 7000,
+                        title: "Zombie Survival Tips for New Players",
+                        date: "2025-01-05",
+                        category: "announcement",
+                        content: "New to Zombie Survival? Here are some tips:\n\n1. Always barricade early\n2. Stick with your team\n3. Save ammo for later waves\n4. Use props to block doorways\n5. Communication is key!\n\nSee you on the server!",
+                        server: "gmod",
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: Date.now() - 6000,
+                        title: "Server Restart - New Addons",
+                        date: "2025-01-20",
+                        category: "maintenance",
+                        content: "⚠️ The server will restart tonight at 11 PM EST.\n\nWe're installing:\n- New prop pack\n- Updated admin tools\n- Performance optimizations\n\nExpected downtime: 15 minutes",
+                        server: "gmod",
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem('gmod_forum_posts', JSON.stringify(defaultGmodPosts));
+            }
+
+            // Default TF2 Tower posts
+            if (!tf2Posts || JSON.parse(tf2Posts).length === 0) {
+                const defaultTf2Posts = [
+                    {
+                        id: Date.now() - 5000,
+                        title: "Welcome to The TF2 Tower!",
+                        date: "2025-01-15",
+                        category: "announcement",
+                        content: "🎮 Welcome to our TF2 community server!\n\nWe're a friendly server focused on classic TF2 gameplay. No random crits, no ads, just pure fun.\n\nJoin our Discord and say hi!",
+                        server: "tf2",
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: Date.now() - 4000,
+                        title: "New Map Rotation - January 2025",
+                        date: "2025-01-22",
+                        category: "update",
+                        content: "🗺️ Updated map rotation!\n\nPayload:\n- pl_upward\n- pl_badwater\n- pl_barnblitz\n\nKOTH:\n- koth_harvest\n- koth_viaduct\n- koth_lakeside\n\nVote for next week's maps in Discord!",
+                        server: "tf2",
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: Date.now() - 3000,
+                        title: "Double XP Weekend!",
+                        date: "2025-01-26",
+                        category: "event",
+                        content: "🎉 DOUBLE XP THIS WEEKEND!\n\nSaturday & Sunday - ALL DAY\nAll game modes\nAll maps\n\nGrind your ranks and unlock new achievements!\n\nDon't miss out!",
+                        server: "tf2",
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: Date.now() - 2000,
+                        title: "Server Rules Update",
+                        date: "2025-01-12",
+                        category: "announcement",
+                        content: "📋 Quick reminder of our server rules:\n\n✅ Be respectful\n✅ No cheating/hacking\n✅ No mic spam\n✅ Have fun!\n\nBreaking rules = kick/ban\nAdmins are here to help!",
+                        server: "tf2",
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: Date.now() - 1000,
+                        title: "Looking for Admins!",
+                        date: "2025-01-08",
+                        category: "news",
+                        content: "🔍 We're looking for responsible players to join our admin team!\n\nRequirements:\n- 50+ hours on our server\n- Mature and fair\n- Active in community\n\nApply in Discord!",
+                        server: "tf2",
+                        createdAt: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem('tf2_forum_posts', JSON.stringify(defaultTf2Posts));
+            }
+        }
+
+        // Initialize on page load
+        initializeDefaultPosts();
     </script>
 </body>
 </html>
