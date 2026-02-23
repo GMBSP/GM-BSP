@@ -88,7 +88,7 @@
         }
     </style>
 </head>
-<body>
+<body onclick="startBGM()">
 
 <div id="monitor">
     <div id="login-view">
@@ -109,6 +109,12 @@
     </div>
 </div>
 
+<audio id="bgm" loop src="kulcs.bsp.mp3"></audio>
+<audio id="snd_type" src="button3.wav"></audio>
+<audio id="snd_enter" src="button9.wav"></audio>
+<audio id="snd_error" src="button18.wav"></audio>
+<audio id="snd_join" src="friend_join.wav"></audio>
+
 <script>
     const uInput = document.getElementById('user');
     const pInput = document.getElementById('pass');
@@ -117,6 +123,20 @@
     
     const NAME = "JcBw52003-J";
     const PASS = "INT3RL0P32005@!ERR.";
+
+    // Door Data
+    const doorList = `
+DOOR ID | MAP SOURCE      | STATUS   | INTEGRITY
+--------------------------------------------------
+D-101   | tf_2fort        | CLOSED   | DAMAGED (12%)
+D-102   | gm_construct    | OPENED   | STABLE
+D-103   | de_dust2        | CLOSED   | STABLE
+D-104   | hl2_canals_01   | CLOSED   | DAMAGED (88%)
+D-105   | cp_dustbowl     | OPENED   | CRITICAL
+D-106   | gm_flatgrass    | CLOSED   | STABLE
+D-107   | cs_office       | CLOSED   | STABLE
+D-108   | hl2_citadel_03  | LOCKED   | STABLE
+--------------------------------------------------`;
 
     const bootText = [
         "ESTABLISHING SECURE CONNECTION...",
@@ -130,16 +150,31 @@
         "--------------------------------------------------"
     ];
 
+    function startBGM() {
+        const bgm = document.getElementById('bgm');
+        if (bgm.paused) bgm.play().catch(e => console.log("Waiting for user interaction..."));
+    }
+
+    function playSfx(id) {
+        const sfx = document.getElementById(id);
+        sfx.currentTime = 0;
+        sfx.play();
+    }
+
     function handleKey(e) {
         if (e.key === 'Enter') {
             if (uInput.value === NAME && pInput.value === PASS) {
+                playSfx('snd_join');
                 startTransition();
             } else {
+                playSfx('snd_error');
                 monitor.style.backgroundColor = "#300";
                 setTimeout(() => { monitor.style.backgroundColor = "#c0c0c0"; }, 150);
                 pInput.value = "";
                 pInput.placeholder = "CREDENTIALS REJECTED.";
             }
+        } else {
+            playSfx('snd_type');
         }
     }
 
@@ -156,6 +191,7 @@
     function typeWriter(text, i) {
         if (i < text.length) {
             output.innerHTML += text.charAt(i);
+            if (text.charAt(i) !== ' ' && text.charAt(i) !== '\n') playSfx('snd_type');
             let speed = text.charAt(i) === '\n' ? 250 : 25; 
             setTimeout(() => typeWriter(text, i + 1), speed);
             output.scrollTop = output.scrollHeight;
@@ -167,19 +203,23 @@
 
     function handleConsole(e) {
         if (e.key === 'Enter') {
+            playSfx('snd_enter');
             let c = e.target.value.toLowerCase().trim();
             let res = "";
             
-            if (c === 'help') res = "\n> STATUS: Check hardware health\n> LOGS: View internal records\n> CLEAR: Flush terminal buffer\n> EXIT: Logout";
-            else if (c === 'status') res = "\n[!] CORE: CRITICAL OVERLOAD\n[!] SOURCE: DATA LEAK DETECTED\n[!] TRACE: ACTIVE";
-            else if (c === 'logs') res = "\n2025-11-12: SUBJECT DISCONNECTED.\n2025-12-01: NO SIGNAL DETECTED.\n2026-02-23: UNAUTHORIZED ACCESS DETECTED.";
-            else if (c === 'clear') { output.innerHTML = "TERMINAL BUFFER FLUSHED.\n-----------------------"; e.target.value = ""; return; }
+            if (c === 'help') res = "\n> STATUS\n> LOGS\n> DOORS\n> CLEAR\n> EXIT";
+            else if (c === 'doors') res = "\n" + doorList;
+            else if (c === 'status') res = "\n[!] CORE: CRITICAL OVERLOAD\n[!] SOURCE: DATA LEAK DETECTED";
+            else if (c === 'logs') res = "\n2025-11-12: SUBJECT DISCONNECTED.\n2026-02-23: UNAUTHORIZED ACCESS.";
+            else if (c === 'clear') { output.innerHTML = "TERMINAL BUFFER FLUSHED."; e.target.value = ""; return; }
             else if (c === 'exit') location.reload();
             else res = `\n'${c}' IS NOT A RECOGNIZED COMMAND.`;
             
             output.innerHTML += res;
             output.scrollTop = output.scrollHeight;
             e.target.value = "";
+        } else {
+            playSfx('snd_type');
         }
     }
 </script>
