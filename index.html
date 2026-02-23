@@ -23,7 +23,7 @@
             overflow: hidden;
         }
 
-        /* CRT Container - Sharp corners, bowed sides */
+        /* CRT Container - Sharp corners, bowed sides per request */
         .crt-container {
             background-color: var(--terminal-gray);
             width: 95vw;
@@ -43,7 +43,7 @@
             transition: background-color 0.4s ease;
         }
 
-        /* Scanline Overlay */
+        /* Scanline Overlay for retro effect */
         .crt-container::before {
             content: " ";
             display: block;
@@ -96,6 +96,9 @@
             40% { transform: translate(5px, -3px); }
             100% { transform: translate(0); }
         }
+
+        /* Hint text for players */
+        .hint { color: #666; font-size: 0.75rem; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -115,7 +118,7 @@
                     <input type="password" id="pass" placeholder="insert password here.." autocomplete="off">
                 </div>
             </div>
-            <p style="color: #666; font-size: 0.8rem; margin-top: 10px;">[ PRESS ENTER TO SUBMIT ]</p>
+            <p class="hint">[ Press ENTER to authorize ]</p>
         </div>
 
         <div id="console-view">
@@ -145,15 +148,15 @@ Type 'help' for available commands.</div>
         const cmdInput = document.getElementById('cmd');
         const output = document.getElementById('output');
 
-        // Obfuscated Keys (Reversed Base64)
-        const _u = "Si0zMDAyNXdCY0o="; 
-        const _p = "LlJSRUAhNTAwMlAzME0zVE5J"; 
+        // HIDDEN CREDENTIALS (Reversed Base64 for ARG protection)
+        const _u = "Si0zMDAyNXdCY0o="; // JcBw52003-J
+        const _p = "LlJSRUAhNTAwMlAzME0zVE5J"; // INT3RL0P32005@!ERR.
 
         function secretDecode(str) {
             return atob(str.split("").reverse().join(""));
         }
 
-        // Keyboard submission for Login
+        // Logic to handle Enter key on Name and Password fields
         [userInput, passInput].forEach(element => {
             element.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
@@ -167,19 +170,21 @@ Type 'help' for available commands.</div>
             const p = passInput.value;
 
             if (u === secretDecode(_u) && p === secretDecode(_p)) {
+                // Trigger Transition
                 monitor.setAttribute('data-state', 'terminal');
                 loginView.style.display = 'none';
                 consoleView.style.display = 'flex';
                 cmdInput.focus();
             } else {
+                // Trigger Error Shake
                 monitor.style.animation = "glitch-shake 0.1s infinite";
                 setTimeout(() => monitor.style.animation = "none", 150);
                 passInput.value = "";
-                passInput.placeholder = "KEY ERROR: ACCESS DENIED";
+                passInput.placeholder = "CREDENTIAL ERROR: DENIED";
             }
         }
 
-        // Terminal Command Logic
+        // Terminal Commands
         cmdInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const command = cmdInput.value.toLowerCase().trim();
@@ -190,11 +195,21 @@ Type 'help' for available commands.</div>
 
         function handleCommand(c) {
             let res = "";
-            if (c === 'help') res = "\n> STATUS: Check system health\n> LOGS: View encrypted data\n> CLEAR: Flush terminal\n> EXIT: Logout";
-            else if (c === 'status') res = "\n[!] CORE: FRAGMENTED\n[!] TRACE: ACTIVE\n[!] SOURCE: [REDACTED]";
-            else if (c === 'clear') { output.innerText = "TERMINAL FLUSHED.\n===================================="; return; }
-            else if (c === 'exit') { location.reload(); return; }
-            else res = `\n'${c}' is not recognized as a system command.`;
+            if (c === 'help') {
+                res = "\n> STATUS: Check system health\n> LOGS: View internal records\n> CLEAR: Flush terminal\n> EXIT: Terminate connection";
+            } else if (c === 'status') {
+                res = "\n[!] CORE: FRAGMENTED\n[!] TRACE: ACTIVE\n[!] LOCATION: [REDACTED]";
+            } else if (c === 'logs') {
+                res = "\n01: CONNECTION ESTABLISHED\n02: SUBJECT JcBw DISCONNECTED\n03: SOURCE LEAK DETECTED";
+            } else if (c === 'clear') {
+                output.innerText = "TERMINAL FLUSHED.\n====================================";
+                return;
+            } else if (c === 'exit') {
+                location.reload();
+                return;
+            } else {
+                res = `\n'${c}' is not recognized as an internal command.`;
+            }
             
             output.innerText += res;
             output.scrollTop = output.scrollHeight;
