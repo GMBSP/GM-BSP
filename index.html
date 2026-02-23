@@ -46,8 +46,25 @@
             pointer-events: none;
         }
 
-        .input-box { background: var(--input-bg); border: 1px solid #ffffff44; padding: 18px; margin: 12px 0; width: 650px; position: relative; z-index: 6; }
-        input { background: transparent; border: none; color: #ccc; width: 100%; font-size: 1.3rem; outline: none; font-family: inherit; }
+        .input-box { 
+            background: var(--input-bg); 
+            border: 1px solid #ffffff44; 
+            padding: 18px; 
+            margin: 12px 0; 
+            width: 650px; 
+            position: relative; 
+            z-index: 6; 
+        }
+        
+        input { 
+            background: transparent; 
+            border: none; 
+            color: #ccc; 
+            width: 100%; 
+            font-size: 1.3rem; 
+            outline: none; 
+            font-family: inherit; 
+        }
         
         #login-view { display: block; position: relative; z-index: 6; }
         #console-view { display: none; color: var(--text-red); height: 100%; flex-direction: column; position: relative; z-index: 6; }
@@ -104,7 +121,6 @@
     const monitor = document.getElementById('monitor');
     const output = document.getElementById('output');
     
-    // Obfuscated keys (Base64 + Reversed)
     const _u = "Si0zMDAyNXdCY0o="; 
     const _p = "LlJSRUAhNTAwMlAzME0zVE5J"; 
 
@@ -135,7 +151,7 @@
                 pInput.value = "";
             }
         } else {
-            playSfx('snd_type');
+            if (e.key !== 'Shift' && e.key !== 'Control' && e.key !== 'Alt') playSfx('snd_type');
         }
     }
 
@@ -145,7 +161,7 @@
             document.getElementById('login-view').style.display = "none";
             document.getElementById('console-view').style.display = "flex";
             monitor.style.backgroundColor = "#060606";
-            typeWriter("INITIALIZING... ACCESS GRANTED.", 0);
+            typeWriter("INITIALIZING... ACCESS GRANTED.\nTYPE 'HELP' FOR COMMANDS.\n---------------------------", 0);
         }, 300);
     }
 
@@ -154,6 +170,7 @@
             output.innerHTML += text.charAt(i);
             if (text.charAt(i) !== ' ' && text.charAt(i) !== '\n') playSfx('snd_type');
             setTimeout(() => typeWriter(text, i + 1), 25);
+            output.scrollTop = output.scrollHeight;
         } else {
             document.getElementById('prompt-box').style.display = "flex";
             document.getElementById('cmd').focus();
@@ -164,11 +181,19 @@
         if (e.key === 'Enter') {
             playSfx('snd_enter');
             let c = e.target.value.toLowerCase().trim();
-            if (c === 'doors') startInfiniteDoors();
-            else if (c === 'exit') location.reload();
+            if (c === 'doors') {
+                startInfiniteDoors();
+            } else if (c === 'help') {
+                output.innerHTML += "\n> DOORS: INFINITE MAP TRACE\n> EXIT: DISCONNECT";
+            } else if (c === 'exit') {
+                location.reload();
+            } else {
+                output.innerHTML += `\n'${c}' UNKNOWN.`;
+            }
+            output.scrollTop = output.scrollHeight;
             e.target.value = "";
         } else {
-            playSfx('snd_type');
+            if (e.key !== 'Shift' && e.key !== 'Control' && e.key !== 'Alt') playSfx('snd_type');
         }
     }
 
@@ -176,10 +201,16 @@
         document.getElementById('prompt-box').style.display = "none";
         setInterval(() => {
             const map = maps[Math.floor(Math.random() * maps.length)];
-            output.innerHTML += `DOOR-${Math.floor(Math.random()*999)} | ${map.padEnd(15)} | ${Math.random() > 0.5 ? 'OPENED' : 'CLOSED'}\n`;
+            const status = Math.random() > 0.5 ? 'OPENED' : 'CLOSED';
+            const integrity = Math.floor(Math.random() * 100);
+            output.innerHTML += `DOOR-${Math.floor(Math.random()*999)} | ${map.padEnd(15)} | ${status} | INT: ${integrity}%\n`;
             output.scrollTop = output.scrollHeight;
-            if (Math.random() > 0.9) playSfx('snd_type');
-        }, 100);
+            
+            const lines = output.innerHTML.split('\n');
+            if (lines.length > 60) output.innerHTML = lines.slice(lines.length - 60).join('\n');
+            
+            if (Math.random() > 0.8) playSfx('snd_type');
+        }, 80);
     }
 </script>
 
