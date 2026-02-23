@@ -7,9 +7,9 @@
     <style>
         :root {
             --bg-color: #000;
-            --terminal-gray: #d1d1d1;
-            --input-bg: #1a1a1a;
-            --scanline-opacity: 0.12;
+            --terminal-gray: #c0c0c0; /* Slightly more metallic gray */
+            --input-bg: #121212;
+            --scanline-opacity: 0.1;
         }
 
         body {
@@ -23,64 +23,62 @@
             overflow: hidden;
         }
 
-        /* CRT "Tube" Shape - Bowed left and right sides */
+        /* Refined CRT Shape - Subtle Curve */
         .crt-container {
             background-color: var(--terminal-gray);
-            width: 95%;
-            max-width: 1100px;
-            height: 90%;
+            width: 90vw;
+            max-width: 1000px;
+            height: 80vh;
             position: relative;
             
-            /* Barrel Distortion Effect */
-            border-radius: 12% / 50%; 
+            /* Reduced Barrel Distortion */
+            border-radius: 4% / 10%; 
             box-shadow: 
-                inset 0 0 120px rgba(0,0,0,0.35),
-                0 0 60px rgba(0,0,0,1);
+                inset 0 0 80px rgba(0,0,0,0.4),
+                0 0 40px rgba(0,0,0,0.8);
             
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            padding: 80px 100px;
+            padding: 40px 60px;
             box-sizing: border-box;
-            animation: flicker 0.15s infinite;
+            transition: background-color 0.5s ease;
         }
 
-        /* Scanline Overlay & Screen Glare */
+        /* Scanline Overlay */
         .crt-container::before {
             content: " ";
             display: block;
             position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, var(--scanline-opacity)) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
             z-index: 10;
             background-size: 100% 3px, 3px 100%;
             pointer-events: none;
         }
 
-        h1 { font-size: 1.6rem; color: #333; margin: 0 0 40px 0; letter-spacing: 4px; text-transform: uppercase; }
+        h1 { font-size: 1.4rem; color: #333; margin: 0 0 30px 0; letter-spacing: 3px; font-weight: 900; }
 
         /* UI Elements */
-        .input-group { margin-bottom: 25px; position: relative; z-index: 5; }
-        label { display: block; font-weight: bold; color: #444; margin-bottom: 10px; letter-spacing: 1px; }
+        .input-group { margin-bottom: 20px; position: relative; z-index: 5; }
+        label { display: block; font-weight: bold; color: #444; margin-bottom: 8px; font-size: 0.9rem; }
 
         .input-box {
             background-color: var(--input-bg);
-            border: 2px solid #fff;
-            padding: 15px;
+            border: 1px solid #ffffff33;
+            padding: 12px;
             width: 100%;
-            max-width: 600px;
+            max-width: 500px;
             box-sizing: border-box;
-            display: flex;
-            align-items: center;
         }
 
         input {
             background: transparent;
             border: none;
-            color: #aaa;
+            color: #ddd;
             width: 100%;
-            font-size: 1.1rem;
+            font-size: 1rem;
             outline: none;
             font-family: inherit;
         }
@@ -88,60 +86,41 @@
         button {
             background-color: var(--input-bg);
             color: white;
-            border: 2px solid #fff;
-            padding: 12px 50px;
+            border: 1px solid #fff;
+            padding: 8px 30px;
             font-family: inherit;
-            font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            position: relative;
-            z-index: 5;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
         }
 
-        button:hover { background-color: #333; }
+        button:hover { background: #222; }
 
-        /* Views */
-        #login-view { display: block; }
-        #console-view { display: none; flex-direction: column; height: 100%; }
+        /* Logic for Console View (Darker inner screen) */
+        #console-view { display: none; flex-direction: column; height: 100%; color: #ff0000; }
+        #console-view h1 { color: #ff0000; text-shadow: 0 0 5px rgba(255,0,0,0.5); }
+        #output { flex-grow: 1; overflow-y: auto; white-space: pre-wrap; line-height: 1.4; color: #ff3333; }
+        .prompt-symbol { color: #ffa500; font-weight: bold; margin-right: 10px; }
 
-        #output {
-            flex-grow: 1;
-            color: #222;
-            white-space: pre-wrap;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            line-height: 1.5;
-            font-size: 1rem;
-        }
-
-        .prompt-container { display: flex; align-items: center; }
-        .prompt-symbol { font-weight: bold; margin-right: 15px; color: #222; font-size: 1.2rem; }
+        /* Hidden data attributes to avoid F12 simple searches */
+        #monitor[data-state="terminal"] { background-color: #080808; }
+        #monitor[data-state="terminal"] h1 { color: #ffff00; } /* Yellow header as per image */
 
         /* Animations */
-        @keyframes flicker {
-            0% { opacity: 0.985; }
-            50% { opacity: 1; }
-            100% { opacity: 0.99; }
-        }
-
         @keyframes glitch-shake {
             0% { transform: translate(0); }
-            20% { transform: translate(-8px, 4px); }
-            40% { transform: translate(-8px, -4px); }
-            60% { transform: translate(8px, 4px); }
-            80% { transform: translate(8px, -4px); }
+            25% { transform: translate(-4px, 2px); }
+            50% { transform: translate(4px, -2px); }
+            75% { transform: translate(-2px, -2px); }
             100% { transform: translate(0); }
         }
-
-        /* Hide Scrollbar */
-        #output::-webkit-scrollbar { width: 0; }
     </style>
 </head>
 <body>
 
-    <div class="crt-container" id="monitor">
+    <div class="crt-container" id="monitor" data-state="login">
         
         <div id="login-view">
             <h1>SOURCEEXPLORER</h1>
@@ -160,19 +139,17 @@
         </div>
 
         <div id="console-view">
-            <h1>SOURCEEXPLORER TERMINAL v1.0</h1>
+            <h1 style="color: #ffff00;">SOURCE EXPLORER</h1>
             <div id="output">WELCOME TO SOURCE EXPLORER!
 ============================================
-SESSION_ID: 0x8821_B
-LOCAL_TIME: 2026-02-23
-STATUS: ENCRYPTED CONNECTION
+SOURCE EXPLORER TERMINAL v1.0
 ============================================
 Type 'help' for available commands.</div>
             
-            <div class="prompt-container">
+            <div style="display: flex; align-items: center; margin-top: 20px;">
                 <span class="prompt-symbol">&gt;</span>
-                <div class="input-box" style="margin-bottom: 0;">
-                    <input type="text" id="cmd" placeholder="Type command here..." autocomplete="off">
+                <div class="input-box" style="border: 1px solid orange; max-width: 100%;">
+                    <input type="text" id="cmd" placeholder="Type command here..." autocomplete="off" style="color: #aaa;">
                 </div>
             </div>
         </div>
@@ -186,7 +163,7 @@ Type 'help' for available commands.</div>
         const cmdInput = document.getElementById('cmd');
         const output = document.getElementById('output');
 
-        // HIDDEN CREDENTIALS (Base64 + Reversed)
+        // Obfuscated keys
         const _u = "Si0zMDAyNXdCY0o="; 
         const _p = "LlJSRUAhNTAwMlAzME0zVE5J"; 
 
@@ -195,28 +172,20 @@ Type 'help' for available commands.</div>
         }
 
         function validateLogin() {
-            const uInput = document.getElementById('user').value;
-            const pInput = document.getElementById('pass').value;
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
 
-            if (uInput === secretDecode(_u) && pInput === secretDecode(_p)) {
+            if (u === secretDecode(_u) && p === secretDecode(_p)) {
+                monitor.setAttribute('data-state', 'terminal');
                 loginView.style.display = 'none';
                 consoleView.style.display = 'flex';
                 cmdInput.focus();
             } else {
-                triggerGlitch();
-                document.getElementById('pass').value = '';
-                document.getElementById('pass').placeholder = "INVALID ACCESS KEY";
+                monitor.style.animation = "glitch-shake 0.2s infinite";
+                setTimeout(() => monitor.style.animation = "none", 200);
             }
         }
 
-        function triggerGlitch() {
-            monitor.style.animation = "glitch-shake 0.25s cubic-bezier(.25,.46,.45,.94) both";
-            setTimeout(() => {
-                monitor.style.animation = "flicker 0.15s infinite";
-            }, 250);
-        }
-
-        // Terminal Command Logic
         cmdInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const command = cmdInput.value.toLowerCase().trim();
@@ -226,27 +195,13 @@ Type 'help' for available commands.</div>
         });
 
         function handleCommand(c) {
-            let response = "";
-            switch(c) {
-                case 'help':
-                    response = "\n> HELP: List commands\n> STATUS: Check hardware health\n> LOGS: Read system entries\n> CLEAR: Wipe screen\n> EXIT: Terminate session";
-                    break;
-                case 'status':
-                    response = "\n[!] CORE: CRITICAL TEMPERATURE\n[!] BUFFER: 92% FULL\n[!] CONNECTION: UNSTABLE";
-                    break;
-                case 'logs':
-                    response = "\nLOG_01: Experiment initiated.\nLOG_02: Subject JcBw failed to synchronize.\nLOG_03: [REDACTED]";
-                    break;
-                case 'clear':
-                    output.innerText = "TERMINAL CLEARED.\n====================================";
-                    return;
-                case 'exit':
-                    location.reload();
-                    return;
-                default:
-                    response = `\n'${c}' is not a recognized internal command.`;
-            }
-            output.innerText += response;
+            let res = "";
+            if (c === 'help') res = "\n> STATUS: Check system health\n> LOGS: Access directory\n> EXIT: Logout";
+            else if (c === 'status') res = "\n[!] SOURCE INTEGRITY: 44%\n[!] WARNING: ENCRYPTION LEAK DETECTED.";
+            else if (c === 'exit') { location.reload(); return; }
+            else res = `\n'${c}' is not recognized.`;
+            
+            output.innerText += res;
             output.scrollTop = output.scrollHeight;
         }
     </script>
