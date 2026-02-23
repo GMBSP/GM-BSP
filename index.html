@@ -23,22 +23,18 @@
             overflow: hidden;
         }
 
-        /* CRT Container - Removed rounded corners, kept side bowing */
+        /* CRT Container - Sharp corners, bowed sides */
         .crt-container {
             background-color: var(--terminal-gray);
             width: 95vw;
             max-width: 1100px;
             height: 85vh;
             position: relative;
-            
-            /* Barrel distortion only on the sides, sharp corners */
             border-radius: 0; 
-            clip-path: ellipse(100% 120% at 50% 50%); /* Subtle side curve without rounding corners */
-            
+            clip-path: ellipse(100% 120% at 50% 50%); 
             box-shadow: 
                 inset 0 0 100px rgba(0,0,0,0.5),
                 0 0 40px rgba(0,0,0,0.9);
-            
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -85,21 +81,6 @@
             font-family: inherit;
         }
 
-        button {
-            background-color: var(--input-bg);
-            color: white;
-            border: 1px solid #fff;
-            padding: 10px 40px;
-            font-family: inherit;
-            cursor: pointer;
-            margin-top: 15px;
-            text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 2px;
-        }
-
-        button:hover { background: #222; }
-
         /* Console States */
         #console-view { display: none; flex-direction: column; height: 100%; }
         #output { flex-grow: 1; overflow-y: auto; white-space: pre-wrap; line-height: 1.5; color: #ff3333; font-size: 1rem; }
@@ -134,7 +115,7 @@
                     <input type="password" id="pass" placeholder="insert password here.." autocomplete="off">
                 </div>
             </div>
-            <button onclick="validateLogin()">Enter</button>
+            <p style="color: #666; font-size: 0.8rem; margin-top: 10px;">[ PRESS ENTER TO SUBMIT ]</p>
         </div>
 
         <div id="console-view">
@@ -159,6 +140,8 @@ Type 'help' for available commands.</div>
         const monitor = document.getElementById('monitor');
         const loginView = document.getElementById('login-view');
         const consoleView = document.getElementById('console-view');
+        const userInput = document.getElementById('user');
+        const passInput = document.getElementById('pass');
         const cmdInput = document.getElementById('cmd');
         const output = document.getElementById('output');
 
@@ -170,9 +153,18 @@ Type 'help' for available commands.</div>
             return atob(str.split("").reverse().join(""));
         }
 
+        // Keyboard submission for Login
+        [userInput, passInput].forEach(element => {
+            element.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    validateLogin();
+                }
+            });
+        });
+
         function validateLogin() {
-            const u = document.getElementById('user').value;
-            const p = document.getElementById('pass').value;
+            const u = userInput.value;
+            const p = passInput.value;
 
             if (u === secretDecode(_u) && p === secretDecode(_p)) {
                 monitor.setAttribute('data-state', 'terminal');
@@ -182,11 +174,12 @@ Type 'help' for available commands.</div>
             } else {
                 monitor.style.animation = "glitch-shake 0.1s infinite";
                 setTimeout(() => monitor.style.animation = "none", 150);
-                document.getElementById('pass').value = "";
-                document.getElementById('pass').placeholder = "KEY ERROR: RE-ENTRY REQUIRED";
+                passInput.value = "";
+                passInput.placeholder = "KEY ERROR: ACCESS DENIED";
             }
         }
 
+        // Terminal Command Logic
         cmdInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 const command = cmdInput.value.toLowerCase().trim();
@@ -198,7 +191,7 @@ Type 'help' for available commands.</div>
         function handleCommand(c) {
             let res = "";
             if (c === 'help') res = "\n> STATUS: Check system health\n> LOGS: View encrypted data\n> CLEAR: Flush terminal\n> EXIT: Logout";
-            else if (c === 'status') res = "\n[!] CORE: OVERHEATING\n[!] SOURCE: FRAGMENTED\n[!] STATUS: TRACE IMMINENT";
+            else if (c === 'status') res = "\n[!] CORE: FRAGMENTED\n[!] TRACE: ACTIVE\n[!] SOURCE: [REDACTED]";
             else if (c === 'clear') { output.innerText = "TERMINAL FLUSHED.\n===================================="; return; }
             else if (c === 'exit') { location.reload(); return; }
             else res = `\n'${c}' is not recognized as a system command.`;
