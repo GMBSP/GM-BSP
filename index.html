@@ -9,7 +9,7 @@
             --bg-color: #000;
             --terminal-gray: #d1d1d1;
             --input-bg: #1a1a1a;
-            --text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            --scanline-opacity: 0.1;
         }
 
         body {
@@ -22,114 +22,186 @@
             font-family: 'Courier New', Courier, monospace;
             overflow: hidden;
         }
-/* test
-        /* The "Monitor" container with a slight warp */
-        .screen {
+
+        /* CRT "Tube" Shape - Rounded sides */
+        .crt-container {
             background-color: var(--terminal-gray);
-            width: 80%;
-            max-width: 800px;
-            height: 80%;
-            padding: 40px;
-            box-sizing: border-box;
-            border-radius: 50% / 2%; /* Subtle CRT curve */
+            width: 90%;
+            max-width: 1000px;
+            height: 85%;
             position: relative;
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.2);
+            
+            /* Barrel Distortion Effect */
+            border-radius: 10% / 50%; 
+            box-shadow: 
+                inset 0 0 100px rgba(0,0,0,0.3),
+                0 0 50px rgba(0,0,0,1);
+            
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 60px 80px; /* Extra horizontal padding for the curve */
+            box-sizing: border-box;
             animation: flicker 0.15s infinite;
         }
 
-        h1 {
-            font-size: 1.5rem;
-            letter-spacing: 2px;
-            margin-bottom: 50px;
-            color: #444;
-            text-transform: uppercase;
-        }
-
-        .login-area {
-            margin-top: 20px;
-        }
-
-        label {
+        /* Scanline Overlay */
+        .crt-container::before {
+            content: " ";
             display: block;
-            font-weight: bold;
-            color: #555;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, var(--scanline-opacity)) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            z-index: 10;
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
         }
+
+        h1 { font-size: 1.6rem; color: #333; margin-bottom: 40px; letter-spacing: 3px; }
+
+        /* Shared UI Elements */
+        .input-group { margin-bottom: 25px; }
+        label { display: block; font-weight: bold; color: #444; margin-bottom: 10px; }
 
         .input-box {
             background-color: var(--input-bg);
             border: 2px solid #fff;
             padding: 15px;
             width: 100%;
-            max-width: 600px;
-            margin-bottom: 25px;
+            max-width: 550px;
             box-sizing: border-box;
         }
 
         input {
             background: transparent;
             border: none;
-            color: #888;
+            color: #999;
             width: 100%;
-            font-size: 1rem;
+            font-size: 1.1rem;
             outline: none;
             font-family: inherit;
         }
 
-        /* Subtle scanline effect for ARG vibes */
-        .screen::before {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            z-index: 2;
-            background-size: 100% 4px, 3px 100%;
-            pointer-events: none;
+        button {
+            background-color: var(--input-bg);
+            color: white;
+            border: 1px solid #fff;
+            padding: 10px 40px;
+            font-family: inherit;
+            cursor: pointer;
+            margin-top: 10px;
+            text-transform: uppercase;
         }
 
-        @keyframes flicker {
-            0% { opacity: 0.99; }
-            50% { opacity: 1; }
-            100% { opacity: 0.98; }
+        button:hover { background-color: #333; }
+
+        /* Navigation Views */
+        #login-view { display: block; }
+        #console-view { display: none; flex-direction: column; height: 100%; }
+
+        #output {
+            flex-grow: 1;
+            color: #222;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            line-height: 1.4;
         }
+
+        .prompt-container { display: flex; align-items: center; }
+        .prompt-symbol { font-weight: bold; margin-right: 15px; color: #222; }
+
+        @keyframes flicker {
+            0% { opacity: 0.98; }
+            50% { opacity: 1; }
+            100% { opacity: 0.99; }
+        }
+
+        /* Hide Scrollbar */
+        #output::-webkit-scrollbar { width: 0; }
     </style>
 </head>
 <body>
 
-    <div class="screen">
-        <h1>SOURCEEXPLORER</h1>
-
-        <div class="login-area">
-            <label for="name">NAME</label>
-            <div class="input-box">
-                <input type="text" id="name" placeholder="insert name here.." autocomplete="off">
+    <div class="crt-container">
+        
+        <div id="login-view">
+            <h1>SOURCEEXPLORER</h1>
+            <div class="input-group">
+                <label>NAME</label>
+                <div class="input-box">
+                    <input type="text" id="user" placeholder="insert name here.." autocomplete="off">
+                </div>
             </div>
+            <div class="input-group">
+                <div class="input-box">
+                    <input type="password" id="pass" placeholder="insert password here.." autocomplete="off">
+                </div>
+            </div>
+            <button onclick="login()">Enter</button>
+        </div>
 
-            <div class="input-box">
-                <input type="password" id="password" placeholder="insert password here.." autocomplete="off">
+        <div id="console-view">
+            <h1>SOURCEEXPLORER TERMINAL</h1>
+            <div id="output">SYSTEM BOOT SUCCESSFUL...
+CONNECTION ESTABLISHED.
+====================================
+Type 'help' for available commands.</div>
+            
+            <div class="prompt-container">
+                <span class="prompt-symbol">&gt;</span>
+                <div class="input-box" style="margin-bottom: 0;">
+                    <input type="text" id="cmd" placeholder="Type command here..." autocomplete="off">
+                </div>
             </div>
         </div>
+
     </div>
 
     <script>
-        // Simple script to handle 'Enter' key for ARG progression
-        const pwd = document.getElementById('password');
-        pwd.addEventListener('keypress', function (e) {
+        const loginView = document.getElementById('login-view');
+        const consoleView = document.getElementById('console-view');
+        const cmdInput = document.getElementById('cmd');
+        const output = document.getElementById('output');
+
+        function login() {
+            // Standardizing password to 'admin' for now
+            if (document.getElementById('pass').value.toLowerCase() === 'admin') {
+                loginView.style.display = 'none';
+                consoleView.style.display = 'flex';
+                cmdInput.focus();
+            } else {
+                alert("UNAUTHORIZED ACCESS");
+            }
+        }
+
+        cmdInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
-                const val = pwd.value.toLowerCase();
-                if (val === 'access_granted') { // Example password
-                    alert('ACCESS GRANTED. DECRYPTING FILES...');
-                    // You can redirect to another page here:
-                    // window.location.href = "secret_file.html";
-                } else {
-                    pwd.value = '';
-                    pwd.placeholder = 'INVALID CREDENTIALS';
-                }
+                const val = cmdInput.value.toLowerCase().trim();
+                execute(val);
+                cmdInput.value = '';
             }
         });
+
+        function execute(c) {
+            let res = "";
+            switch(c) {
+                case 'help':
+                    res = "\n- STATUS: System health\n- SCAN: Search for local nodes\n- LOGOUT: Return to login";
+                    break;
+                case 'status':
+                    res = "\nHEALTH: 88%\nENCRYPTION: ACTIVE\nNOTICE: Source remains unstable.";
+                    break;
+                case 'logout':
+                    location.reload();
+                    return;
+                default:
+                    res = `\nCommand '${c}' not found.`;
+            }
+            output.innerText += res;
+            output.scrollTop = output.scrollHeight;
+        }
     </script>
 </body>
 </html>
