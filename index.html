@@ -4,169 +4,110 @@
     <meta charset="UTF-8">
     <title>SOURCEEXPLORER</title>
     <style>
-        :root {
-            --bg-color: #000;
-            --terminal-gray: #c0c0c0;
-            --input-bg: #121212;
-            --text-red: #ff3333;
-        }
-
-        body { 
-            background: var(--bg-color); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-            font-family: 'Courier New', Courier, monospace; 
-            overflow: hidden; 
-        }
+        body { background: #000; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Courier New', monospace; overflow: hidden; }
         
-        /* Fixed Size Monitor */
         #monitor {
-            background-color: var(--terminal-gray);
-            width: 95vw; 
-            height: 90vh;
-            max-width: 1200px;
-            padding: 60px; 
-            box-sizing: border-box;
+            background: #c0c0c0;
+            width: 95vw; height: 90vh;
+            padding: 50px; box-sizing: border-box;
             clip-path: ellipse(100% 120% at 50% 50%);
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.5), 0 0 50px rgba(0,0,0,1);
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
             position: relative;
-            transition: background-color 0.8s ease;
+            display: flex; flex-direction: column;
         }
 
-        /* Scanline Overlay */
+        /* Scanline and Grain */
         #monitor::after {
-            content: " ";
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 4px;
-            z-index: 10;
-            pointer-events: none;
+            background-size: 100% 4px; pointer-events: none;
         }
 
-        /* Flash effect for transition */
-        .flash {
-            animation: white-out 0.4s ease-out forwards;
-        }
-
-        @keyframes white-out {
-            0% { filter: brightness(1); }
-            50% { filter: brightness(10); background: white; }
-            100% { filter: brightness(1); }
-        }
-
-        .input-box { background: var(--input-bg); border: 1px solid #ffffff44; padding: 15px; margin: 10px 0; max-width: 600px; }
+        .input-box { background: #121212; border: 1px solid #fff; padding: 15px; margin: 10px 0; width: 500px; }
         input { background: transparent; border: none; color: #ccc; width: 100%; font-size: 1.2rem; outline: none; font-family: inherit; }
         
-        #login-view { display: block; }
-        #console-view { display: none; color: var(--text-red); height: 100%; flex-direction: column; }
+        #login-view { display: block; z-index: 5; }
+        #console-view { display: none; color: #ff3333; z-index: 5; flex-direction: column; height: 100%; }
         
-        #output { 
-            white-space: pre-wrap; 
-            margin-bottom: 20px; 
-            font-size: 1.1rem; 
-            overflow: hidden;
-            border-right: .15em solid orange; /* Blinking cursor during print */
-            animation: blink-caret .75s step-end infinite;
-        }
-
-        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: orange; } }
-
-        h1 { text-transform: uppercase; letter-spacing: 4px; color: #333; margin-top: 0; }
-        .prompt-container { display: none; align-items: center; } /* Hidden until print finishes */
+        #output { white-space: pre-wrap; flex-grow: 1; overflow-y: auto; line-height: 1.4; }
+        h1 { text-transform: uppercase; color: #333; margin: 0 0 20px 0; }
+        
+        /* Status Light for Debugging */
+        #status-led { width: 10px; height: 10px; background: #555; border-radius: 50%; position: absolute; top: 20px; right: 20px; }
+        .led-active { background: #0f0 !important; box-shadow: 0 0 10px #0f0; }
     </style>
 </head>
 <body>
 
 <div id="monitor">
+    <div id="status-led"></div>
+
     <div id="login-view">
         <h1>SOURCEEXPLORER</h1>
-        <label style="font-weight: bold; color: #444;">NAME</label>
-        <div class="input-box"><input type="text" id="user" placeholder="insert name here.." autocomplete="off"></div>
-        <div class="input-box"><input type="password" id="pass" placeholder="insert password here.." autocomplete="off"></div>
-        <p style="color: #666; font-size: 0.8rem;">[ KEYBOARD AUTHORIZATION REQUIRED ]</p>
+        <label>NAME</label>
+        <div class="input-box"><input type="text" id="user" onkeydown="handleKey(event)"></div>
+        <label>PASSWORD</label>
+        <div class="input-box"><input type="password" id="pass" onkeydown="handleKey(event)"></div>
+        <p style="color: #666;">[ TYPE AND HIT ENTER ]</p>
     </div>
 
     <div id="console-view">
         <h1 style="color: yellow;">SOURCE EXPLORER</h1>
         <div id="output"></div>
-        <div class="prompt-container" id="prompt-box">
-            <span style="color: orange; margin-right: 10px; font-weight: bold;">&gt;</span>
-            <div class="input-box" style="border-color: orange; width: 100%; margin: 0;"><input type="text" id="cmd" autocomplete="off"></div>
+        <div style="display:flex; align-items:center;">
+            <span style="color:orange; margin-right:10px;">&gt;</span>
+            <div class="input-box" style="width:100%; border-color:orange;"><input type="text" id="cmd" onkeydown="handleConsole(event)"></div>
         </div>
     </div>
 </div>
 
 <script>
-    const uInput = document.getElementById('user');
-    const pInput = document.getElementById('pass');
-    const monitor = document.getElementById('monitor');
-    const output = document.getElementById('output');
-    
-    // AUTH KEYS
-    const VALID_USER = "JcBw52003-J";
-    const VALID_PASS = "INT3RL0P32005@!ERR.";
+    const u = document.getElementById('user');
+    const p = document.getElementById('pass');
+    const led = document.getElementById('status-led');
+    const out = document.getElementById('output');
 
-    const bootText = [
-        "ESTABLISHING SECURE CONNECTION...",
-        "DECRYPTING SOURCE NODES...",
-        "AUTHORIZATION GRANTED.",
-        "WELCOME TO SOURCE EXPLORER TERMINAL v1.0",
-        "========================================",
-        "WARNING: SYSTEM INTEGRITY AT 44%",
-        "TYPE 'HELP' TO LIST COMMANDS."
-    ];
+    const NAME = "JcBw52003-J";
+    const PASS = "INT3RL0P32005@!ERR.";
 
-    window.addEventListener('keypress', function (e) {
+    // This function triggers specifically on the inputs
+    function handleKey(e) {
         if (e.key === 'Enter') {
-            if (uInput.value === VALID_USER && pInput.value === VALID_PASS) {
-                startTransition();
-            } else if (document.activeElement === document.getElementById('cmd')) {
-                handleCommand(document.getElementById('cmd').value);
-                document.getElementById('cmd').value = "";
+            // Blink LED to show script is working
+            led.classList.add('led-active');
+            setTimeout(() => led.classList.remove('led-active'), 200);
+
+            if (u.value === NAME && p.value === PASS) {
+                document.getElementById('login-view').style.display = "none";
+                document.getElementById('console-view').style.display = "flex";
+                document.getElementById('monitor').style.background = "#050505";
+                typeOut("AUTHORIZATION GRANTED...\nBOOTING CORE...\nREADY.");
             } else {
-                // Wrong password shake/flash
-                monitor.style.background = "#500";
-                setTimeout(() => { monitor.style.background = var(--terminal-gray); }, 150);
+                u.style.color = "red";
+                p.style.color = "red";
+                setTimeout(() => { u.style.color = "#ccc"; p.style.color = "#ccc"; }, 500);
             }
         }
-    });
-
-    function startTransition() {
-        monitor.classList.add('flash');
-        setTimeout(() => {
-            document.getElementById('login-view').style.display = "none";
-            document.getElementById('console-view').style.display = "flex";
-            monitor.style.backgroundColor = "#050505";
-            typeWriter(bootText.join('\n'), 0);
-        }, 300);
     }
 
-    function typeWriter(text, i) {
-        if (i < text.length) {
-            output.innerHTML += text.charAt(i);
-            // CRT Printer speed
-            let speed = text.charAt(i) === '\n' ? 300 : 30; 
-            setTimeout(() => typeWriter(text, i + 1), speed);
-        } else {
-            output.style.borderRight = "none";
-            document.getElementById('prompt-box').style.display = "flex";
-            document.getElementById('cmd').focus();
+    function typeOut(text) {
+        let i = 0;
+        let interval = setInterval(() => {
+            out.innerHTML += text.charAt(i);
+            i++;
+            if (i >= text.length) {
+                clearInterval(interval);
+                document.getElementById('cmd').focus();
+            }
+        }, 50);
+    }
+
+    function handleConsole(e) {
+        if (e.key === 'Enter') {
+            const val = e.target.value.toLowerCase();
+            out.innerHTML += `\n> ${val}\nUNKNOWN COMMAND.`;
+            e.target.value = "";
         }
-    }
-
-    function handleCommand(c) {
-        let cmd = c.toLowerCase().trim();
-        let res = "";
-        if (cmd === 'help') res = "\n> STATUS\n> LOGS\n> EXIT";
-        else if (cmd === 'status') res = "\n[!] SYSTEM OVERHEATING\n[!] SOURCE FRAGMENTED";
-        else if (cmd === 'exit') location.reload();
-        else res = `\n'${cmd}' UNKNOWN.`;
-        
-        output.innerHTML += res;
     }
 </script>
 
