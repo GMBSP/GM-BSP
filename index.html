@@ -46,25 +46,8 @@
             pointer-events: none;
         }
 
-        .input-box { 
-            background: var(--input-bg); 
-            border: 1px solid #ffffff44; 
-            padding: 18px; 
-            margin: 12px 0; 
-            width: 650px; 
-            position: relative; 
-            z-index: 6; 
-        }
-        
-        input { 
-            background: transparent; 
-            border: none; 
-            color: #ccc; 
-            width: 100%; 
-            font-size: 1.3rem; 
-            outline: none; 
-            font-family: inherit; 
-        }
+        .input-box { background: var(--input-bg); border: 1px solid #ffffff44; padding: 18px; margin: 12px 0; width: 650px; position: relative; z-index: 6; }
+        input { background: transparent; border: none; color: #ccc; width: 100%; font-size: 1.3rem; outline: none; font-family: inherit; }
         
         #login-view { display: block; position: relative; z-index: 6; }
         #console-view { display: none; color: var(--text-red); height: 100%; flex-direction: column; position: relative; z-index: 6; }
@@ -74,7 +57,7 @@
             margin-bottom: 20px; 
             font-size: 1.2rem; 
             line-height: 1.5;
-            overflow-y: auto;
+            overflow-y: hidden; /* Hidden to emphasize the infinite scroll */
         }
 
         h1 { text-transform: uppercase; letter-spacing: 6px; color: #333; margin-top: 0; font-size: 2rem; }
@@ -124,35 +107,25 @@
     const NAME = "JcBw52003-J";
     const PASS = "INT3RL0P32005@!ERR.";
 
-    // Door Data
-    const doorList = `
-DOOR ID | MAP SOURCE      | STATUS   | INTEGRITY
---------------------------------------------------
-D-101   | tf_2fort        | CLOSED   | DAMAGED (12%)
-D-102   | gm_construct    | OPENED   | STABLE
-D-103   | de_dust2        | CLOSED   | STABLE
-D-104   | hl2_canals_01   | CLOSED   | DAMAGED (88%)
-D-105   | cp_dustbowl     | OPENED   | CRITICAL
-D-106   | gm_flatgrass    | CLOSED   | STABLE
-D-107   | cs_office       | CLOSED   | STABLE
-D-108   | hl2_citadel_03  | LOCKED   | STABLE
---------------------------------------------------`;
+    const maps = [
+        "tf_2fort", "gm_construct", "de_dust2", "hl2_canals_01", 
+        "cp_dustbowl", "gm_flatgrass", "cs_office", "hl2_citadel_03",
+        "de_aztec", "ctf_well", "gm_bigcity", "hl2_c17_01"
+    ];
 
     const bootText = [
         "ESTABLISHING SECURE CONNECTION...",
         "BYPASSING LOCAL FIREWALL...",
-        "DECRYPTING CORE FILES (SEC: 0x882)...",
         "ACCESS GRANTED: JcBw_52003",
         "--------------------------------------------------",
         "SOURCE EXPLORER TERMINAL v1.0.4 [BUILD_992]",
-        "SYSTEM STATUS: COMPROMISED",
         "TYPE 'HELP' FOR LIST OF SYSTEM COMMANDS.",
         "--------------------------------------------------"
     ];
 
     function startBGM() {
         const bgm = document.getElementById('bgm');
-        if (bgm.paused) bgm.play().catch(e => console.log("Waiting for user interaction..."));
+        if (bgm.paused) bgm.play().catch(e => {});
     }
 
     function playSfx(id) {
@@ -171,7 +144,6 @@ D-108   | hl2_citadel_03  | LOCKED   | STABLE
                 monitor.style.backgroundColor = "#300";
                 setTimeout(() => { monitor.style.backgroundColor = "#c0c0c0"; }, 150);
                 pInput.value = "";
-                pInput.placeholder = "CREDENTIALS REJECTED.";
             }
         } else {
             playSfx('snd_type');
@@ -192,8 +164,7 @@ D-108   | hl2_citadel_03  | LOCKED   | STABLE
         if (i < text.length) {
             output.innerHTML += text.charAt(i);
             if (text.charAt(i) !== ' ' && text.charAt(i) !== '\n') playSfx('snd_type');
-            let speed = text.charAt(i) === '\n' ? 250 : 25; 
-            setTimeout(() => typeWriter(text, i + 1), speed);
+            setTimeout(() => typeWriter(text, i + 1), 25);
             output.scrollTop = output.scrollHeight;
         } else {
             document.getElementById('prompt-box').style.display = "flex";
@@ -201,21 +172,51 @@ D-108   | hl2_citadel_03  | LOCKED   | STABLE
         }
     }
 
+    let infiniteActive = false;
+    function startInfiniteDoors() {
+        infiniteActive = true;
+        document.getElementById('prompt-box').style.display = "none";
+        
+        setInterval(() => {
+            if (!infiniteActive) return;
+            
+            const id = Math.floor(Math.random() * 900) + 100;
+            const map = maps[Math.floor(Math.random() * maps.length)];
+            const status = Math.random() > 0.5 ? "CLOSED" : "OPENED";
+            const integrity = Math.floor(Math.random() * 100);
+            const state = integrity < 30 ? "CRITICAL" : (integrity < 70 ? "DAMAGED" : "STABLE");
+
+            const line = `D-${id} | ${map.padEnd(15)} | ${status.padEnd(8)} | ${state} (${integrity}%)\n`;
+            output.innerHTML += line;
+            
+            // Overwhelming sound effect
+            if (Math.random() > 0.8) playSfx('snd_type');
+            
+            // Keep the bottom visible
+            output.scrollTop = output.scrollHeight;
+
+            // Remove old lines to prevent browser crash
+            const lines = output.innerHTML.split('\n');
+            if (lines.length > 50) {
+                output.innerHTML = lines.slice(lines.length - 50).join('\n');
+            }
+        }, 100); // Speed of the infinite loop
+    }
+
     function handleConsole(e) {
         if (e.key === 'Enter') {
             playSfx('snd_enter');
             let c = e.target.value.toLowerCase().trim();
-            let res = "";
             
-            if (c === 'help') res = "\n> STATUS\n> LOGS\n> DOORS\n> CLEAR\n> EXIT";
-            else if (c === 'doors') res = "\n" + doorList;
-            else if (c === 'status') res = "\n[!] CORE: CRITICAL OVERLOAD\n[!] SOURCE: DATA LEAK DETECTED";
-            else if (c === 'logs') res = "\n2025-11-12: SUBJECT DISCONNECTED.\n2026-02-23: UNAUTHORIZED ACCESS.";
-            else if (c === 'clear') { output.innerHTML = "TERMINAL BUFFER FLUSHED."; e.target.value = ""; return; }
-            else if (c === 'exit') location.reload();
-            else res = `\n'${c}' IS NOT A RECOGNIZED COMMAND.`;
-            
-            output.innerHTML += res;
+            if (c === 'help') {
+                output.innerHTML += "\n> DOORS\n> EXIT";
+            } else if (c === 'doors') {
+                startInfiniteDoors();
+            } else if (c === 'exit') {
+                location.reload();
+            } else {
+                output.innerHTML += `\n'${c}' UNKNOWN.`;
+            }
             output.scrollTop = output.scrollHeight;
             e.target.value = "";
         } else {
