@@ -9,7 +9,7 @@
             --bg-color: #000;
             --terminal-gray: #d1d1d1;
             --input-bg: #1a1a1a;
-            --scanline-opacity: 0.1;
+            --scanline-opacity: 0.12;
         }
 
         body {
@@ -23,60 +23,62 @@
             overflow: hidden;
         }
 
-        /* CRT "Tube" Shape - Rounded sides */
+        /* CRT "Tube" Shape - Bowed left and right sides */
         .crt-container {
             background-color: var(--terminal-gray);
-            width: 90%;
-            max-width: 1000px;
-            height: 85%;
+            width: 95%;
+            max-width: 1100px;
+            height: 90%;
             position: relative;
             
             /* Barrel Distortion Effect */
-            border-radius: 10% / 50%; 
+            border-radius: 12% / 50%; 
             box-shadow: 
-                inset 0 0 100px rgba(0,0,0,0.3),
-                0 0 50px rgba(0,0,0,1);
+                inset 0 0 120px rgba(0,0,0,0.35),
+                0 0 60px rgba(0,0,0,1);
             
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            padding: 60px 80px; /* Extra horizontal padding for the curve */
+            padding: 80px 100px;
             box-sizing: border-box;
             animation: flicker 0.15s infinite;
         }
 
-        /* Scanline Overlay */
+        /* Scanline Overlay & Screen Glare */
         .crt-container::before {
             content: " ";
             display: block;
             position: absolute;
             top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, var(--scanline-opacity)) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
             z-index: 10;
             background-size: 100% 3px, 3px 100%;
             pointer-events: none;
         }
 
-        h1 { font-size: 1.6rem; color: #333; margin-bottom: 40px; letter-spacing: 3px; }
+        h1 { font-size: 1.6rem; color: #333; margin: 0 0 40px 0; letter-spacing: 4px; text-transform: uppercase; }
 
-        /* Shared UI Elements */
-        .input-group { margin-bottom: 25px; }
-        label { display: block; font-weight: bold; color: #444; margin-bottom: 10px; }
+        /* UI Elements */
+        .input-group { margin-bottom: 25px; position: relative; z-index: 5; }
+        label { display: block; font-weight: bold; color: #444; margin-bottom: 10px; letter-spacing: 1px; }
 
         .input-box {
             background-color: var(--input-bg);
             border: 2px solid #fff;
             padding: 15px;
             width: 100%;
-            max-width: 550px;
+            max-width: 600px;
             box-sizing: border-box;
+            display: flex;
+            align-items: center;
         }
 
         input {
             background: transparent;
             border: none;
-            color: #999;
+            color: #aaa;
             width: 100%;
             font-size: 1.1rem;
             outline: none;
@@ -86,17 +88,21 @@
         button {
             background-color: var(--input-bg);
             color: white;
-            border: 1px solid #fff;
-            padding: 10px 40px;
+            border: 2px solid #fff;
+            padding: 12px 50px;
             font-family: inherit;
+            font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
             text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 5;
         }
 
         button:hover { background-color: #333; }
 
-        /* Navigation Views */
+        /* Views */
         #login-view { display: block; }
         #console-view { display: none; flex-direction: column; height: 100%; }
 
@@ -106,16 +112,27 @@
             white-space: pre-wrap;
             overflow-y: auto;
             margin-bottom: 20px;
-            line-height: 1.4;
+            line-height: 1.5;
+            font-size: 1rem;
         }
 
         .prompt-container { display: flex; align-items: center; }
-        .prompt-symbol { font-weight: bold; margin-right: 15px; color: #222; }
+        .prompt-symbol { font-weight: bold; margin-right: 15px; color: #222; font-size: 1.2rem; }
 
+        /* Animations */
         @keyframes flicker {
-            0% { opacity: 0.98; }
+            0% { opacity: 0.985; }
             50% { opacity: 1; }
             100% { opacity: 0.99; }
+        }
+
+        @keyframes glitch-shake {
+            0% { transform: translate(0); }
+            20% { transform: translate(-8px, 4px); }
+            40% { transform: translate(-8px, -4px); }
+            60% { transform: translate(8px, 4px); }
+            80% { transform: translate(8px, -4px); }
+            100% { transform: translate(0); }
         }
 
         /* Hide Scrollbar */
@@ -124,7 +141,7 @@
 </head>
 <body>
 
-    <div class="crt-container">
+    <div class="crt-container" id="monitor">
         
         <div id="login-view">
             <h1>SOURCEEXPLORER</h1>
@@ -139,14 +156,17 @@
                     <input type="password" id="pass" placeholder="insert password here.." autocomplete="off">
                 </div>
             </div>
-            <button onclick="login()">Enter</button>
+            <button onclick="validateLogin()">Enter</button>
         </div>
 
         <div id="console-view">
-            <h1>SOURCEEXPLORER TERMINAL</h1>
-            <div id="output">SYSTEM BOOT SUCCESSFUL...
-CONNECTION ESTABLISHED.
-====================================
+            <h1>SOURCEEXPLORER TERMINAL v1.0</h1>
+            <div id="output">WELCOME TO SOURCE EXPLORER!
+============================================
+SESSION_ID: 0x8821_B
+LOCAL_TIME: 2026-02-23
+STATUS: ENCRYPTED CONNECTION
+============================================
 Type 'help' for available commands.</div>
             
             <div class="prompt-container">
@@ -160,46 +180,73 @@ Type 'help' for available commands.</div>
     </div>
 
     <script>
+        const monitor = document.getElementById('monitor');
         const loginView = document.getElementById('login-view');
         const consoleView = document.getElementById('console-view');
         const cmdInput = document.getElementById('cmd');
         const output = document.getElementById('output');
 
-        function login() {
-            // Standardizing password to 'admin' for now
-            if (document.getElementById('pass').value.toLowerCase() === 'admin') {
+        // HIDDEN CREDENTIALS (Base64 + Reversed)
+        const _u = "Si0zMDAyNXdCY0o="; 
+        const _p = "LlJSRUAhNTAwMlAzME0zVE5J"; 
+
+        function secretDecode(str) {
+            return atob(str.split("").reverse().join(""));
+        }
+
+        function validateLogin() {
+            const uInput = document.getElementById('user').value;
+            const pInput = document.getElementById('pass').value;
+
+            if (uInput === secretDecode(_u) && pInput === secretDecode(_p)) {
                 loginView.style.display = 'none';
                 consoleView.style.display = 'flex';
                 cmdInput.focus();
             } else {
-                alert("UNAUTHORIZED ACCESS");
+                triggerGlitch();
+                document.getElementById('pass').value = '';
+                document.getElementById('pass').placeholder = "INVALID ACCESS KEY";
             }
         }
 
-        cmdInput.addEventListener('keypress', function (e) {
+        function triggerGlitch() {
+            monitor.style.animation = "glitch-shake 0.25s cubic-bezier(.25,.46,.45,.94) both";
+            setTimeout(() => {
+                monitor.style.animation = "flicker 0.15s infinite";
+            }, 250);
+        }
+
+        // Terminal Command Logic
+        cmdInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                const val = cmdInput.value.toLowerCase().trim();
-                execute(val);
+                const command = cmdInput.value.toLowerCase().trim();
+                handleCommand(command);
                 cmdInput.value = '';
             }
         });
 
-        function execute(c) {
-            let res = "";
+        function handleCommand(c) {
+            let response = "";
             switch(c) {
                 case 'help':
-                    res = "\n- STATUS: System health\n- SCAN: Search for local nodes\n- LOGOUT: Return to login";
+                    response = "\n> HELP: List commands\n> STATUS: Check hardware health\n> LOGS: Read system entries\n> CLEAR: Wipe screen\n> EXIT: Terminate session";
                     break;
                 case 'status':
-                    res = "\nHEALTH: 88%\nENCRYPTION: ACTIVE\nNOTICE: Source remains unstable.";
+                    response = "\n[!] CORE: CRITICAL TEMPERATURE\n[!] BUFFER: 92% FULL\n[!] CONNECTION: UNSTABLE";
                     break;
-                case 'logout':
+                case 'logs':
+                    response = "\nLOG_01: Experiment initiated.\nLOG_02: Subject JcBw failed to synchronize.\nLOG_03: [REDACTED]";
+                    break;
+                case 'clear':
+                    output.innerText = "TERMINAL CLEARED.\n====================================";
+                    return;
+                case 'exit':
                     location.reload();
                     return;
                 default:
-                    res = `\nCommand '${c}' not found.`;
+                    response = `\n'${c}' is not a recognized internal command.`;
             }
-            output.innerText += res;
+            output.innerText += response;
             output.scrollTop = output.scrollHeight;
         }
     </script>
