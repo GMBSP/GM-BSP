@@ -7,9 +7,9 @@
     <style>
         :root {
             --bg-color: #000;
-            --terminal-gray: #c0c0c0; /* Slightly more metallic gray */
+            --terminal-gray: #c0c0c0;
             --input-bg: #121212;
-            --scanline-opacity: 0.1;
+            --scanline-opacity: 0.12;
         }
 
         body {
@@ -23,26 +23,28 @@
             overflow: hidden;
         }
 
-        /* Refined CRT Shape - Subtle Curve */
+        /* CRT Container - Removed rounded corners, kept side bowing */
         .crt-container {
             background-color: var(--terminal-gray);
-            width: 90vw;
-            max-width: 1000px;
-            height: 80vh;
+            width: 95vw;
+            max-width: 1100px;
+            height: 85vh;
             position: relative;
             
-            /* Reduced Barrel Distortion */
-            border-radius: 4% / 10%; 
+            /* Barrel distortion only on the sides, sharp corners */
+            border-radius: 0; 
+            clip-path: ellipse(100% 120% at 50% 50%); /* Subtle side curve without rounding corners */
+            
             box-shadow: 
-                inset 0 0 80px rgba(0,0,0,0.4),
-                0 0 40px rgba(0,0,0,0.8);
+                inset 0 0 100px rgba(0,0,0,0.5),
+                0 0 40px rgba(0,0,0,0.9);
             
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            padding: 40px 60px;
+            padding: 60px 80px;
             box-sizing: border-box;
-            transition: background-color 0.5s ease;
+            transition: background-color 0.4s ease;
         }
 
         /* Scanline Overlay */
@@ -58,7 +60,7 @@
             pointer-events: none;
         }
 
-        h1 { font-size: 1.4rem; color: #333; margin: 0 0 30px 0; letter-spacing: 3px; font-weight: 900; }
+        h1 { font-size: 1.5rem; color: #333; margin: 0 0 30px 0; letter-spacing: 4px; font-weight: 900; text-transform: uppercase; }
 
         /* UI Elements */
         .input-group { margin-bottom: 20px; position: relative; z-index: 5; }
@@ -66,19 +68,19 @@
 
         .input-box {
             background-color: var(--input-bg);
-            border: 1px solid #ffffff33;
-            padding: 12px;
+            border: 1px solid #ffffff44;
+            padding: 15px;
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             box-sizing: border-box;
         }
 
         input {
             background: transparent;
             border: none;
-            color: #ddd;
+            color: #ccc;
             width: 100%;
-            font-size: 1rem;
+            font-size: 1.1rem;
             outline: none;
             font-family: inherit;
         }
@@ -87,33 +89,30 @@
             background-color: var(--input-bg);
             color: white;
             border: 1px solid #fff;
-            padding: 8px 30px;
+            padding: 10px 40px;
             font-family: inherit;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 15px;
             text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
+            font-weight: bold;
+            letter-spacing: 2px;
         }
 
         button:hover { background: #222; }
 
-        /* Logic for Console View (Darker inner screen) */
-        #console-view { display: none; flex-direction: column; height: 100%; color: #ff0000; }
-        #console-view h1 { color: #ff0000; text-shadow: 0 0 5px rgba(255,0,0,0.5); }
-        #output { flex-grow: 1; overflow-y: auto; white-space: pre-wrap; line-height: 1.4; color: #ff3333; }
-        .prompt-symbol { color: #ffa500; font-weight: bold; margin-right: 10px; }
+        /* Console States */
+        #console-view { display: none; flex-direction: column; height: 100%; }
+        #output { flex-grow: 1; overflow-y: auto; white-space: pre-wrap; line-height: 1.5; color: #ff3333; font-size: 1rem; }
+        .prompt-symbol { color: #ffa500; font-weight: bold; margin-right: 12px; font-size: 1.2rem; }
 
-        /* Hidden data attributes to avoid F12 simple searches */
-        #monitor[data-state="terminal"] { background-color: #080808; }
-        #monitor[data-state="terminal"] h1 { color: #ffff00; } /* Yellow header as per image */
+        /* Terminal Background Toggle */
+        #monitor[data-state="terminal"] { background-color: #050505; }
+        #monitor[data-state="terminal"] h1 { color: #ffff00; text-shadow: 0 0 8px rgba(255,255,0,0.3); }
 
-        /* Animations */
         @keyframes glitch-shake {
             0% { transform: translate(0); }
-            25% { transform: translate(-4px, 2px); }
-            50% { transform: translate(4px, -2px); }
-            75% { transform: translate(-2px, -2px); }
+            20% { transform: translate(-5px, 3px); }
+            40% { transform: translate(5px, -3px); }
             100% { transform: translate(0); }
         }
     </style>
@@ -139,17 +138,17 @@
         </div>
 
         <div id="console-view">
-            <h1 style="color: #ffff00;">SOURCE EXPLORER</h1>
+            <h1>SOURCE EXPLORER</h1>
             <div id="output">WELCOME TO SOURCE EXPLORER!
 ============================================
 SOURCE EXPLORER TERMINAL v1.0
 ============================================
 Type 'help' for available commands.</div>
             
-            <div style="display: flex; align-items: center; margin-top: 20px;">
+            <div style="display: flex; align-items: center; margin-top: 25px;">
                 <span class="prompt-symbol">&gt;</span>
-                <div class="input-box" style="border: 1px solid orange; max-width: 100%;">
-                    <input type="text" id="cmd" placeholder="Type command here..." autocomplete="off" style="color: #aaa;">
+                <div class="input-box" style="border: 1px solid #ffa500; max-width: 100%;">
+                    <input type="text" id="cmd" placeholder="Type command here..." autocomplete="off" style="color: #999;">
                 </div>
             </div>
         </div>
@@ -163,7 +162,7 @@ Type 'help' for available commands.</div>
         const cmdInput = document.getElementById('cmd');
         const output = document.getElementById('output');
 
-        // Obfuscated keys
+        // Obfuscated Keys (Reversed Base64)
         const _u = "Si0zMDAyNXdCY0o="; 
         const _p = "LlJSRUAhNTAwMlAzME0zVE5J"; 
 
@@ -181,8 +180,10 @@ Type 'help' for available commands.</div>
                 consoleView.style.display = 'flex';
                 cmdInput.focus();
             } else {
-                monitor.style.animation = "glitch-shake 0.2s infinite";
-                setTimeout(() => monitor.style.animation = "none", 200);
+                monitor.style.animation = "glitch-shake 0.1s infinite";
+                setTimeout(() => monitor.style.animation = "none", 150);
+                document.getElementById('pass').value = "";
+                document.getElementById('pass').placeholder = "KEY ERROR: RE-ENTRY REQUIRED";
             }
         }
 
@@ -196,10 +197,11 @@ Type 'help' for available commands.</div>
 
         function handleCommand(c) {
             let res = "";
-            if (c === 'help') res = "\n> STATUS: Check system health\n> LOGS: Access directory\n> EXIT: Logout";
-            else if (c === 'status') res = "\n[!] SOURCE INTEGRITY: 44%\n[!] WARNING: ENCRYPTION LEAK DETECTED.";
+            if (c === 'help') res = "\n> STATUS: Check system health\n> LOGS: View encrypted data\n> CLEAR: Flush terminal\n> EXIT: Logout";
+            else if (c === 'status') res = "\n[!] CORE: OVERHEATING\n[!] SOURCE: FRAGMENTED\n[!] STATUS: TRACE IMMINENT";
+            else if (c === 'clear') { output.innerText = "TERMINAL FLUSHED.\n===================================="; return; }
             else if (c === 'exit') { location.reload(); return; }
-            else res = `\n'${c}' is not recognized.`;
+            else res = `\n'${c}' is not recognized as a system command.`;
             
             output.innerText += res;
             output.scrollTop = output.scrollHeight;
