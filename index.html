@@ -121,10 +121,8 @@
     const monitor = document.getElementById('monitor');
     const output = document.getElementById('output');
     
-    const _u = "Si0zMDAyNXdCY0o="; 
-    const _p = "LlJSRUAhNTAwMlAzME0zVE5J"; 
-
-    function _d(s) { return atob(s.split("").reverse().join("")); }
+    const VALID_N = "JcBw52003-J"; 
+    const VALID_P = "INT3RL0P32005@!ERR."; 
 
     const maps = ["tf_2fort", "gm_construct", "de_dust2", "hl2_canals_01", "cp_dustbowl", "gm_flatgrass", "cs_office", "hl2_citadel_03"];
 
@@ -141,7 +139,7 @@
 
     function handleKey(e) {
         if (e.key === 'Enter') {
-            if (uInput.value === _d(_u) && pInput.value === _d(_p)) {
+            if (uInput.value === VALID_N && pInput.value === VALID_P) {
                 playSfx('snd_join');
                 startTransition();
             } else {
@@ -180,39 +178,4 @@
     function handleConsole(e) {
         if (e.key === 'Enter') {
             playSfx('snd_enter');
-            let c = e.target.value.toLowerCase().trim();
-            if (c === 'doors') {
-                startInfiniteDoors();
-            } else if (c === 'help') {
-                output.innerHTML += "\n> DOORS: INFINITE MAP TRACE\n> EXIT: DISCONNECT";
-            } else if (c === 'exit') {
-                location.reload();
-            } else {
-                output.innerHTML += `\n'${c}' UNKNOWN.`;
-            }
-            output.scrollTop = output.scrollHeight;
-            e.target.value = "";
-        } else {
-            if (e.key !== 'Shift' && e.key !== 'Control' && e.key !== 'Alt') playSfx('snd_type');
-        }
-    }
-
-    function startInfiniteDoors() {
-        document.getElementById('prompt-box').style.display = "none";
-        setInterval(() => {
-            const map = maps[Math.floor(Math.random() * maps.length)];
-            const status = Math.random() > 0.5 ? 'OPENED' : 'CLOSED';
-            const integrity = Math.floor(Math.random() * 100);
-            output.innerHTML += `DOOR-${Math.floor(Math.random()*999)} | ${map.padEnd(15)} | ${status} | INT: ${integrity}%\n`;
-            output.scrollTop = output.scrollHeight;
-            
-            const lines = output.innerHTML.split('\n');
-            if (lines.length > 60) output.innerHTML = lines.slice(lines.length - 60).join('\n');
-            
-            if (Math.random() > 0.8) playSfx('snd_type');
-        }, 80);
-    }
-</script>
-
-</body>
-</html>
+            let c =
