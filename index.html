@@ -9,6 +9,7 @@
             --terminal-gray: #c0c0c0;
             --input-bg: #121212;
             --text-red: #ff3333;
+            --btn-gray: #a0a0a0;
         }
 
         body { 
@@ -38,47 +39,34 @@
 
         #monitor::after {
             content: " ";
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
+            position: absolute; top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.12) 50%);
             background-size: 100% 4px;
             z-index: 10;
             pointer-events: none;
         }
 
-        .input-box { 
-            background: var(--input-bg); 
-            border: 1px solid #ffffff44; 
-            padding: 18px; 
-            margin: 12px 0; 
-            width: 650px; 
-            position: relative; 
-            z-index: 6; 
-        }
+        .input-box { background: var(--input-bg); border: 1px solid #ffffff44; padding: 15px; margin: 10px 0; width: 600px; display: flex; align-items: center; }
+        input { background: transparent; border: none; color: #ccc; width: 100%; font-size: 1.2rem; outline: none; font-family: inherit; }
         
-        input { 
-            background: transparent; 
-            border: none; 
-            color: #ccc; 
-            width: 100%; 
-            font-size: 1.3rem; 
-            outline: none; 
-            font-family: inherit; 
+        button {
+            background: var(--btn-gray);
+            border: 2px solid #555;
+            padding: 10px 20px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 2px 2px 0px #444;
         }
-        
+
+        button:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px #444; }
+
         #login-view { display: block; position: relative; z-index: 6; }
         #console-view { display: none; color: var(--text-red); height: 100%; flex-direction: column; position: relative; z-index: 6; }
         
-        #output { 
-            white-space: pre-wrap; 
-            margin-bottom: 20px; 
-            font-size: 1.2rem; 
-            line-height: 1.5;
-            overflow-y: hidden;
-        }
-
-        h1 { text-transform: uppercase; letter-spacing: 6px; color: #333; margin-top: 0; font-size: 2rem; }
-        .prompt-container { display: none; align-items: center; }
+        #output { white-space: pre-wrap; margin-bottom: 20px; font-size: 1.1rem; line-height: 1.4; overflow-y: hidden; flex-grow: 1; }
+        h1 { text-transform: uppercase; letter-spacing: 6px; color: #333; margin: 0 0 20px 0; font-size: 2rem; }
 
         .flash { animation: white-out 0.5s ease-out forwards; }
         @keyframes white-out {
@@ -88,23 +76,22 @@
         }
     </style>
 </head>
-<body onclick="startBGM()">
+<body onclick="startAudio()">
 
 <div id="monitor">
     <div id="login-view">
         <h1>SOURCEEXPLORER</h1>
-        <label style="font-weight: bold; color: #444; letter-spacing: 2px;">NAME</label>
-        <div class="input-box"><input type="text" id="user" placeholder="insert name here.." onkeydown="handleKey(event)" autocomplete="off"></div>
-        <label style="font-weight: bold; color: #444; letter-spacing: 2px;">PASSWORD</label>
-        <div class="input-box"><input type="password" id="pass" placeholder="insert password here.." onkeydown="handleKey(event)" autocomplete="off"></div>
+        <div class="input-box"><input type="text" id="user" placeholder="NAME"></div>
+        <div class="input-box"><input type="password" id="pass" placeholder="PASSWORD"></div>
+        <button onclick="attemptLogin()">AUTHORIZE</button>
     </div>
 
     <div id="console-view">
         <h1 style="color: yellow;">SOURCE EXPLORER</h1>
         <div id="output"></div>
-        <div class="prompt-container" id="prompt-box">
-            <span style="color: orange; margin-right: 15px; font-weight: bold; font-size: 1.5rem;">&gt;</span>
-            <div class="input-box" style="border-color: orange; width: 100%; margin: 0;"><input type="text" id="cmd" onkeydown="handleConsole(event)" autocomplete="off"></div>
+        <div id="prompt-container" style="display:flex; align-items:center;">
+            <div class="input-box" style="width:100%; border-color:orange; margin:0;"><input type="text" id="cmd" placeholder="Enter command..."></div>
+            <button onclick="runCommand()" style="margin-top:0; margin-left:10px; background: orange; border-color: darkorange;">EXECUTE</button>
         </div>
     </div>
 </div>
@@ -116,66 +103,89 @@
 <audio id="snd_join" src="friend_join.wav"></audio>
 
 <script>
-    const uInput = document.getElementById('user');
-    const pInput = document.getElementById('pass');
-    const monitor = document.getElementById('monitor');
-    const output = document.getElementById('output');
-    
-    const VALID_N = "JcBw52003-J"; 
-    const VALID_P = "INT3RL0P32005@!ERR."; 
-
     const maps = ["tf_2fort", "gm_construct", "de_dust2", "hl2_canals_01", "cp_dustbowl", "gm_flatgrass", "cs_office", "hl2_citadel_03"];
+    let audioStarted = false;
 
-    function startBGM() {
-        const bgm = document.getElementById('bgm');
-        if (bgm.paused) bgm.play().catch(e => {});
+    function startAudio() {
+        if (!audioStarted) {
+            document.getElementById('bgm').play().catch(() => {});
+            audioStarted = true;
+        }
     }
 
     function playSfx(id) {
-        const sfx = document.getElementById(id);
-        sfx.currentTime = 0;
-        sfx.play();
+        const s = document.getElementById(id);
+        s.currentTime = 0;
+        s.play();
     }
 
-    function handleKey(e) {
-        if (e.key === 'Enter') {
-            if (uInput.value === VALID_N && pInput.value === VALID_P) {
-                playSfx('snd_join');
-                startTransition();
-            } else {
-                playSfx('snd_error');
-                monitor.style.backgroundColor = "#300";
-                setTimeout(() => { monitor.style.backgroundColor = "#c0c0c0"; }, 150);
-                pInput.value = "";
+    // Input sound effect
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter') playSfx('snd_type');
+            else {
+                if (input.id === 'cmd') runCommand();
+                else attemptLogin();
             }
+        });
+    });
+
+    function attemptLogin() {
+        const u = document.getElementById('user').value;
+        const p = document.getElementById('pass').value;
+        
+        if (u === "JcBw52003-J" && p === "INT3RL0P32005@!ERR.") {
+            playSfx('snd_join');
+            document.getElementById('monitor').classList.add('flash');
+            setTimeout(() => {
+                document.getElementById('login-view').style.display = "none";
+                document.getElementById('console-view').style.display = "flex";
+                document.getElementById('monitor').style.backgroundColor = "#060606";
+                writeToConsole("CONNECTION ESTABLISHED.\nSYSTEM VULNERABLE.\nTYPE 'DOORS' TO SCAN MAP NODES.");
+            }, 300);
         } else {
-            if (e.key !== 'Shift' && e.key !== 'Control' && e.key !== 'Alt') playSfx('snd_type');
+            playSfx('snd_error');
+            document.getElementById('monitor').style.backgroundColor = "#400";
+            setTimeout(() => document.getElementById('monitor').style.backgroundColor = "#c0c0c0", 200);
         }
     }
 
-    function startTransition() {
-        monitor.classList.add('flash');
-        setTimeout(() => {
-            document.getElementById('login-view').style.display = "none";
-            document.getElementById('console-view').style.display = "flex";
-            monitor.style.backgroundColor = "#060606";
-            typeWriter("INITIALIZING... ACCESS GRANTED.\nTYPE 'HELP' FOR COMMANDS.\n---------------------------", 0);
-        }, 300);
-    }
-
-    function typeWriter(text, i) {
-        if (i < text.length) {
-            output.innerHTML += text.charAt(i);
+    function writeToConsole(text) {
+        let i = 0;
+        const out = document.getElementById('output');
+        const interval = setInterval(() => {
+            out.innerHTML += text.charAt(i);
             if (text.charAt(i) !== ' ' && text.charAt(i) !== '\n') playSfx('snd_type');
-            setTimeout(() => typeWriter(text, i + 1), 25);
-            output.scrollTop = output.scrollHeight;
-        } else {
-            document.getElementById('prompt-box').style.display = "flex";
-            document.getElementById('cmd').focus();
-        }
+            i++;
+            if (i >= text.length) {
+                clearInterval(interval);
+                document.getElementById('cmd').focus();
+            }
+        }, 300); // CRT Printer effect speed
     }
 
-    function handleConsole(e) {
-        if (e.key === 'Enter') {
-            playSfx('snd_enter');
-            let c =
+    function runCommand() {
+        const cmdInput = document.getElementById('cmd');
+        const val = cmdInput.value.toLowerCase().trim();
+        const out = document.getElementById('output');
+        playSfx('snd_enter');
+
+        if (val === 'doors') {
+            document.getElementById('prompt-container').style.display = "none";
+            setInterval(() => {
+                const m = maps[Math.floor(Math.random() * maps.length)];
+                out.innerHTML += `DOOR-${Math.floor(Math.random()*999)} | ${m.padEnd(15)} | ${Math.random() > 0.5 ? 'OPEN' : 'CLOSED'}\n`;
+                if (Math.random() > 0.8) playSfx('snd_type');
+                // Auto-scroll
+                const lines = out.innerHTML.split('\n');
+                if (lines.length > 50) out.innerHTML = lines.slice(lines.length - 50).join('\n');
+            }, 100);
+        } else {
+            out.innerHTML += `\n'${val}' UNKNOWN COMMAND.`;
+        }
+        cmdInput.value = "";
+    }
+</script>
+
+</body>
+</html>
