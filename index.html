@@ -4,108 +4,181 @@
     <meta charset="UTF-8">
     <title>SOURCEEXPLORER</title>
     <style>
-        body { background: #000; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'Courier New', monospace; overflow: hidden; }
+        :root {
+            --bg-color: #000;
+            --terminal-gray: #c0c0c0;
+            --input-bg: #121212;
+            --text-red: #ff3333;
+        }
+
+        body { 
+            background: var(--bg-color); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            width: 100vw;
+            margin: 0; 
+            font-family: 'Courier New', Courier, monospace; 
+            overflow: hidden; 
+        }
         
         #monitor {
-            background: #c0c0c0;
-            width: 95vw; height: 90vh;
-            padding: 50px; box-sizing: border-box;
-            clip-path: ellipse(100% 120% at 50% 50%);
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
+            background-color: var(--terminal-gray);
+            width: 98vw; 
+            height: 85vh;
+            max-width: 1600px;
+            padding: 4% 6%; 
+            box-sizing: border-box;
+            clip-path: ellipse(100% 125% at 50% 50%);
+            box-shadow: inset 0 0 120px rgba(0,0,0,0.6), 0 0 80px rgba(0,0,0,1);
             position: relative;
-            display: flex; flex-direction: column;
+            transition: background-color 0.8s ease;
         }
 
-        /* Scanline and Grain */
         #monitor::after {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 4px; pointer-events: none;
+            content: " ";
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.12) 50%);
+            background-size: 100% 4px;
+            z-index: 10;
+            pointer-events: none;
         }
 
-        .input-box { background: #121212; border: 1px solid #fff; padding: 15px; margin: 10px 0; width: 500px; }
-        input { background: transparent; border: none; color: #ccc; width: 100%; font-size: 1.2rem; outline: none; font-family: inherit; }
+        .input-box { 
+            background: var(--input-bg); 
+            border: 1px solid #ffffff44; 
+            padding: 18px; 
+            margin: 12px 0; 
+            width: 650px; 
+            position: relative; 
+            z-index: 6; 
+        }
         
-        #login-view { display: block; z-index: 5; }
-        #console-view { display: none; color: #ff3333; z-index: 5; flex-direction: column; height: 100%; }
+        input { 
+            background: transparent; 
+            border: none; 
+            color: #ccc; 
+            width: 100%; 
+            font-size: 1.3rem; 
+            outline: none; 
+            font-family: inherit; 
+        }
         
-        #output { white-space: pre-wrap; flex-grow: 1; overflow-y: auto; line-height: 1.4; }
-        h1 { text-transform: uppercase; color: #333; margin: 0 0 20px 0; }
+        #login-view { display: block; position: relative; z-index: 6; }
+        #console-view { display: none; color: var(--text-red); height: 100%; flex-direction: column; position: relative; z-index: 6; }
         
-        /* Status Light for Debugging */
-        #status-led { width: 10px; height: 10px; background: #555; border-radius: 50%; position: absolute; top: 20px; right: 20px; }
-        .led-active { background: #0f0 !important; box-shadow: 0 0 10px #0f0; }
+        #output { 
+            white-space: pre-wrap; 
+            margin-bottom: 20px; 
+            font-size: 1.2rem; 
+            line-height: 1.5;
+            overflow-y: auto;
+        }
+
+        h1 { text-transform: uppercase; letter-spacing: 6px; color: #333; margin-top: 0; font-size: 2rem; }
+        .prompt-container { display: none; align-items: center; }
+
+        .flash { animation: white-out 0.5s ease-out forwards; }
+        @keyframes white-out {
+            0% { filter: brightness(1); }
+            50% { filter: brightness(8); background: white; }
+            100% { filter: brightness(1); }
+        }
     </style>
 </head>
 <body>
 
 <div id="monitor">
-    <div id="status-led"></div>
-
     <div id="login-view">
         <h1>SOURCEEXPLORER</h1>
-        <label>NAME</label>
-        <div class="input-box"><input type="text" id="user" onkeydown="handleKey(event)"></div>
-        <label>PASSWORD</label>
-        <div class="input-box"><input type="password" id="pass" onkeydown="handleKey(event)"></div>
-        <p style="color: #666;">[ TYPE AND HIT ENTER ]</p>
+        <label style="font-weight: bold; color: #444; letter-spacing: 2px;">NAME</label>
+        <div class="input-box"><input type="text" id="user" placeholder="insert name here.." onkeydown="handleKey(event)" autocomplete="off"></div>
+        <label style="font-weight: bold; color: #444; letter-spacing: 2px;">PASSWORD</label>
+        <div class="input-box"><input type="password" id="pass" placeholder="insert password here.." onkeydown="handleKey(event)" autocomplete="off"></div>
     </div>
 
     <div id="console-view">
         <h1 style="color: yellow;">SOURCE EXPLORER</h1>
         <div id="output"></div>
-        <div style="display:flex; align-items:center;">
-            <span style="color:orange; margin-right:10px;">&gt;</span>
-            <div class="input-box" style="width:100%; border-color:orange;"><input type="text" id="cmd" onkeydown="handleConsole(event)"></div>
+        <div class="prompt-container" id="prompt-box">
+            <span style="color: orange; margin-right: 15px; font-weight: bold; font-size: 1.5rem;">&gt;</span>
+            <div class="input-box" style="border-color: orange; width: 100%; margin: 0;"><input type="text" id="cmd" onkeydown="handleConsole(event)" autocomplete="off"></div>
         </div>
     </div>
 </div>
 
 <script>
-    const u = document.getElementById('user');
-    const p = document.getElementById('pass');
-    const led = document.getElementById('status-led');
-    const out = document.getElementById('output');
-
+    const uInput = document.getElementById('user');
+    const pInput = document.getElementById('pass');
+    const monitor = document.getElementById('monitor');
+    const output = document.getElementById('output');
+    
     const NAME = "JcBw52003-J";
     const PASS = "INT3RL0P32005@!ERR.";
 
-    // This function triggers specifically on the inputs
+    const bootText = [
+        "ESTABLISHING SECURE CONNECTION...",
+        "BYPASSING LOCAL FIREWALL...",
+        "DECRYPTING CORE FILES (SEC: 0x882)...",
+        "ACCESS GRANTED: JcBw_52003",
+        "--------------------------------------------------",
+        "SOURCE EXPLORER TERMINAL v1.0.4 [BUILD_992]",
+        "SYSTEM STATUS: COMPROMISED",
+        "TYPE 'HELP' FOR LIST OF SYSTEM COMMANDS.",
+        "--------------------------------------------------"
+    ];
+
     function handleKey(e) {
         if (e.key === 'Enter') {
-            // Blink LED to show script is working
-            led.classList.add('led-active');
-            setTimeout(() => led.classList.remove('led-active'), 200);
-
-            if (u.value === NAME && p.value === PASS) {
-                document.getElementById('login-view').style.display = "none";
-                document.getElementById('console-view').style.display = "flex";
-                document.getElementById('monitor').style.background = "#050505";
-                typeOut("AUTHORIZATION GRANTED...\nBOOTING CORE...\nREADY.");
+            if (uInput.value === NAME && pInput.value === PASS) {
+                startTransition();
             } else {
-                u.style.color = "red";
-                p.style.color = "red";
-                setTimeout(() => { u.style.color = "#ccc"; p.style.color = "#ccc"; }, 500);
+                monitor.style.backgroundColor = "#300";
+                setTimeout(() => { monitor.style.backgroundColor = "#c0c0c0"; }, 150);
+                pInput.value = "";
+                pInput.placeholder = "CREDENTIALS REJECTED.";
             }
         }
     }
 
-    function typeOut(text) {
-        let i = 0;
-        let interval = setInterval(() => {
-            out.innerHTML += text.charAt(i);
-            i++;
-            if (i >= text.length) {
-                clearInterval(interval);
-                document.getElementById('cmd').focus();
-            }
-        }, 50);
+    function startTransition() {
+        monitor.classList.add('flash');
+        setTimeout(() => {
+            document.getElementById('login-view').style.display = "none";
+            document.getElementById('console-view').style.display = "flex";
+            monitor.style.backgroundColor = "#060606";
+            typeWriter(bootText.join('\n'), 0);
+        }, 300);
+    }
+
+    function typeWriter(text, i) {
+        if (i < text.length) {
+            output.innerHTML += text.charAt(i);
+            let speed = text.charAt(i) === '\n' ? 250 : 25; 
+            setTimeout(() => typeWriter(text, i + 1), speed);
+            output.scrollTop = output.scrollHeight;
+        } else {
+            document.getElementById('prompt-box').style.display = "flex";
+            document.getElementById('cmd').focus();
+        }
     }
 
     function handleConsole(e) {
         if (e.key === 'Enter') {
-            const val = e.target.value.toLowerCase();
-            out.innerHTML += `\n> ${val}\nUNKNOWN COMMAND.`;
+            let c = e.target.value.toLowerCase().trim();
+            let res = "";
+            
+            if (c === 'help') res = "\n> STATUS: Check hardware health\n> LOGS: View internal records\n> CLEAR: Flush terminal buffer\n> EXIT: Logout";
+            else if (c === 'status') res = "\n[!] CORE: CRITICAL OVERLOAD\n[!] SOURCE: DATA LEAK DETECTED\n[!] TRACE: ACTIVE";
+            else if (c === 'logs') res = "\n2025-11-12: SUBJECT DISCONNECTED.\n2025-12-01: NO SIGNAL DETECTED.\n2026-02-23: UNAUTHORIZED ACCESS DETECTED.";
+            else if (c === 'clear') { output.innerHTML = "TERMINAL BUFFER FLUSHED.\n-----------------------"; e.target.value = ""; return; }
+            else if (c === 'exit') location.reload();
+            else res = `\n'${c}' IS NOT A RECOGNIZED COMMAND.`;
+            
+            output.innerHTML += res;
+            output.scrollTop = output.scrollHeight;
             e.target.value = "";
         }
     }
