@@ -57,7 +57,7 @@
             margin-bottom: 20px; 
             font-size: 1.2rem; 
             line-height: 1.5;
-            overflow-y: hidden; /* Hidden to emphasize the infinite scroll */
+            overflow-y: hidden;
         }
 
         h1 { text-transform: uppercase; letter-spacing: 6px; color: #333; margin-top: 0; font-size: 2rem; }
@@ -104,24 +104,13 @@
     const monitor = document.getElementById('monitor');
     const output = document.getElementById('output');
     
-    const NAME = "JcBw52003-J";
-    const PASS = "INT3RL0P32005@!ERR.";
+    // Obfuscated keys (Base64 + Reversed)
+    const _u = "Si0zMDAyNXdCY0o="; 
+    const _p = "LlJSRUAhNTAwMlAzME0zVE5J"; 
 
-    const maps = [
-        "tf_2fort", "gm_construct", "de_dust2", "hl2_canals_01", 
-        "cp_dustbowl", "gm_flatgrass", "cs_office", "hl2_citadel_03",
-        "de_aztec", "ctf_well", "gm_bigcity", "hl2_c17_01"
-    ];
+    function _d(s) { return atob(s.split("").reverse().join("")); }
 
-    const bootText = [
-        "ESTABLISHING SECURE CONNECTION...",
-        "BYPASSING LOCAL FIREWALL...",
-        "ACCESS GRANTED: JcBw_52003",
-        "--------------------------------------------------",
-        "SOURCE EXPLORER TERMINAL v1.0.4 [BUILD_992]",
-        "TYPE 'HELP' FOR LIST OF SYSTEM COMMANDS.",
-        "--------------------------------------------------"
-    ];
+    const maps = ["tf_2fort", "gm_construct", "de_dust2", "hl2_canals_01", "cp_dustbowl", "gm_flatgrass", "cs_office", "hl2_citadel_03"];
 
     function startBGM() {
         const bgm = document.getElementById('bgm');
@@ -136,7 +125,7 @@
 
     function handleKey(e) {
         if (e.key === 'Enter') {
-            if (uInput.value === NAME && pInput.value === PASS) {
+            if (uInput.value === _d(_u) && pInput.value === _d(_p)) {
                 playSfx('snd_join');
                 startTransition();
             } else {
@@ -156,7 +145,7 @@
             document.getElementById('login-view').style.display = "none";
             document.getElementById('console-view').style.display = "flex";
             monitor.style.backgroundColor = "#060606";
-            typeWriter(bootText.join('\n'), 0);
+            typeWriter("INITIALIZING... ACCESS GRANTED.", 0);
         }, 300);
     }
 
@@ -165,63 +154,32 @@
             output.innerHTML += text.charAt(i);
             if (text.charAt(i) !== ' ' && text.charAt(i) !== '\n') playSfx('snd_type');
             setTimeout(() => typeWriter(text, i + 1), 25);
-            output.scrollTop = output.scrollHeight;
         } else {
             document.getElementById('prompt-box').style.display = "flex";
             document.getElementById('cmd').focus();
         }
     }
 
-    let infiniteActive = false;
-    function startInfiniteDoors() {
-        infiniteActive = true;
-        document.getElementById('prompt-box').style.display = "none";
-        
-        setInterval(() => {
-            if (!infiniteActive) return;
-            
-            const id = Math.floor(Math.random() * 900) + 100;
-            const map = maps[Math.floor(Math.random() * maps.length)];
-            const status = Math.random() > 0.5 ? "CLOSED" : "OPENED";
-            const integrity = Math.floor(Math.random() * 100);
-            const state = integrity < 30 ? "CRITICAL" : (integrity < 70 ? "DAMAGED" : "STABLE");
-
-            const line = `D-${id} | ${map.padEnd(15)} | ${status.padEnd(8)} | ${state} (${integrity}%)\n`;
-            output.innerHTML += line;
-            
-            // Overwhelming sound effect
-            if (Math.random() > 0.8) playSfx('snd_type');
-            
-            // Keep the bottom visible
-            output.scrollTop = output.scrollHeight;
-
-            // Remove old lines to prevent browser crash
-            const lines = output.innerHTML.split('\n');
-            if (lines.length > 50) {
-                output.innerHTML = lines.slice(lines.length - 50).join('\n');
-            }
-        }, 100); // Speed of the infinite loop
-    }
-
     function handleConsole(e) {
         if (e.key === 'Enter') {
             playSfx('snd_enter');
             let c = e.target.value.toLowerCase().trim();
-            
-            if (c === 'help') {
-                output.innerHTML += "\n> DOORS\n> EXIT";
-            } else if (c === 'doors') {
-                startInfiniteDoors();
-            } else if (c === 'exit') {
-                location.reload();
-            } else {
-                output.innerHTML += `\n'${c}' UNKNOWN.`;
-            }
-            output.scrollTop = output.scrollHeight;
+            if (c === 'doors') startInfiniteDoors();
+            else if (c === 'exit') location.reload();
             e.target.value = "";
         } else {
             playSfx('snd_type');
         }
+    }
+
+    function startInfiniteDoors() {
+        document.getElementById('prompt-box').style.display = "none";
+        setInterval(() => {
+            const map = maps[Math.floor(Math.random() * maps.length)];
+            output.innerHTML += `DOOR-${Math.floor(Math.random()*999)} | ${map.padEnd(15)} | ${Math.random() > 0.5 ? 'OPENED' : 'CLOSED'}\n`;
+            output.scrollTop = output.scrollHeight;
+            if (Math.random() > 0.9) playSfx('snd_type');
+        }, 100);
     }
 </script>
 
