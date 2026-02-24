@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SOURCEEXPLORER - ERROR</title>
+    <title>SOURCEEXPLORER - RESONANCE</title>
     <style>
         body, html {
             margin: 0;
@@ -45,22 +45,22 @@
         #clock-container {
             position: relative;
             z-index: 5;
-            width: 500px;
-            height: 500px;
+            width: 550px;
+            height: 600px;
             background: #ff00ff;
-            border: 10px solid #000;
+            border: 12px solid #000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            box-shadow: 0 0 60px rgba(0,0,0,0.9);
         }
 
         .clock-face {
-            width: 300px;
-            height: 300px;
+            width: 350px;
+            height: 350px;
             border-radius: 50%;
-            border: 8px white double;
+            border: 6px white solid;
             background: conic-gradient(
                 #000 0deg 90deg, 
                 #ff00ff 90deg 180deg, 
@@ -68,34 +68,36 @@
                 #ff00ff 270deg 360deg
             );
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
-        .clock-face::after {
-            content: ". . . . . .";
+        .number {
             position: absolute;
             color: white;
-            font-size: 2rem;
-            width: 100%;
+            font-weight: bold;
+            font-size: 1.4rem;
+            width: 30px;
+            height: 30px;
             text-align: center;
-            top: 40%;
-            letter-spacing: 15px;
+            line-height: 30px;
         }
 
         #timer {
             background: #000;
             color: #ff00ff;
-            padding: 15px;
-            font-size: 2.5rem;
+            padding: 20px;
+            font-size: 3rem;
             font-weight: bold;
             border: 4px solid white;
+            letter-spacing: 2px;
         }
 
         .label {
             color: #000;
             font-weight: bold;
-            margin-top: 10px;
+            margin-top: 15px;
             text-transform: uppercase;
+            letter-spacing: 3px;
         }
     </style>
 </head>
@@ -105,7 +107,7 @@
     <div class="crt-overlay"></div>
 
     <div id="clock-container">
-        <div class="clock-face"></div>
+        <div class="clock-face" id="face"></div>
         <div id="timer">00:00:00:00</div>
         <div class="label">Time Until Resonance</div>
     </div>
@@ -115,6 +117,20 @@
     <script>
         function playAmbient() {
             document.getElementById('bgm').play().catch(() => {});
+        }
+
+        const face = document.getElementById('face');
+        for (let i = 1; i <= 12; i++) {
+            const num = document.createElement('div');
+            num.className = 'number';
+            num.innerHTML = i;
+            const angle = (i * 30) - 90;
+            const radius = 145;
+            const x = 175 + radius * Math.cos(angle * Math.PI / 180) - 15;
+            const y = 175 + radius * Math.sin(angle * Math.PI / 180) - 15;
+            num.style.left = x + 'px';
+            num.style.top = y + 'px';
+            face.appendChild(num);
         }
 
         function updateCountdown() {
