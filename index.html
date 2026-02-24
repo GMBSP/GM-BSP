@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SOURCEEXPLORER - RESONANCE</title>
+    <title>ERROR</title>
     <style>
         body, html {
             margin: 0;
@@ -45,21 +45,19 @@
         #clock-container {
             position: relative;
             z-index: 5;
-            width: 550px;
-            height: 600px;
+            width: 500px;
+            height: 500px;
             background: #ff00ff;
             border: 12px solid #000;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             box-shadow: 0 0 60px rgba(0,0,0,0.9);
         }
 
-        .clock-face {
-            width: 350px;
-            height: 350px;
-            border-radius: 50%;
+        .clock-face-square {
+            width: 400px;
+            height: 400px;
             border: 6px white solid;
             background: conic-gradient(
                 #000 0deg 90deg, 
@@ -68,55 +66,84 @@
                 #ff00ff 270deg 360deg
             );
             position: relative;
-            margin-bottom: 30px;
         }
+
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            background: white;
+            border: 1px solid black;
+        }
+
+        .hour-hand { width: 8px; height: 100px; z-index: 3; }
+        .min-hand { width: 5px; height: 140px; z-index: 4; }
+        .sec-hand { width: 2px; height: 160px; background: red; z-index: 5; }
 
         .number {
             position: absolute;
             color: white;
             font-weight: bold;
-            font-size: 1.4rem;
-            width: 30px;
-            height: 30px;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
             text-align: center;
-            line-height: 30px;
-        }
-
-        #timer {
-            background: #000;
-            color: #ff00ff;
-            padding: 20px;
-            font-size: 3rem;
-            font-weight: bold;
-            border: 4px solid white;
-            letter-spacing: 2px;
-        }
-
-        .label {
-            color: #000;
-            font-weight: bold;
-            margin-top: 15px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
+            line-height: 40px;
+            text-shadow: 2px 2px #000;
         }
     </style>
 </head>
-<body onclick="playAmbient()">
+<body onclick="initAudio()">
 
     <div class="background"></div>
     <div class="crt-overlay"></div>
 
     <div id="clock-container">
-        <div class="clock-face" id="face"></div>
-        <div id="timer">00:00:00:00</div>
-        <div class="label">Time Until Resonance</div>
+        <div class="clock-face-square" id="face">
+            <div class="hand hour-hand" id="hour"></div>
+            <div class="hand min-hand" id="min"></div>
+            <div class="hand sec-hand" id="sec"></div>
+        </div>
     </div>
 
     <audio id="bgm" loop src="kulcs.bsp.mp3"></audio>
+    <audio id="beep" src="button3.wav"></audio>
 
     <script>
-        function playAmbient() {
-            document.getElementById('bgm').play().catch(() => {});
+        let audioStarted = false;
+        const targetDate = new Date("2026-03-13T21:35:00-03:00").getTime();
+
+        function initAudio() {
+            if (!audioStarted) {
+                document.getElementById('bgm').play();
+                audioStarted = true;
+                processBeep();
+            }
+        }
+
+        function playBeep() {
+            const b = document.getElementById('beep');
+            b.currentTime = 0;
+            b.play();
+        }
+
+        function processBeep() {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+            
+            let interval = 2000; 
+
+            if (diff > 0) {
+                const totalWindow = 30 * 24 * 60 * 60 * 1000; 
+                const progress = Math.max(0, 1 - (diff / totalWindow));
+                interval = 2000 - (progress * 1800); 
+            } else {
+                interval = 100; 
+            }
+
+            playBeep();
+            setTimeout(processBeep, interval);
         }
 
         const face = document.getElementById('face');
@@ -125,40 +152,31 @@
             num.className = 'number';
             num.innerHTML = i;
             const angle = (i * 30) - 90;
-            const radius = 145;
-            const x = 175 + radius * Math.cos(angle * Math.PI / 180) - 15;
-            const y = 175 + radius * Math.sin(angle * Math.PI / 180) - 15;
+            const radius = 170;
+            const x = 200 + radius * Math.cos(angle * Math.PI / 180) - 20;
+            const y = 200 + radius * Math.sin(angle * Math.PI / 180) - 20;
             num.style.left = x + 'px';
             num.style.top = y + 'px';
             face.appendChild(num);
         }
 
-        function updateCountdown() {
-            const targetDate = new Date("2026-03-13T21:35:00-03:00").getTime();
-            const now = new Date().getTime();
-            const distance = targetDate - now;
+        function updateClock() {
+            const now = new Date();
+            const s = now.getSeconds();
+            const m = now.getMinutes();
+            const h = now.getHours();
 
-            if (distance < 0) {
-                document.getElementById("timer").innerHTML = "00:00:00:00";
-                document.getElementById("timer").style.color = "red";
-                return;
-            }
+            const sDeg = (s / 60) * 360;
+            const mDeg = ((m / 60) * 360) + ((s / 60) * 6);
+            const hDeg = ((h / 12) * 360) + ((m / 60) * 30);
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            const d = String(days).padStart(2, '0');
-            const h = String(hours).padStart(2, '0');
-            const m = String(minutes).padStart(2, '0');
-            const s = String(seconds).padStart(2, '0');
-
-            document.getElementById("timer").innerHTML = `${d}:${h}:${m}:${s}`;
+            document.getElementById('sec').style.transform = `translateX(-50%) rotate(${sDeg}deg)`;
+            document.getElementById('min').style.transform = `translateX(-50%) rotate(${mDeg}deg)`;
+            document.getElementById('hour').style.transform = `translateX(-50%) rotate(${hDeg}deg)`;
         }
 
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
+        setInterval(updateClock, 1000);
+        updateClock();
     </script>
 </body>
 </html>
