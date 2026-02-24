@@ -2,190 +2,147 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SOURCEEXPLORER</title>
+    <title>SOURCEEXPLORER - ERROR</title>
     <style>
-        :root {
-            --bg-color: #000;
-            --terminal-gray: #c0c0c0;
-            --input-bg: #121212;
-            --text-red: #ff3333;
-            --btn-gray: #a0a0a0;
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
         }
 
-        body { 
-            background: var(--bg-color); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            width: 100vw;
-            margin: 0; 
-            font-family: 'Courier New', Courier, monospace; 
-            overflow: hidden; 
-        }
-        
-        #monitor {
-            background-color: var(--terminal-gray);
-            width: 98vw; 
-            height: 85vh;
-            max-width: 1600px;
-            padding: 4% 6%; 
-            box-sizing: border-box;
-            clip-path: ellipse(100% 125% at 50% 50%);
-            box-shadow: inset 0 0 120px rgba(0,0,0,0.6), 0 0 80px rgba(0,0,0,1);
-            position: relative;
-            transition: background-color 0.8s ease;
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, #ff00ff 25%, transparent 25%), 
+                linear-gradient(-45deg, #ff00ff 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #ff00ff 75%), 
+                linear-gradient(-45deg, transparent 75%, #ff00ff 75%);
+            background-size: 100px 100px;
+            background-position: 0 0, 0 50px, 50px 50px, 50px 0;
+            z-index: 1;
         }
 
-        #monitor::after {
-            content: " ";
-            position: absolute; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.12) 50%);
+        .crt-overlay {
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
             background-size: 100% 4px;
             z-index: 10;
             pointer-events: none;
         }
 
-        .input-box { background: var(--input-bg); border: 1px solid #ffffff44; padding: 15px; margin: 10px 0; width: 600px; display: flex; align-items: center; }
-        input { background: transparent; border: none; color: #ccc; width: 100%; font-size: 1.2rem; outline: none; font-family: inherit; }
-        
-        button {
-            background: var(--btn-gray);
-            border: 2px solid #555;
-            padding: 10px 20px;
-            font-family: inherit;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            box-shadow: 2px 2px 0px #444;
+        #clock-container {
+            position: relative;
+            z-index: 5;
+            width: 500px;
+            height: 500px;
+            background: #ff00ff;
+            border: 10px solid #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
 
-        button:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px #444; }
+        .clock-face {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 8px white double;
+            background: conic-gradient(
+                #000 0deg 90deg, 
+                #ff00ff 90deg 180deg, 
+                #000 180deg 270deg, 
+                #ff00ff 270deg 360deg
+            );
+            position: relative;
+            margin-bottom: 20px;
+        }
 
-        #login-view { display: block; position: relative; z-index: 6; }
-        #console-view { display: none; color: var(--text-red); height: 100%; flex-direction: column; position: relative; z-index: 6; }
-        
-        #output { white-space: pre-wrap; margin-bottom: 20px; font-size: 1.1rem; line-height: 1.4; overflow-y: hidden; flex-grow: 1; }
-        h1 { text-transform: uppercase; letter-spacing: 6px; color: #333; margin: 0 0 20px 0; font-size: 2rem; }
+        .clock-face::after {
+            content: ". . . . . .";
+            position: absolute;
+            color: white;
+            font-size: 2rem;
+            width: 100%;
+            text-align: center;
+            top: 40%;
+            letter-spacing: 15px;
+        }
 
-        .flash { animation: white-out 0.5s ease-out forwards; }
-        @keyframes white-out {
-            0% { filter: brightness(1); }
-            50% { filter: brightness(8); background: white; }
-            100% { filter: brightness(1); }
+        #timer {
+            background: #000;
+            color: #ff00ff;
+            padding: 15px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            border: 4px solid white;
+        }
+
+        .label {
+            color: #000;
+            font-weight: bold;
+            margin-top: 10px;
+            text-transform: uppercase;
         }
     </style>
 </head>
-<body onclick="startAudio()">
+<body onclick="playAmbient()">
 
-<div id="monitor">
-    <div id="login-view">
-        <h1>SOURCEEXPLORER</h1>
-        <div class="input-box"><input type="text" id="user" placeholder="NAME"></div>
-        <div class="input-box"><input type="password" id="pass" placeholder="PASSWORD"></div>
-        <button onclick="attemptLogin()">AUTHORIZE</button>
+    <div class="background"></div>
+    <div class="crt-overlay"></div>
+
+    <div id="clock-container">
+        <div class="clock-face"></div>
+        <div id="timer">00:00:00:00</div>
+        <div class="label">Time Until Resonance</div>
     </div>
 
-    <div id="console-view">
-        <h1 style="color: yellow;">SOURCE EXPLORER</h1>
-        <div id="output"></div>
-        <div id="prompt-container" style="display:flex; align-items:center;">
-            <div class="input-box" style="width:100%; border-color:orange; margin:0;"><input type="text" id="cmd" placeholder="Enter command..."></div>
-            <button onclick="runCommand()" style="margin-top:0; margin-left:10px; background: orange; border-color: darkorange;">EXECUTE</button>
-        </div>
-    </div>
-</div>
+    <audio id="bgm" loop src="kulcs.bsp.mp3"></audio>
 
-<audio id="bgm" loop src="kulcs.bsp.mp3"></audio>
-<audio id="snd_type" src="button3.wav"></audio>
-<audio id="snd_enter" src="button9.wav"></audio>
-<audio id="snd_error" src="button18.wav"></audio>
-<audio id="snd_join" src="friend_join.wav"></audio>
-
-<script>
-    const maps = ["tf_2fort", "gm_construct", "de_dust2", "hl2_canals_01", "cp_dustbowl", "gm_flatgrass", "cs_office", "hl2_citadel_03"];
-    let audioStarted = false;
-
-    function startAudio() {
-        if (!audioStarted) {
+    <script>
+        function playAmbient() {
             document.getElementById('bgm').play().catch(() => {});
-            audioStarted = true;
         }
-    }
 
-    function playSfx(id) {
-        const s = document.getElementById(id);
-        s.currentTime = 0;
-        s.play();
-    }
+        function updateCountdown() {
+            const targetDate = new Date("2026-03-13T21:35:00-03:00").getTime();
+            const now = new Date().getTime();
+            const distance = targetDate - now;
 
-    // Input sound effect
-    document.querySelectorAll('input').forEach(input => {
-        input.addEventListener('keydown', (e) => {
-            if (e.key !== 'Enter') playSfx('snd_type');
-            else {
-                if (input.id === 'cmd') runCommand();
-                else attemptLogin();
+            if (distance < 0) {
+                document.getElementById("timer").innerHTML = "00:00:00:00";
+                document.getElementById("timer").style.color = "red";
+                return;
             }
-        });
-    });
 
-    function attemptLogin() {
-        const u = document.getElementById('user').value;
-        const p = document.getElementById('pass').value;
-        
-        if (u === "JcBw52003-J" && p === "INT3RL0P32005@!ERR.") {
-            playSfx('snd_join');
-            document.getElementById('monitor').classList.add('flash');
-            setTimeout(() => {
-                document.getElementById('login-view').style.display = "none";
-                document.getElementById('console-view').style.display = "flex";
-                document.getElementById('monitor').style.backgroundColor = "#060606";
-                writeToConsole("CONNECTION ESTABLISHED.\nSYSTEM VULNERABLE.\nTYPE 'DOORS' TO SCAN MAP NODES.");
-            }, 300);
-        } else {
-            playSfx('snd_error');
-            document.getElementById('monitor').style.backgroundColor = "#400";
-            setTimeout(() => document.getElementById('monitor').style.backgroundColor = "#c0c0c0", 200);
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            const d = String(days).padStart(2, '0');
+            const h = String(hours).padStart(2, '0');
+            const m = String(minutes).padStart(2, '0');
+            const s = String(seconds).padStart(2, '0');
+
+            document.getElementById("timer").innerHTML = `${d}:${h}:${m}:${s}`;
         }
-    }
 
-    function writeToConsole(text) {
-        let i = 0;
-        const out = document.getElementById('output');
-        const interval = setInterval(() => {
-            out.innerHTML += text.charAt(i);
-            if (text.charAt(i) !== ' ' && text.charAt(i) !== '\n') playSfx('snd_type');
-            i++;
-            if (i >= text.length) {
-                clearInterval(interval);
-                document.getElementById('cmd').focus();
-            }
-        }, 300); // CRT Printer effect speed
-    }
-
-    function runCommand() {
-        const cmdInput = document.getElementById('cmd');
-        const val = cmdInput.value.toLowerCase().trim();
-        const out = document.getElementById('output');
-        playSfx('snd_enter');
-
-        if (val === 'doors') {
-            document.getElementById('prompt-container').style.display = "none";
-            setInterval(() => {
-                const m = maps[Math.floor(Math.random() * maps.length)];
-                out.innerHTML += `DOOR-${Math.floor(Math.random()*999)} | ${m.padEnd(15)} | ${Math.random() > 0.5 ? 'OPEN' : 'CLOSED'}\n`;
-                if (Math.random() > 0.8) playSfx('snd_type');
-                // Auto-scroll
-                const lines = out.innerHTML.split('\n');
-                if (lines.length > 50) out.innerHTML = lines.slice(lines.length - 50).join('\n');
-            }, 100);
-        } else {
-            out.innerHTML += `\n'${val}' UNKNOWN COMMAND.`;
-        }
-        cmdInput.value = "";
-    }
-</script>
-
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
 </body>
 </html>
