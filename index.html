@@ -29,9 +29,29 @@
             z-index: 0;
         }
 
+        .crt-effect {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .crt-effect::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: radial-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 100%),
+                        rgba(18, 16, 16, 0.1);
+            pointer-events: none;
+        }
+
         .container {
             display: flex;
-            gap: 20px;
+            gap: 25px;
             z-index: 5;
             padding: 20px;
         }
@@ -40,24 +60,25 @@
             width: 500px;
             height: 500px;
             background: black;
-            border: 4px solid #000;
+            border: 6px solid #000;
             display: flex;
             flex-direction: column;
-            padding: 30px;
+            padding: 35px;
             box-sizing: border-box;
             position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
         .clock-window {
             width: 500px;
             height: 500px;
             background: conic-gradient(#000 0% 25%, #f0f 25% 50%, #000 50% 75%, #f0f 75% 100%);
-            border: 10px solid #000;
+            border: 12px solid #000;
             display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
             box-sizing: border-box;
+            position: relative;
         }
 
         .nav-item {
@@ -66,17 +87,17 @@
             cursor: pointer;
             text-transform: uppercase;
             width: fit-content;
+            color: #ccc;
         }
 
-        .nav-item:hover {
-            color: #ff00ff;
-        }
+        .nav-item:hover { color: #f0f; }
 
         #msg-box {
             margin-top: auto;
             color: #ff0000;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             min-height: 1.5rem;
+            letter-spacing: 2px;
         }
 
         #clock-face {
@@ -103,10 +124,11 @@
 <body onclick="startSys()">
 
     <div class="background-missing"></div>
+    <div class="crt-effect"></div>
 
     <div class="container">
         <div class="terminal-window">
-            <div style="font-size: 1.2rem; letter-spacing: 3px; border-bottom: 1px solid #333; padding-bottom: 10px;">SOURCEEXPLORER</div>
+            <div style="font-size: 1.2rem; letter-spacing: 4px; border-bottom: 2px solid #222; padding-bottom: 12px;">SOURCEEXPLORER</div>
             
             <div style="margin-top: 40px;">
                 <div class="nav-item" onclick="denyAccess()">Version</div>
@@ -132,12 +154,12 @@
 
     <script>
         const target = new Date("2026-03-13T21:35:00-03:00").getTime();
-        let active = false;
+        let sysStarted = false;
 
         function startSys() {
-            if (!active) {
+            if (!sysStarted) {
                 document.getElementById('bgm').play().catch(()=>{});
-                active = true;
+                sysStarted = true;
                 runBeep();
             }
         }
