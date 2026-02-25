@@ -14,83 +14,117 @@
             display: flex;
         }
 
+        .background-missing {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(45deg, #ff0000 25%, transparent 25%), 
+                linear-gradient(-45deg, #ff0000 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #ff0000 75%), 
+                linear-gradient(-45deg, transparent 75%, #ff0000 75%);
+            background-size: 100px 100px;
+            background-position: 0 0, 0 50px, 50px 50px, 50px 0;
+            z-index: 0;
+        }
+
         .sidebar {
-            width: 40%;
+            width: 65%;
             height: 100%;
             background: black;
-            border-right: 10px solid #ff0000;
             display: flex;
             flex-direction: column;
-            padding: 40px;
+            padding: 20px;
             box-sizing: border-box;
+            position: relative;
+            z-index: 5;
+            border-right: 4px solid #000;
+        }
+
+        .main-content {
+            width: 35%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: relative;
             z-index: 5;
         }
 
-        .main-content {
-            width: 60%;
-            height: 100%;
-            background-image: 
-                linear-gradient(45deg, #ff0000 25%, #000 25%, #000 50%, #ff0000 50%, #ff0000 75%, #000 75%, #000 100%);
-            background-size: 100px 100px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
+        .nav-area { margin-top: auto; padding-bottom: 40px; }
         .nav-item {
-            font-size: 2rem;
-            margin: 40px 0;
+            font-size: 1.2rem;
+            margin: 20px 0;
             cursor: pointer;
             text-transform: uppercase;
-            transition: color 0.2s;
         }
 
-        .nav-item:hover { color: #ff00ff; }
-
-        #msg-box {
-            position: absolute;
-            bottom: 50px;
-            color: #ff0000;
-            font-size: 1.5rem;
-            height: 1.5rem;
-        }
-
-        #clock-square {
-            width: 400px;
-            height: 400px;
-            background: conic-gradient(#000 0% 25%, #f0f 25% 50%, #000 50% 75%, #f0f 75% 100%);
-            border: 8px solid white;
+        .wireframe-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             position: relative;
         }
 
-        .hand {
-            position: absolute;
-            bottom: 50%; left: 50%;
-            transform-origin: bottom;
-            background: white;
+        #wireframe-canvas {
+            width: 400px;
+            height: 400px;
+            border: 1px solid #333;
         }
 
-        .h-hand { width: 8px; height: 100px; z-index: 3; }
-        .m-hand { width: 5px; height: 140px; z-index: 4; }
-        .s-hand { width: 2px; height: 160px; background: red; z-index: 5; }
+        #msg-box {
+            position: absolute;
+            left: 20px;
+            bottom: 20px;
+            color: #ff0000;
+            font-size: 1.2rem;
+        }
+
+        #clock-square {
+            width: 320px;
+            height: 320px;
+            background: conic-gradient(#000 0% 25%, #f0f 25% 50%, #000 50% 75%, #f0f 75% 100%);
+            border: 4px solid white;
+            position: relative;
+        }
+
+        .hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom; background: white; }
+        .h-hand { width: 6px; height: 80px; z-index: 3; }
+        .m-hand { width: 4px; height: 110px; z-index: 4; }
+        .s-hand { width: 2px; height: 130px; background: red; z-index: 5; }
 
         .num {
             position: absolute;
             color: white;
             font-weight: bold;
-            font-size: 1.2rem;
-            text-shadow: 2px 2px #000;
+            font-size: 1rem;
+            text-shadow: 1px 1px #000;
         }
     </style>
 </head>
 <body onclick="startSys()">
 
+    <div class="background-missing"></div>
+
     <div class="sidebar">
-        <h1 style="letter-spacing: 5px; border-bottom: 2px solid white; padding-bottom: 10px;">SOURCEEXPLORER</h1>
-        <div class="nav-item" onclick="denyAccess('Version')">Version</div>
-        <div class="nav-item" onclick="denyAccess('Doors')">Doors</div>
-        <div class="nav-item" onclick="denyAccess('Files')">Files</div>
+        <div style="font-size: 1rem; letter-spacing: 2px;">SOURCEEXPLORER</div>
+        
+        <div class="wireframe-container">
+            <svg id="wireframe-canvas" viewBox="0 0 400 400" fill="none" stroke="white" stroke-width="1.5">
+                <path d="M100 150 L250 150 L250 300 L100 300 Z M140 110 L290 110 L290 260 L140 260 Z M100 150 L140 110 M250 150 L290 110 M250 300 L290 260 M100 300 L140 260" />
+                <path d="M280 300 L380 300 L330 180 Z M280 300 L310 260 L380 300 M310 260 L330 180" />
+                <circle cx="200" cy="80" r="50" />
+                <ellipse cx="200" cy="80" rx="50" ry="20" />
+                <ellipse cx="200" cy="80" rx="20" ry="50" />
+            </svg>
+        </div>
+
+        <div class="nav-area">
+            <div class="nav-item" onclick="denyAccess()">Version</div>
+            <div class="nav-item" onclick="denyAccess()">Doors</div>
+            <div class="nav-item" onclick="denyAccess()">Files</div>
+        </div>
         <div id="msg-box"></div>
     </div>
 
@@ -108,12 +142,12 @@
 
     <script>
         const target = new Date("2026-03-13T21:35:00-03:00").getTime();
-        let sysActive = false;
+        let active = false;
 
         function startSys() {
-            if (!sysActive) {
-                document.getElementById('bgm').play();
-                sysActive = true;
+            if (!active) {
+                document.getElementById('bgm').play().catch(()=>{});
+                active = true;
                 runBeep();
             }
         }
@@ -129,11 +163,9 @@
             const now = new Date().getTime();
             const diff = target - now;
             const progress = Math.max(0, 1 - (diff / (30 * 24 * 60 * 60 * 1000)));
-            
             const b = document.getElementById('beep');
             b.volume = 0.1 + (progress * 0.9);
             b.play();
-
             setTimeout(runBeep, 2000 - (progress * 1900));
         }
 
@@ -142,17 +174,17 @@
             const n = document.createElement('div');
             n.className = 'num';
             n.innerText = i;
-            const rad = 175;
+            const rad = 140;
             const ang = (i * 30 - 90) * (Math.PI / 180);
-            n.style.left = (200 + rad * Math.cos(ang) - 10) + 'px';
-            n.style.top = (200 + rad * Math.sin(ang) - 10) + 'px';
+            n.style.left = (160 + rad * Math.cos(ang) - 8) + 'px';
+            n.style.top = (160 + rad * Math.sin(ang) - 8) + 'px';
             clock.appendChild(n);
         }
 
         function tic() {
             const d = new Date();
             const s = d.getSeconds() * 6;
-            const m = d.getMinutes() * 6 + d.getSeconds() * 0.1;
+            const m = d.getMinutes() * 6;
             const h = (d.getHours() % 12) * 30 + d.getMinutes() * 0.5;
             document.getElementById('s').style.transform = `translateX(-50%) rotate(${s}deg)`;
             document.getElementById('m').style.transform = `translateX(-50%) rotate(${m}deg)`;
