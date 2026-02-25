@@ -2,185 +2,164 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ERROR</title>
+    <title>SOURCEEXPLORER - ROOT</title>
     <style>
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
             background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            color: white;
             font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            display: flex;
         }
 
-        .background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
+        .sidebar {
+            width: 40%;
             height: 100%;
-            background-image: 
-                linear-gradient(45deg, #ff00ff 25%, transparent 25%), 
-                linear-gradient(-45deg, #ff00ff 25%, transparent 25%), 
-                linear-gradient(45deg, transparent 75%, #ff00ff 75%), 
-                linear-gradient(-45deg, transparent 75%, #ff00ff 75%);
-            background-size: 100px 100px;
-            background-position: 0 0, 0 50px, 50px 50px, 50px 0;
-            z-index: 1;
-        }
-
-        .crt-overlay {
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
-            background-size: 100% 4px;
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        #clock-container {
+            background: black;
+            border-right: 10px solid #ff0000;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            box-sizing: border-box;
             position: relative;
             z-index: 5;
-            width: 500px;
-            height: 500px;
-            background: #ff00ff;
-            border: 12px solid #000;
+        }
+
+        .main-content {
+            width: 60%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, #ff0000 25%, #000 25%, #000 50%, #ff0000 50%, #ff0000 75%, #000 75%, #000 100%);
+            background-size: 100px 100px;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 0 60px rgba(0,0,0,0.9);
         }
 
-        .clock-face-square {
+        .nav-item {
+            font-size: 2rem;
+            margin: 40px 0;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .nav-item:hover { color: #ff00ff; }
+
+        #msg-box {
+            position: absolute;
+            bottom: 50px;
+            color: #ff0000;
+            font-size: 1.5rem;
+            height: 1.5rem;
+        }
+
+        #clock-square {
             width: 400px;
             height: 400px;
-            border: 6px white solid;
-            background: conic-gradient(
-                #000 0deg 90deg, 
-                #ff00ff 90deg 180deg, 
-                #000 180deg 270deg, 
-                #ff00ff 270deg 360deg
-            );
+            background: conic-gradient(#000 0% 25%, #f0f 25% 50%, #000 50% 75%, #f0f 75% 100%);
+            border: 8px solid white;
             position: relative;
         }
 
         .hand {
             position: absolute;
-            bottom: 50%;
-            left: 50%;
+            bottom: 50%; left: 50%;
             transform-origin: bottom;
             background: white;
-            border: 1px solid black;
         }
 
-        .hour-hand { width: 8px; height: 100px; z-index: 3; }
-        .min-hand { width: 5px; height: 140px; z-index: 4; }
-        .sec-hand { width: 2px; height: 160px; background: red; z-index: 5; }
+        .h-hand { width: 8px; height: 100px; z-index: 3; }
+        .m-hand { width: 5px; height: 140px; z-index: 4; }
+        .s-hand { width: 2px; height: 160px; background: red; z-index: 5; }
 
-        .number {
+        .num {
             position: absolute;
             color: white;
             font-weight: bold;
-            font-size: 1.5rem;
-            width: 40px;
-            height: 40px;
-            text-align: center;
-            line-height: 40px;
+            font-size: 1.2rem;
             text-shadow: 2px 2px #000;
         }
     </style>
 </head>
-<body onclick="initAudio()">
+<body onclick="startSys()">
 
-    <div class="background"></div>
-    <div class="crt-overlay"></div>
+    <div class="sidebar">
+        <h1 style="letter-spacing: 5px; border-bottom: 2px solid white; padding-bottom: 10px;">SOURCEEXPLORER</h1>
+        <div class="nav-item" onclick="denyAccess('Version')">Version</div>
+        <div class="nav-item" onclick="denyAccess('Doors')">Doors</div>
+        <div class="nav-item" onclick="denyAccess('Files')">Files</div>
+        <div id="msg-box"></div>
+    </div>
 
-    <div id="clock-container">
-        <div class="clock-face-square" id="face">
-            <div class="hand hour-hand" id="hour"></div>
-            <div class="hand min-hand" id="min"></div>
-            <div class="hand sec-hand" id="sec"></div>
+    <div class="main-content">
+        <div id="clock-square">
+            <div class="hand h-hand" id="h"></div>
+            <div class="hand m-hand" id="m"></div>
+            <div class="hand s-hand" id="s"></div>
         </div>
     </div>
 
     <audio id="bgm" loop src="kulcs.bsp.mp3"></audio>
     <audio id="beep" src="button3.wav"></audio>
+    <audio id="click" src="ui_click.wav"></audio>
 
     <script>
-        let audioStarted = false;
-        const targetDate = new Date("2026-03-13T21:35:00-03:00").getTime();
+        const target = new Date("2026-03-13T21:35:00-03:00").getTime();
+        let sysActive = false;
 
-        function initAudio() {
-            if (!audioStarted) {
+        function startSys() {
+            if (!sysActive) {
                 document.getElementById('bgm').play();
-                audioStarted = true;
-                processBeep();
+                sysActive = true;
+                runBeep();
             }
         }
 
-        function playBeep(vol) {
-            const b = document.getElementById('beep');
-            b.currentTime = 0;
-            b.volume = Math.min(1, Math.max(0.1, vol));
-            b.play();
+        function denyAccess() {
+            document.getElementById('click').play();
+            const msg = document.getElementById('msg-box');
+            msg.innerText = "not now.";
+            setTimeout(() => { msg.innerText = ""; }, 2000);
         }
 
-        function processBeep() {
+        function runBeep() {
             const now = new Date().getTime();
-            const diff = targetDate - now;
-            const totalWindow = 30 * 24 * 60 * 60 * 1000; 
-            const progress = Math.max(0, 1 - (diff / totalWindow));
+            const diff = target - now;
+            const progress = Math.max(0, 1 - (diff / (30 * 24 * 60 * 60 * 1000)));
             
-            let interval = 2000; 
-            let volume = 0.1;
+            const b = document.getElementById('beep');
+            b.volume = 0.1 + (progress * 0.9);
+            b.play();
 
-            if (diff > 0) {
-                interval = 2000 - (progress * 1900);
-                volume = 0.1 + (progress * 0.9);
-            } else {
-                interval = 100;
-                volume = 1.0;
-            }
-
-            playBeep(volume);
-            setTimeout(processBeep, interval);
+            setTimeout(runBeep, 2000 - (progress * 1900));
         }
 
-        const face = document.getElementById('face');
+        const clock = document.getElementById('clock-square');
         for (let i = 1; i <= 12; i++) {
-            const num = document.createElement('div');
-            num.className = 'number';
-            num.innerHTML = i;
-            const angle = (i * 30) - 90;
-            const radius = 170;
-            const x = 200 + radius * Math.cos(angle * Math.PI / 180) - 20;
-            const y = 200 + radius * Math.sin(angle * Math.PI / 180) - 20;
-            num.style.left = x + 'px';
-            num.style.top = y + 'px';
-            face.appendChild(num);
+            const n = document.createElement('div');
+            n.className = 'num';
+            n.innerText = i;
+            const rad = 175;
+            const ang = (i * 30 - 90) * (Math.PI / 180);
+            n.style.left = (200 + rad * Math.cos(ang) - 10) + 'px';
+            n.style.top = (200 + rad * Math.sin(ang) - 10) + 'px';
+            clock.appendChild(n);
         }
 
-        function updateClock() {
-            const now = new Date();
-            const s = now.getSeconds();
-            const m = now.getMinutes();
-            const h = now.getHours();
-
-            const sDeg = (s / 60) * 360;
-            const mDeg = ((m / 60) * 360) + ((s / 60) * 6);
-            const hDeg = ((h / 12) * 360) + ((m / 60) * 30);
-
-            document.getElementById('sec').style.transform = `translateX(-50%) rotate(${sDeg}deg)`;
-            document.getElementById('min').style.transform = `translateX(-50%) rotate(${mDeg}deg)`;
-            document.getElementById('hour').style.transform = `translateX(-50%) rotate(${hDeg}deg)`;
+        function tic() {
+            const d = new Date();
+            const s = d.getSeconds() * 6;
+            const m = d.getMinutes() * 6 + d.getSeconds() * 0.1;
+            const h = (d.getHours() % 12) * 30 + d.getMinutes() * 0.5;
+            document.getElementById('s').style.transform = `translateX(-50%) rotate(${s}deg)`;
+            document.getElementById('m').style.transform = `translateX(-50%) rotate(${m}deg)`;
+            document.getElementById('h').style.transform = `translateX(-50%) rotate(${h}deg)`;
         }
-
-        setInterval(updateClock, 1000);
-        updateClock();
+        setInterval(tic, 1000);
+        tic();
     </script>
 </body>
 </html>
