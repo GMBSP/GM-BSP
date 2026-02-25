@@ -12,6 +12,8 @@
             font-family: 'Courier New', Courier, monospace;
             overflow: hidden;
             display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .background-missing {
@@ -27,79 +29,74 @@
             z-index: 0;
         }
 
-        .sidebar {
-            width: 65%;
-            height: 100%;
+        .container {
+            display: flex;
+            gap: 20px;
+            z-index: 5;
+            padding: 20px;
+        }
+
+        .terminal-window {
+            width: 500px;
+            height: 500px;
             background: black;
+            border: 4px solid #000;
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding: 30px;
             box-sizing: border-box;
             position: relative;
-            z-index: 5;
-            border-right: 4px solid #000;
         }
 
-        .main-content {
-            width: 35%;
-            height: 100%;
+        .clock-window {
+            width: 500px;
+            height: 500px;
+            background: conic-gradient(#000 0% 25%, #f0f 25% 50%, #000 50% 75%, #f0f 75% 100%);
+            border: 10px solid #000;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
-            z-index: 5;
+            box-sizing: border-box;
         }
 
-        .nav-area { margin-top: auto; padding-bottom: 40px; }
         .nav-item {
-            font-size: 1.2rem;
-            margin: 20px 0;
+            font-size: 1.4rem;
+            margin: 25px 0;
             cursor: pointer;
             text-transform: uppercase;
+            width: fit-content;
         }
 
-        .wireframe-container {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        #wireframe-canvas {
-            width: 400px;
-            height: 400px;
-            border: 1px solid #333;
+        .nav-item:hover {
+            color: #ff00ff;
         }
 
         #msg-box {
-            position: absolute;
-            left: 20px;
-            bottom: 20px;
+            margin-top: auto;
             color: #ff0000;
             font-size: 1.2rem;
+            min-height: 1.5rem;
         }
 
-        #clock-square {
-            width: 320px;
-            height: 320px;
-            background: conic-gradient(#000 0% 25%, #f0f 25% 50%, #000 50% 75%, #f0f 75% 100%);
+        #clock-face {
+            width: 400px;
+            height: 400px;
             border: 4px solid white;
             position: relative;
         }
 
         .hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom; background: white; }
-        .h-hand { width: 6px; height: 80px; z-index: 3; }
-        .m-hand { width: 4px; height: 110px; z-index: 4; }
-        .s-hand { width: 2px; height: 130px; background: red; z-index: 5; }
+        .h-hand { width: 8px; height: 110px; z-index: 3; }
+        .m-hand { width: 5px; height: 150px; z-index: 4; }
+        .s-hand { width: 2px; height: 170px; background: red; z-index: 5; }
 
         .num {
             position: absolute;
             color: white;
             font-weight: bold;
-            font-size: 1rem;
-            text-shadow: 1px 1px #000;
+            font-size: 1.2rem;
+            text-shadow: 2px 2px #000;
         }
     </style>
 </head>
@@ -107,32 +104,25 @@
 
     <div class="background-missing"></div>
 
-    <div class="sidebar">
-        <div style="font-size: 1rem; letter-spacing: 2px;">SOURCEEXPLORER</div>
-        
-        <div class="wireframe-container">
-            <svg id="wireframe-canvas" viewBox="0 0 400 400" fill="none" stroke="white" stroke-width="1.5">
-                <path d="M100 150 L250 150 L250 300 L100 300 Z M140 110 L290 110 L290 260 L140 260 Z M100 150 L140 110 M250 150 L290 110 M250 300 L290 260 M100 300 L140 260" />
-                <path d="M280 300 L380 300 L330 180 Z M280 300 L310 260 L380 300 M310 260 L330 180" />
-                <circle cx="200" cy="80" r="50" />
-                <ellipse cx="200" cy="80" rx="50" ry="20" />
-                <ellipse cx="200" cy="80" rx="20" ry="50" />
-            </svg>
+    <div class="container">
+        <div class="terminal-window">
+            <div style="font-size: 1.2rem; letter-spacing: 3px; border-bottom: 1px solid #333; padding-bottom: 10px;">SOURCEEXPLORER</div>
+            
+            <div style="margin-top: 40px;">
+                <div class="nav-item" onclick="denyAccess()">Version</div>
+                <div class="nav-item" onclick="denyAccess()">Doors</div>
+                <div class="nav-item" onclick="denyAccess()">Files</div>
+            </div>
+
+            <div id="msg-box"></div>
         </div>
 
-        <div class="nav-area">
-            <div class="nav-item" onclick="denyAccess()">Version</div>
-            <div class="nav-item" onclick="denyAccess()">Doors</div>
-            <div class="nav-item" onclick="denyAccess()">Files</div>
-        </div>
-        <div id="msg-box"></div>
-    </div>
-
-    <div class="main-content">
-        <div id="clock-square">
-            <div class="hand h-hand" id="h"></div>
-            <div class="hand m-hand" id="m"></div>
-            <div class="hand s-hand" id="s"></div>
+        <div class="clock-window">
+            <div id="clock-face">
+                <div class="hand h-hand" id="h"></div>
+                <div class="hand m-hand" id="m"></div>
+                <div class="hand s-hand" id="s"></div>
+            </div>
         </div>
     </div>
 
@@ -169,22 +159,22 @@
             setTimeout(runBeep, 2000 - (progress * 1900));
         }
 
-        const clock = document.getElementById('clock-square');
+        const clock = document.getElementById('clock-face');
         for (let i = 1; i <= 12; i++) {
             const n = document.createElement('div');
             n.className = 'num';
             n.innerText = i;
-            const rad = 140;
+            const rad = 175;
             const ang = (i * 30 - 90) * (Math.PI / 180);
-            n.style.left = (160 + rad * Math.cos(ang) - 8) + 'px';
-            n.style.top = (160 + rad * Math.sin(ang) - 8) + 'px';
+            n.style.left = (200 + rad * Math.cos(ang) - 10) + 'px';
+            n.style.top = (200 + rad * Math.sin(ang) - 10) + 'px';
             clock.appendChild(n);
         }
 
         function tic() {
             const d = new Date();
             const s = d.getSeconds() * 6;
-            const m = d.getMinutes() * 6;
+            const m = d.getMinutes() * 6 + d.getSeconds() * 0.1;
             const h = (d.getHours() % 12) * 30 + d.getMinutes() * 0.5;
             document.getElementById('s').style.transform = `translateX(-50%) rotate(${s}deg)`;
             document.getElementById('m').style.transform = `translateX(-50%) rotate(${m}deg)`;
