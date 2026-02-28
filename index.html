@@ -5,3 +5,84 @@
     <title>SOURCEEXPLORER</title>
     <style>
         body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .error-container {
+            text-align: center;
+            z-index: 5;
+        }
+
+        h1 {
+            font-size: 2rem;
+            letter-spacing: 5px;
+            margin: 0;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        .crt-overlay {
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 3px;
+            z-index: 10;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body onclick="startPersistence()">
+
+    <div class="crt-overlay"></div>
+
+    <div class="error-container">
+        <h1>PAGE NOT FOUND.</h1>
+        <p>(ERROR - 2003)</p>
+    </div>
+
+    <audio id="bgm" loop src="kulcs.bsp.mp3"></audio>
+    <audio id="beep" src="button3.wav"></audio>
+
+    <script>
+        const targetDate = new Date("2026-03-13T21:35:00-03:00").getTime();
+        let initialized = false;
+
+        function startPersistence() {
+            if (!initialized) {
+                document.getElementById('bgm').play().catch(() => {});
+                initialized = true;
+                triggerPulse();
+            }
+        }
+
+        function triggerPulse() {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+            
+            const totalWindow = 30 * 24 * 60 * 60 * 1000; 
+            const progress = Math.max(0, 1 - (diff / totalWindow));
+            
+            const b = document.getElementById('beep');
+            b.volume = 0.1 + (progress * 0.9);
+            b.play().catch(() => {});
+
+            const interval = diff > 0 ? (2000 - (progress * 1900)) : 100;
+            setTimeout(triggerPulse, interval);
+        }
+    </script>
+</body>
+</html>
