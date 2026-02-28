@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SOURCEEXPLORER - ROOT</title>
+    <title>SOURCEEXPLORER</title>
     <style>
         body, html {
             margin: 0; padding: 0;
@@ -25,100 +25,74 @@
                 linear-gradient(45deg, transparent 75%, #ff0000 75%), 
                 linear-gradient(-45deg, transparent 75%, #ff0000 75%);
             background-size: 100px 100px;
-            background-position: 0 0, 0 50px, 50px 50px, 50px 0;
             z-index: 0;
+        }
+
+        .white-page {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: white;
+            background-image: 
+                linear-gradient(45deg, #000 25%, transparent 25%), 
+                linear-gradient(-45deg, #000 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #000 75%), 
+                linear-gradient(-45deg, transparent 75%, #000 75%);
+            background-size: 40px 40px;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: black;
         }
 
         .crt-effect {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            background-size: 100% 3px, 3px 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 3px;
             pointer-events: none;
             z-index: 10;
         }
 
-        .crt-effect::after {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: radial-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 100%),
-                        rgba(18, 16, 16, 0.1);
-            pointer-events: none;
-        }
-
-        .container {
-            display: flex;
-            gap: 25px;
-            z-index: 5;
-            padding: 20px;
-        }
+        .container { display: flex; gap: 25px; z-index: 5; }
 
         .terminal-window {
-            width: 500px;
-            height: 500px;
+            width: 500px; height: 500px;
             background: black;
             border: 6px solid #000;
-            display: flex;
-            flex-direction: column;
-            padding: 35px;
-            box-sizing: border-box;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column;
+            padding: 35px; box-sizing: border-box;
         }
 
         .clock-window {
-            width: 500px;
-            height: 500px;
+            width: 500px; height: 500px;
             background: conic-gradient(#000 0% 25%, #f0f 25% 50%, #000 50% 75%, #f0f 75% 100%);
             border: 12px solid #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-sizing: border-box;
+            display: flex; justify-content: center; align-items: center;
             position: relative;
         }
 
-        .nav-item {
-            font-size: 1.4rem;
-            margin: 25px 0;
-            cursor: pointer;
-            text-transform: uppercase;
-            width: fit-content;
-            color: #ccc;
+        .nav-item, .exp-link {
+            font-size: 1.4rem; cursor: pointer; text-transform: uppercase; color: #ccc;
+        }
+        .exp-link { letter-spacing: 4px; border-bottom: 2px solid #222; padding-bottom: 12px; display: block; }
+        .nav-item:hover, .exp-link:hover { color: #f0f; }
+
+        .btn-white {
+            background: white; border: 4px solid black; color: black;
+            padding: 15px 30px; font-weight: bold; cursor: pointer; margin: 10px;
+            font-family: 'Courier New', Courier, monospace; font-size: 1.5rem;
         }
 
-        .nav-item:hover { color: #f0f; }
+        #msg-box, #white-msg { color: #ff0000; font-size: 1.3rem; min-height: 1.5rem; }
 
-        #msg-box {
-            margin-top: auto;
-            color: #ff0000;
-            font-size: 1.3rem;
-            min-height: 1.5rem;
-            letter-spacing: 2px;
-        }
-
-        #clock-face {
-            width: 400px;
-            height: 400px;
-            border: 4px solid white;
-            position: relative;
-        }
-
+        #clock-face { width: 400px; height: 400px; border: 4px solid white; position: relative; }
         .hand { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom; background: white; }
         .h-hand { width: 8px; height: 110px; z-index: 3; }
         .m-hand { width: 5px; height: 150px; z-index: 4; }
         .s-hand { width: 2px; height: 170px; background: red; z-index: 5; }
-
-        .num {
-            position: absolute;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-            text-shadow: 2px 2px #000;
-        }
+        .num { position: absolute; color: white; font-weight: bold; text-shadow: 2px 2px #000; }
     </style>
 </head>
 <body onclick="startSys()">
@@ -126,16 +100,25 @@
     <div class="background-missing"></div>
     <div class="crt-effect"></div>
 
+    <div class="white-page" id="white-page">
+        <div style="background: white; padding: 40px; border: 10px solid black; text-align: center;">
+            <h1 style="font-size: 3rem;">AUTHORIZED PERSONNEL ONLY</h1>
+            <div id="white-msg"></div>
+            <div style="margin-top: 20px;">
+                <button class="btn-white" onclick="toggleWhitePage(false)">BACK</button>
+                <button class="btn-white" onclick="denyWhite()">NEXT</button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="terminal-window">
-            <div style="font-size: 1.2rem; letter-spacing: 4px; border-bottom: 2px solid #222; padding-bottom: 12px;">SOURCEEXPLORER</div>
-            
+            <span class="exp-link" onclick="toggleWhitePage(true)">SOURCEEXPLORER</span>
             <div style="margin-top: 40px;">
                 <div class="nav-item" onclick="denyAccess()">Version</div>
                 <div class="nav-item" onclick="denyAccess()">Doors</div>
                 <div class="nav-item" onclick="denyAccess()">Files</div>
             </div>
-
             <div id="msg-box"></div>
         </div>
 
@@ -162,6 +145,18 @@
                 sysStarted = true;
                 runBeep();
             }
+        }
+
+        function toggleWhitePage(show) {
+            document.getElementById('click').play();
+            document.getElementById('white-page').style.display = show ? 'flex' : 'none';
+        }
+
+        function denyWhite() {
+            document.getElementById('click').play();
+            const msg = document.getElementById('white-msg');
+            msg.innerText = "not now.";
+            setTimeout(() => { msg.innerText = ""; }, 2000);
         }
 
         function denyAccess() {
@@ -196,7 +191,7 @@
         function tic() {
             const d = new Date();
             const s = d.getSeconds() * 6;
-            const m = d.getMinutes() * 6 + d.getSeconds() * 0.1;
+            const m = d.getMinutes() * 6;
             const h = (d.getHours() % 12) * 30 + d.getMinutes() * 0.5;
             document.getElementById('s').style.transform = `translateX(-50%) rotate(${s}deg)`;
             document.getElementById('m').style.transform = `translateX(-50%) rotate(${m}deg)`;
