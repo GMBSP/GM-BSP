@@ -63,14 +63,14 @@
             gap: 3px;
         }
         .countdown-label {
-            font-size: 0.55rem;
-            color: #444;
-            letter-spacing: 4px;
+            font-size: 0.7rem;
+            color: #888;
+            letter-spacing: 6px;
         }
         .countdown-timer {
             font-family: 'VT323', monospace;
-            font-size: 3rem;
-            color: #777;
+            font-size: 3.5rem;
+            color: #ccc;
             letter-spacing: 6px;
         }
         .countdown-timer .sep { animation: blink 1s step-end infinite; }
@@ -78,10 +78,10 @@
 
         /* Calendar block */
         .cal-block {
-            background: rgba(0,0,0,0.75);
-            border: 1px solid #1e1e1e;
+            background: rgba(0,0,0,0.85);
+            border: 1px solid #333;
             padding: 28px 32px;
-            width: 420px;
+            width: 440px;
         }
 
         .cal-header {
@@ -93,8 +93,8 @@
 
         .cal-arrow {
             font-family: 'VT323', monospace;
-            font-size: 2rem;
-            color: #444;
+            font-size: 2.4rem;
+            color: #666;
             cursor: pointer;
             padding: 0 8px;
             user-select: none;
@@ -105,7 +105,7 @@
 
         .cal-month-name {
             font-family: 'VT323', monospace;
-            font-size: 2rem;
+            font-size: 2.2rem;
             letter-spacing: 6px;
             color: #fff;
         }
@@ -117,9 +117,9 @@
         }
         .day-header {
             text-align: center;
-            font-size: 0.5rem;
-            color: #333;
-            letter-spacing: 1px;
+            font-size: 0.65rem;
+            color: #666;
+            letter-spacing: 2px;
             padding: 4px 0;
         }
 
@@ -134,25 +134,25 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 0.78rem;
-            color: #444;
+            font-size: 0.9rem;
+            color: #555;
             border: 1px solid transparent;
             cursor: default;
         }
 
         .day-cell.has-day:hover {
-            border-color: #2a2a2a;
-            color: #888;
+            border-color: #444;
+            color: #bbb;
         }
 
         .day-cell.today {
             color: #fff !important;
             border-color: #fff !important;
-            background: rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.07);
         }
 
-        .day-cell.past { color: #222; }
-        .day-cell.future { color: #555; }
+        .day-cell.past { color: #333; }
+        .day-cell.future { color: #aaa; }
     </style>
 </head>
 <body>
