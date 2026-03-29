@@ -151,8 +151,46 @@
             background: rgba(255,255,255,0.07);
         }
 
-        .day-cell.past { color: #333; }
-        .day-cell.future { color: #aaa; }
+        .day-cell.special {
+            color: #f0f !important;
+            border-color: #f0f !important;
+            background: rgba(255,0,255,0.06);
+            position: relative;
+        }
+
+        .day-cell.special::after {
+            content: '2003';
+            position: absolute;
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            border: 1px solid #f0f;
+            color: #f0f;
+            font-family: 'VT323', monospace;
+            font-size: 1rem;
+            letter-spacing: 3px;
+            padding: 2px 8px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s;
+            z-index: 20;
+        }
+
+        .day-cell.special:hover::after { opacity: 1; }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .enter-link {
+            font-family: 'Share Tech Mono', monospace; font-size: 0.65rem;
+            color: #444; letter-spacing: 4px; cursor: pointer;
+            transition: color 0.2s; text-align: center; user-select: none;
+        }
+        .enter-link:hover { color: #fff; }
     </style>
 </head>
 <body>
@@ -186,6 +224,11 @@
             <div class="day-header">SAT</div>
         </div>
         <div class="days-grid" id="days-grid"></div>
+    </div>
+
+    <div class="nav-links">
+        <div class="enter-link" onclick="window.location.href='/console'">SOURCEEXPLORER ›</div>
+        <div class="enter-link" onclick="window.location.href='/chat'">CHAT ›</div>
     </div>
 </div>
 
@@ -226,6 +269,12 @@ function renderCalendar() {
             cell.classList.add('today');
         } else {
             cell.classList.add('future');
+        }
+
+        // April 25 special marker
+        if (viewMonth === 3 && d === 25) {
+            cell.classList.remove('past','future','today');
+            cell.classList.add('special');
         }
 
         grid.appendChild(cell);
