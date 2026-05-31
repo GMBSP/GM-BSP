@@ -1,311 +1,998 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>2003</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TheGMTower Forums</title>
 
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+<!-- ============================================================
+     FIREBASE SETUP — see FIREBASE_SETUP.md for full instructions
+     ============================================================
 
-        body, html {
-            width: 100%; height: 100%;
-            background: #000;
-            font-family: 'Share Tech Mono', monospace;
-            color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
+  STEP 1: Go to https://console.firebase.google.com
+  STEP 2: Create a project (or open an existing one)
+  STEP 3: Project Settings → Your apps → Add app → Web (</>)
+  STEP 4: Copy the firebaseConfig values into the block below
+  STEP 5: In Firebase Console → Authentication → Sign-in method
+          → Enable "Email/Password"
 
-        .bg {
-            position: fixed; inset: 0;
-            background-image: url('2003.png');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.15;
-            z-index: 0;
-        }
+  ============================================================ -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
-        .crt {
-            position: fixed; inset: 0;
-            background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.15) 50%);
-            background-size: 100% 3px;
-            pointer-events: none; z-index: 10;
-        }
-        .crt::after {
-            content: ''; display: block; position: absolute; inset: 0;
-            background: radial-gradient(rgba(0,0,0,0) 55%, rgba(0,0,0,0.55) 100%);
-        }
+  const firebaseConfig = {
+    apiKey:            "AIzaSyBXwfm6qA0kaof-UA3tvlwvs_mlsmHPNdc",
+    authDomain:        "forums-4c2e6.firebaseapp.com",
+    projectId:         "forums-4c2e6",
+    storageBucket:     "forums-4c2e6.firebasestorage.app",
+    messagingSenderId: "753816883046",
+    appId:             "1:753816883046:web:2980dec077936035c0c2a7"
+  };
 
-        .wrapper {
-            position: relative; z-index: 5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 28px;
-        }
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-        .year-heading {
-            font-family: 'VT323', monospace;
-            font-size: 7rem;
-            color: #fff;
-            letter-spacing: 16px;
-            text-shadow: 0 0 30px rgba(255,255,255,0.25);
-            line-height: 1;
-        }
+  function showAuthMsg(msg, isError) {
+    const el = document.getElementById('auth-msg');
+    el.textContent = msg;
+    el.style.color = isError ? '#cc4400' : '#226622';
+    el.style.display = 'block';
+  }
 
-        .countdown-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-        }
-        .countdown-label {
-            font-size: 0.7rem;
-            color: #888;
-            letter-spacing: 6px;
-        }
-        .countdown-timer {
-            font-family: 'VT323', monospace;
-            font-size: 3.5rem;
-            color: #ccc;
-            letter-spacing: 6px;
-        }
-        .countdown-timer .sep { animation: blink 1s step-end infinite; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  function clearAuthMsg() {
+    const el = document.getElementById('auth-msg');
+    if (el) { el.textContent = ''; el.style.display = 'none'; }
+  }
 
-        /* Calendar block */
-        .cal-block {
-            background: rgba(0,0,0,0.85);
-            border: 1px solid #333;
-            padding: 28px 32px;
-            width: 440px;
-        }
+  function updateUI(user) {
+    const loginBox  = document.getElementById('login-box');
+    const loggedBox = document.getElementById('logged-box');
+    const usernameDisplay = document.getElementById('user-display');
+    const topbarUser = document.getElementById('topbar-user');
+    if (user) {
+      if (loginBox)  loginBox.style.display  = 'none';
+      if (loggedBox) loggedBox.style.display = 'flex';
+      if (usernameDisplay) usernameDisplay.textContent = user.email.split('@')[0];
+      if (topbarUser) topbarUser.textContent = user.email.split('@')[0];
+    } else {
+      if (loginBox)  loginBox.style.display  = 'flex';
+      if (loggedBox) loggedBox.style.display = 'none';
+      if (topbarUser) topbarUser.textContent = '';
+    }
+  }
 
-        .cal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+  window.addEventListener('DOMContentLoaded', () => {
+    onAuthStateChanged(auth, updateUI);
 
-        .cal-arrow {
-            font-family: 'VT323', monospace;
-            font-size: 2.4rem;
-            color: #666;
-            cursor: pointer;
-            padding: 0 8px;
-            user-select: none;
-            transition: color 0.15s;
-            line-height: 1;
-        }
-        .cal-arrow:hover { color: #fff; }
+    // Toggle between login & register forms
+    document.getElementById('show-register').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('form-login').style.display = 'none';
+      document.getElementById('form-register').style.display = 'flex';
+      clearAuthMsg();
+    });
+    document.getElementById('show-login').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('form-register').style.display = 'none';
+      document.getElementById('form-login').style.display = 'flex';
+      clearAuthMsg();
+    });
 
-        .cal-month-name {
-            font-family: 'VT323', monospace;
-            font-size: 2.2rem;
-            letter-spacing: 6px;
-            color: #fff;
-        }
+    // LOGIN
+    document.getElementById('btn-login').addEventListener('click', async () => {
+      const email    = document.getElementById('inp-email').value.trim();
+      const password = document.getElementById('inp-pass').value;
+      if (!email || !password) { showAuthMsg('Please fill in all fields.', true); return; }
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        clearAuthMsg();
+      } catch (err) {
+        showAuthMsg(err.message, true);
+      }
+    });
 
-        .day-headers {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            margin-bottom: 8px;
-        }
-        .day-header {
-            text-align: center;
-            font-size: 0.65rem;
-            color: #666;
-            letter-spacing: 2px;
-            padding: 4px 0;
-        }
+    // REGISTER
+    document.getElementById('btn-register').addEventListener('click', async () => {
+      const email    = document.getElementById('inp-reg-email').value.trim();
+      const password = document.getElementById('inp-reg-pass').value;
+      const confirm  = document.getElementById('inp-reg-confirm').value;
+      if (!email || !password) { showAuthMsg('Please fill in all fields.', true); return; }
+      if (password !== confirm) { showAuthMsg('Passwords do not match.', true); return; }
+      if (password.length < 6)  { showAuthMsg('Password must be at least 6 characters.', true); return; }
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        clearAuthMsg();
+      } catch (err) {
+        showAuthMsg(err.message, true);
+      }
+    });
 
-        .days-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-        }
+    // LOGOUT
+    document.getElementById('btn-logout').addEventListener('click', async () => {
+      await signOut(auth);
+    });
+  });
+</script>
 
-        .day-cell {
-            aspect-ratio: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.9rem;
-            color: #555;
-            border: 1px solid transparent;
-            cursor: default;
-        }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tahoma&family=Oswald:wght@400;500;600;700&family=Source+Code+Pro:wght@400;600&display=swap');
 
-        .day-cell.has-day:hover {
-            border-color: #444;
-            color: #bbb;
-        }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .day-cell.today {
-            color: #fff !important;
-            border-color: #fff !important;
-            background: rgba(255,255,255,0.07);
-        }
+:root {
+  --blue: #2255aa;
+  --blue-dark: #1a3d7a;
+  --blue-mid: #3366bb;
+  --blue-light: #dde8f8;
+  --yellow: #f5f0c8;
+  --yellow-dark: #e8e0a0;
+  --yellow-border: #c8bc70;
+  --bg: #c8d4e8;
+  --panel: #eef2fa;
+  --panel-alt: #e4eaf6;
+  --border: #99aac8;
+  --border-light: #bbccdd;
+  --text: #1a1a2a;
+  --text-mid: #445;
+  --text-muted: #778;
+  --link: #1a3d8a;
+  --link-hover: #8a1a00;
+  --header-bg: #1c2a44;
+  --cat-head: #1e2e4a;
+  --online: #44bb66;
+}
 
-        .day-cell.special {
-            color: #f0f !important;
-            border-color: #f0f !important;
-            background: rgba(255,0,255,0.06);
-            position: relative;
-        }
+body { font-family: Tahoma,'Trebuchet MS',sans-serif; font-size:12px; background:var(--bg); color:var(--text); min-height:100vh; }
+a { color:var(--link); text-decoration:none; }
+a:hover { color:var(--link-hover); text-decoration:underline; }
 
-        .day-cell.special::after {
-            content: '2003';
-            position: absolute;
-            bottom: calc(100% + 6px);
-            left: 50%;
-            transform: translateX(-50%);
-            background: #000;
-            border: 1px solid #f0f;
-            color: #f0f;
-            font-family: 'VT323', monospace;
-            font-size: 1rem;
-            letter-spacing: 3px;
-            padding: 2px 8px;
-            white-space: nowrap;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.15s;
-            z-index: 20;
-        }
+/* TOPBAR */
+#topbar { background:var(--header-bg); border-bottom:3px solid var(--blue-mid); height:46px; display:flex; align-items:center; padding:0 14px; }
+#logo { display:flex; align-items:baseline; text-decoration:none; flex-shrink:0; }
+#logo .l-main { font-family:'Oswald',sans-serif; font-size:22px; font-weight:700; color:#fff; letter-spacing:-0.5px; padding:4px 9px; background:var(--blue); border-radius:3px 0 0 3px; }
+#logo .l-sub  { font-family:'Oswald',sans-serif; font-size:22px; font-weight:400; color:#bbc; padding:4px 8px; background:#283a58; border-radius:0 3px 3px 0; border:1px solid #384a68; border-left:none; }
+#topnav { display:flex; margin-left:22px; gap:0; }
+#topnav a { color:#aab; font-size:11px; font-weight:700; padding:5px 11px; text-transform:uppercase; letter-spacing:0.4px; border-radius:3px; text-decoration:none; }
+#topnav a:hover, #topnav a.active { color:#fff; background:rgba(255,255,255,0.1); text-decoration:none; }
+#topbar-right { margin-left:auto; display:flex; align-items:center; gap:10px; }
+#topbar-right a { color:#99a; font-size:11px; font-weight:700; text-transform:uppercase; }
+#topbar-user { color:#fff; font-size:11px; font-weight:700; }
+.btn-register { background:var(--blue); color:#fff !important; padding:5px 12px; border-radius:3px; font-size:11px; }
+.btn-register:hover { background:var(--blue-dark); text-decoration:none !important; }
+.btn-login { background:#2a3a54; color:#ccd !important; padding:5px 12px; border-radius:3px; border:1px solid #445566; }
+.btn-login:hover { background:#334468; text-decoration:none !important; }
 
-        .day-cell.special:hover::after { opacity: 1; }
+/* SUBNAV */
+#subnav { background:var(--panel); border-bottom:1px solid var(--border); height:30px; display:flex; align-items:center; padding:0 14px; }
+.snav-link { font-size:11px; font-weight:700; color:#556; padding:0 10px; height:100%; display:flex; align-items:center; border-bottom:3px solid transparent; margin-bottom:-1px; text-transform:uppercase; letter-spacing:0.3px; }
+.snav-link:hover { color:var(--blue); text-decoration:none; border-bottom-color:var(--blue); }
+.snav-link.active { color:var(--blue); border-bottom-color:var(--blue); }
+.snav-sep { color:var(--border); padding:0 2px; }
 
-        .nav-links {
-            display: flex;
-            gap: 32px;
-        }
+/* BREADCRUMB */
+#breadcrumb { padding:6px 14px; font-size:11px; color:#778; background:var(--bg); border-bottom:1px solid #b0becc; }
+#breadcrumb a { color:#557; }
 
-        .enter-link {
-            font-family: 'Share Tech Mono', monospace; font-size: 0.65rem;
-            color: #444; letter-spacing: 4px; cursor: pointer;
-            transition: color 0.2s; text-align: center; user-select: none;
-        }
-        .enter-link:hover { color: #fff; }
-    </style>
+/* WRAPPER */
+#wrapper { max-width:1060px; margin:0 auto; padding:12px 10px; display:flex; gap:12px; }
+#main { flex:1; min-width:0; }
+#sidebar { width:220px; flex-shrink:0; }
+
+/* ANNOUNCE BANNERS */
+.announce { background:var(--yellow); border:1px solid var(--yellow-border); border-radius:3px; padding:10px 14px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.announce-badge { background:var(--blue); color:white; font-family:'Oswald',sans-serif; font-size:10px; font-weight:700; padding:2px 7px; border-radius:2px; text-transform:uppercase; letter-spacing:1px; white-space:nowrap; flex-shrink:0; }
+.announce-text h3 { color:#223; font-family:'Oswald',sans-serif; font-size:15px; font-weight:500; margin-bottom:3px; }
+.announce-text p { color:#667; font-size:11px; }
+.announce-btn { background:var(--blue); color:white; font-weight:700; font-size:11px; padding:6px 12px; border-radius:3px; white-space:nowrap; flex-shrink:0; text-decoration:none; }
+.announce-btn:hover { background:var(--blue-dark); color:white; text-decoration:none; }
+.announce.warn { background:#fff8c0; border-color:#c8b840; }
+.announce.off { background:var(--yellow); border-color:#b8aa60; }
+.announce.off .announce-text h3 { color:#443300; }
+.announce.off .announce-text p { color:#887755; font-style:italic; }
+
+/* CLOSURE ANNOUNCEMENT — somber dark banner */
+.announce.closed {
+  background: #1a1a1a;
+  border: 2px solid #555;
+  border-radius: 3px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex-direction: column;
+}
+.announce.closed .announce-badge { background: #444; color: #bbb; letter-spacing: 2px; font-size: 9px; }
+.announce.closed .announce-text h3 { color: #ccc; font-family:'Oswald',sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+.announce.closed .announce-text p { color: #888; font-size: 11px; line-height: 1.65; }
+.announce.closed .announce-text p em { color: #666; font-style: italic; }
+.announce.closed .announce-meta { font-size: 10px; color: #555; font-family:'Source Code Pro',monospace; margin-top: 8px; border-top: 1px solid #333; padding-top: 7px; }
+
+/* FORUM TABLE */
+.forum-cat { border:1px solid var(--border); border-radius:3px; margin-bottom:14px; overflow:hidden; }
+.cat-header { background:var(--cat-head); padding:8px 12px; display:flex; align-items:center; justify-content:space-between; }
+.cat-title { font-family:'Oswald',sans-serif; font-size:15px; font-weight:500; color:#dde; letter-spacing:0.3px; }
+.cat-title span { display:inline-block; width:10px; height:10px; background:var(--blue-mid); border-radius:2px; margin-right:8px; vertical-align:middle; position:relative; top:-1px; }
+.cat-stats-head { display:flex; font-size:10px; font-weight:700; color:#778; text-transform:uppercase; letter-spacing:0.5px; }
+.cat-stats-head div { width:90px; text-align:center; }
+
+.forum-row { display:flex; align-items:center; padding:9px 12px; background:var(--panel); border-bottom:1px solid var(--border-light); gap:0; }
+.forum-row:last-child { border-bottom:none; }
+.forum-row:nth-child(even) { background:var(--panel-alt); }
+.forum-row:hover { background:var(--blue-light); }
+.forum-icon { width:34px; height:34px; flex-shrink:0; background:#dde4f0; border:1px solid var(--border); border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--blue); font-family:'Oswald',sans-serif; margin-right:10px; }
+.forum-icon.new-posts { background:var(--yellow); border-color:var(--yellow-border); color:#886600; }
+.forum-icon.locked { background:#eaeaea; border-color:#aaa; color:#888; }
+.forum-icon.sub { background:#e4eef4; border-color:#aabbcc; color:#336688; }
+.forum-icon.broken { background:#f8f8f4; border-color:#ccbbaa; color:#998877; font-size:10px; letter-spacing:-1px; }
+.forum-main { flex:1; min-width:0; }
+.forum-name { font-size:13px; font-weight:700; color:var(--link); margin-bottom:2px; display:block; }
+.forum-name:hover { color:var(--link-hover); }
+.forum-desc { font-size:11px; color:var(--text-muted); line-height:1.4; }
+.forum-desc.weird { color:#887766; font-style:italic; }
+.forum-stats { display:flex; flex-shrink:0; }
+.stat-cell { width:90px; text-align:center; padding:0 4px; }
+.stat-num { font-size:13px; font-weight:700; color:#334; display:block; }
+.stat-label { font-size:10px; color:#99a; text-transform:uppercase; letter-spacing:0.3px; }
+.last-post { width:160px; flex-shrink:0; padding-left:8px; border-left:1px solid var(--border-light); }
+.last-post-title { font-size:11px; font-weight:700; color:#334; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px; }
+.last-post-title:hover { color:var(--link-hover); }
+.last-post-meta { font-size:10px; color:#99a; }
+.last-post-meta a { color:var(--link); font-size:10px; }
+
+.subforum-row { background:#f0f4fc; border-bottom:1px dashed #ccd; padding:5px 12px 5px 56px; font-size:11px; display:flex; gap:6px; flex-wrap:wrap; }
+.subforum-row span { color:#889; }
+.subforum-row a { color:var(--link); font-weight:700; }
+
+/* RECENT POSTS */
+.section-wrap { border:1px solid var(--border); border-radius:3px; margin-bottom:14px; overflow:hidden; }
+.section-head { background:#2a3a58; padding:7px 12px; display:flex; align-items:center; justify-content:space-between; }
+.section-head-title { font-family:'Oswald',sans-serif; font-size:14px; font-weight:500; color:#ccd; letter-spacing:0.3px; }
+.section-head-title b { display:inline-block; width:8px; height:8px; background:var(--blue-mid); border-radius:2px; margin-right:7px; vertical-align:middle; position:relative; top:-1px; }
+.section-head a { font-size:10px; color:#99a; font-weight:700; text-transform:uppercase; }
+.section-head a:hover { color:#fff; text-decoration:none; }
+
+.post-table { width:100%; border-collapse:collapse; }
+.post-table th { background:#2a3a58; color:#aab; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:6px 10px; text-align:left; border-right:1px solid #344; }
+.post-table td { padding:7px 10px; border-bottom:1px solid var(--border-light); vertical-align:middle; background:var(--panel); }
+.post-table tr:nth-child(even) td { background:var(--panel-alt); }
+.post-table tr:hover td { background:var(--blue-light); }
+.post-flag { display:inline-block; font-size:9px; font-weight:700; padding:1px 5px; border-radius:2px; text-transform:uppercase; letter-spacing:0.3px; margin-right:4px; }
+.flag-sticky { background:#2a4a7a; color:#c8d8ff; }
+.flag-new    { background:#3a5a2a; color:#c8eec8; }
+.flag-hot    { background:#7a4a00; color:#ffe8c8; }
+.flag-poll   { background:#8a7a00; color:#fff5c0; }
+.flag-locked { background:#5a5a6a; color:#ddddee; }
+.post-title { font-size:12px; font-weight:700; color:var(--link); }
+.post-title:hover { color:var(--link-hover); }
+.post-subforum { font-size:10px; color:#99a; margin-top:1px; }
+.post-author-cell { font-size:11px; color:#556; white-space:nowrap; }
+.post-author-cell a { color:var(--link); font-weight:700; }
+.post-num { font-size:12px; font-weight:700; color:#445; text-align:center; }
+.post-date { font-size:10px; color:#889; white-space:nowrap; }
+
+/* SIDEBAR */
+.sb-box { background:#fff; border:1px solid var(--border); border-radius:3px; margin-bottom:12px; overflow:hidden; }
+.sb-head { background:#2a3a58; padding:6px 10px; font-family:'Oswald',sans-serif; font-size:13px; font-weight:500; color:#ccd; }
+.sb-head b { display:inline-block; width:7px; height:7px; background:var(--blue-mid); border-radius:1px; margin-right:6px; vertical-align:middle; position:relative; top:-1px; }
+.sb-body { padding:8px 10px; background:var(--panel); }
+
+/* Auth panel */
+#login-box  { flex-direction:column; gap:6px; }
+#logged-box { flex-direction:column; gap:8px; display:none; align-items:center; text-align:center; }
+
+.auth-form { display:flex; flex-direction:column; gap:6px; }
+.auth-form input { width:100%; height:26px; border:1px solid var(--border); background:#fff; padding:0 8px; font-size:11px; font-family:Tahoma,sans-serif; border-radius:2px; color:#222; outline:none; }
+.auth-form input:focus { border-color:var(--blue); }
+.auth-form input::placeholder { color:#bbc; }
+.btn-submit { width:100%; height:27px; background:var(--blue); color:white; border:none; border-radius:2px; font-weight:700; font-size:11px; font-family:Tahoma,sans-serif; cursor:pointer; letter-spacing:0.3px; text-transform:uppercase; }
+.btn-submit:hover { background:var(--blue-dark); }
+.btn-submit.danger { background:#7a2200; }
+.btn-submit.danger:hover { background:#5a1a00; }
+.auth-links { display:flex; justify-content:space-between; font-size:10px; }
+
+#auth-msg { display:none; font-size:10px; padding:4px 6px; border-radius:2px; background:#fff3f0; border:1px solid #e8b8a8; margin-top:2px; line-height:1.4; }
+
+.logged-avatar { width:44px; height:44px; background:var(--blue); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Oswald',sans-serif; font-size:20px; font-weight:700; margin:4px auto 0; }
+.logged-name { font-weight:700; font-size:12px; color:#223; }
+.logged-rank { font-size:10px; color:#99a; }
+
+/* Online / stats */
+.online-error { font-family:'Source Code Pro',monospace; font-size:12px; color:#883300; background:#fff8ee; border:1px solid #ccaa88; border-radius:2px; padding:6px 8px; text-align:center; letter-spacing:0.3px; }
+.stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.stat-item { background:var(--yellow); border:1px solid var(--yellow-border); border-radius:2px; padding:6px 8px; text-align:center; }
+.stat-item .n { font-size:16px; font-weight:700; color:#334; font-family:'Oswald',sans-serif; display:block; }
+.stat-item .l { font-size:9px; color:#778; text-transform:uppercase; letter-spacing:0.4px; }
+.news-item { padding:6px 0; border-bottom:1px solid #e8ecf4; }
+.news-item:last-child { border-bottom:none; }
+.news-tag { display:inline-block; background:var(--blue); color:white; font-size:9px; font-weight:700; padding:1px 5px; border-radius:2px; margin-bottom:3px; text-transform:uppercase; letter-spacing:0.3px; }
+.news-tag.update  { background:#3a5a2a; }
+.news-tag.event   { background:#8a7a00; color:#fff8c0; }
+.news-tag.removed { background:#6a6a7a; }
+.news-item h4 { font-size:11px; font-weight:700; color:#223; margin-bottom:2px; line-height:1.35; }
+.news-item p  { font-size:10px; color:#778; line-height:1.4; }
+
+/* FOOTER */
+#footer { background:var(--header-bg); border-top:3px solid var(--blue-mid); padding:14px 0 12px; margin-top:6px; }
+.footer-inner { max-width:1060px; margin:0 auto; padding:0 10px; }
+.footer-links { display:flex; justify-content:center; gap:16px; margin-bottom:8px; flex-wrap:wrap; }
+.footer-links a { color:#778; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; }
+.footer-links a:hover { color:#aab; text-decoration:none; }
+.footer-copy { text-align:center; color:#556; font-size:10px; line-height:1.6; }
+.footer-copy strong { color:var(--blue-mid); }
+.powered { font-family:'Source Code Pro',monospace; font-size:9px; color:#556; background:#111824; border:1px solid #283a4a; padding:2px 6px; border-radius:2px; display:inline-block; margin-top:4px; }
+
+/* UNSETTLING BITS */
+.forum-row.dead { background:#f4f4ee !important; opacity:0.88; }
+.forum-row.dead .forum-name { color:#556677; }
+.forum-row.dead .forum-desc { color:#99a; }
+.forum-row.dead .stat-num { color:#99a; }
+.forum-row.dead .last-post-title { color:#99a; font-style:italic; }
+.forum-row.weird-row { background:#fdfbee !important; }
+.forum-row.weird-row:hover { background:#f5f0cc !important; }
+.forum-row.weird-row .forum-name { color:#665500; }
+.forum-row.weird-row .forum-desc { color:#887744; }
+.forum-row.weird-row .stat-num { color:#665500; }
+.wrong-date { color:#aa7700 !important; font-style:italic; }
+.post-table tr.deleted td { background:#f8f8f4 !important; color:#aaa; }
+.post-table tr.deleted .post-title { color:#99a; }
+.viewing-notice { font-size:10px; color:#778; padding:5px 12px; background:#eef2fa; border-top:1px dashed var(--border-light); font-style:italic; }
+.broken-title { font-family:'Source Code Pro',monospace; font-size:10px; color:#aab; letter-spacing:-0.5px; }
+.err { color:#883300; font-family:'Source Code Pro',monospace; font-size:10px; }
+</style>
 </head>
 <body>
 
-<div class="bg"></div>
-<div class="crt"></div>
+<!-- TOPBAR -->
+<div id="topbar">
+  <a href="#" id="logo">
+    <span class="l-main">TheGMTower</span>
+    <span class="l-sub">Forums</span>
+  </a>
+  <div id="topnav">
+    <a href="#" class="active">Home</a>
+    <a href="#">Forums</a>
+    <a href="#">Servers</a>
+    <a href="https://gamebanana.com" target="_blank" rel="noopener">Downloads</a>
+  </div>
+  <div id="topbar-right">
+    <span id="topbar-user"></span>
+  </div>
+</div>
 
-<div class="wrapper">
-    <div class="year-heading">2003</div>
+<!-- SUBNAV -->
+<div id="subnav">
+  <a href="#" class="snav-link active">Forum Index</a>
+  <a href="#" class="snav-link">New Posts</a>
+  <span class="snav-sep">|</span>
+  <a href="#" class="snav-link">Search</a>
+  <span class="snav-sep">|</span>
+  <a href="#" class="snav-link">Leaderboard</a>
+  <a href="https://gamebanana.com" target="_blank" rel="noopener" class="snav-link">Downloads</a>
+</div>
 
-    <div class="countdown-wrap">
-        <div class="countdown-label">DAY ENDS IN</div>
-        <div class="countdown-timer">
-            <span id="cd-h">--</span><span class="sep">:</span><span id="cd-m">--</span><span class="sep">:</span><span id="cd-s">--</span>
-        </div>
+<!-- BREADCRUMB -->
+<div id="breadcrumb">
+  <a href="#">TheGMTower Forums</a> &rsaquo; Forum Index
+  &nbsp;&nbsp;<span style="color:#aab; font-size:10px;">— 112 users currently browsing</span>
+</div>
+
+<!-- WRAPPER -->
+<div id="wrapper">
+<div id="main">
+
+  <!-- ★ SERVER CLOSURE ANNOUNCEMENT (2017) ★ -->
+  <div class="announce closed">
+    <div style="display:flex; align-items:center; gap:10px; width:100%;">
+      <span class="announce-badge" style="background:#333; color:#aaa; font-size:9px; letter-spacing:2px;">⚑ OFFICIAL</span>
+      <span style="font-family:'Source Code Pro',monospace; font-size:10px; color:#555;">Posted: Jan 09, 2017 — 11:59 PM</span>
+    </div>
+    <div class="announce-text" style="width:100%;">
+      <h3 style="color:#bbb; font-size:18px; margin-bottom:8px;">TheGMTower is shutting down.</h3>
+      <p style="color:#888; line-height:1.75; max-width:680px;">
+        After nearly eight years, we are closing the servers and archiving the forums. It has been an honor running this community alongside so many of you.<br><br>
+        The game servers will go offline on <strong style="color:#999;">February 1st, 2017</strong>. The forums will remain in read-only mode for as long as we can keep the hosting paid. Downloads on GameBanana will stay up indefinitely.<br><br>
+        <em style="color:#666;">Thank you. Genuinely. For every surf run, every deathrun attempt, every bug report, every stupid post in General Discussion at 3 AM. It meant something to us.</em><br><br>
+        <em style="color:#555; font-size:10px;">— Pretzels &amp; the TheGMTower staff team</em>
+      </p>
+    </div>
+    <div class="announce-meta" style="width:100%;">
+      Replies to this thread are <strong style="color:#666;">locked</strong>. &nbsp;|&nbsp; Read-only archive mode active. &nbsp;|&nbsp; <span style="color:#444;">New registrations disabled.</span>
+    </div>
+  </div>
+
+  <!-- Normal notice (from active era) -->
+  <div class="announce" style="margin-bottom:8px;">
+    <span class="announce-badge">Notice</span>
+    <div class="announce-text">
+      <h3>TheGMTower v2.1 — Surf Map Rotation Updated</h3>
+      <p>Four new maps added to the surf servers. Check the Surf subforum for the full list and map download links. <span style="color:#99a; font-size:10px;">— Jun 2016</span></p>
+    </div>
+    <a href="#" class="announce-btn">Read More</a>
+  </div>
+
+  <!-- Slightly off notice -->
+  <div class="announce off" style="margin-bottom:12px;">
+    <span class="announce-badge" style="background:#776600; color:#fff8c0;">Notice</span>
+    <div class="announce-text">
+      <h3>Forum Maintenance — Some boards may be temporarily unavailable</h3>
+      <p>We are aware. Do not report these threads. They will be handled. Please continue using the forums as normal.</p>
+    </div>
+    <a href="#" class="announce-btn" style="background:#776600;">Acknowledged</a>
+  </div>
+
+  <!-- CATEGORY: GENERAL COMMUNITY -->
+  <div class="forum-cat">
+    <div class="cat-header">
+      <span class="cat-title"><span></span>General Community</span>
+      <div class="cat-stats-head">
+        <div>Threads</div>
+        <div>Posts</div>
+        <div>Last Post</div>
+      </div>
     </div>
 
-    <div class="cal-block">
-        <div class="cal-header">
-            <div class="cal-arrow" id="prev-btn">&#8592;</div>
-            <div class="cal-month-name" id="month-name">JANUARY</div>
-            <div class="cal-arrow" id="next-btn">&#8594;</div>
-        </div>
-        <div class="day-headers">
-            <div class="day-header">SUN</div>
-            <div class="day-header">MON</div>
-            <div class="day-header">TUE</div>
-            <div class="day-header">WED</div>
-            <div class="day-header">THU</div>
-            <div class="day-header">FRI</div>
-            <div class="day-header">SAT</div>
-        </div>
-        <div class="days-grid" id="days-grid"></div>
+    <div class="forum-row">
+      <div class="forum-icon new-posts">!</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name">Announcements &amp; News</a>
+        <div class="forum-desc">Official announcements, rule updates, and server news from the staff team.</div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num">84</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num">1,203</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <a href="#" class="last-post-title">TheGMTower is shutting down [read]</a>
+        <div class="last-post-meta">by <a href="#">Pretzels</a><br>Jan 09, 2017, 11:59 PM</div>
+      </div>
+    </div>
+    <div class="subforum-row"><span>Subforums:</span> <a href="#">Staff Applications</a>, <a href="#">Accepted Applications</a>, <a href="#">Denied Applications</a></div>
+
+    <div class="forum-row">
+      <div class="forum-icon new-posts">N</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name">General Discussion</a>
+        <div class="forum-desc">Anything goes. Introduce yourself, share stories, off-topic chat.</div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num">4,882</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num">38,114</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <a href="#" class="last-post-title">does anyone remember the old lobby</a>
+        <div class="last-post-meta">by <a href="#">fizzle</a><br>Jan 08, 2017, 2:17 AM</div>
+      </div>
     </div>
 
-    <div class="nav-links">
-        <div class="enter-link" onclick="window.location.href='/console'">SOURCEEXPLORER ›</div>
-        <div class="enter-link" onclick="window.location.href='/chat'">CHAT ›</div>
-        <div class="enter-link" onclick="window.location.href='/merch'">MERCH ›</div>
+    <div class="forum-row">
+      <div class="forum-icon">I</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name">Introductions</a>
+        <div class="forum-desc">New to the community? Post here first.</div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num">1,477</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num">9,602</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <a href="#" class="last-post-title">hi, i found this from a google search</a>
+        <div class="last-post-meta">by <a href="#">tbone_actual</a><br>Nov 14, 2016, 8:55 AM</div>
+      </div>
     </div>
+
+    <div class="forum-row dead">
+      <div class="forum-icon broken">???</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name" style="color:#667788;">Off-Topic</a>
+        <div class="forum-desc weird">This board has been moved. If you are seeing this, please disregard.</div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num" style="color:#aab;">—</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num" style="color:#aab;">—</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <span class="last-post-title" style="font-style:italic; color:#aab;">(unavailable)</span>
+        <div class="last-post-meta">&nbsp;</div>
+      </div>
+    </div>
+
+    <div class="forum-row">
+      <div class="forum-icon locked">L</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name">Ban Appeals</a>
+        <div class="forum-desc">Read the instructions before posting. Do not reply to others' threads.</div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num">522</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num">2,088</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <a href="#" class="last-post-title">appeal — re: permanent ban [CLOSED]</a>
+        <div class="last-post-meta">by <a href="#">Cheddar</a><br>Oct 04, 2016, 4:30 PM</div>
+      </div>
+    </div>
+    <div class="viewing-notice">3 guests viewing this board.</div>
+  </div>
+
+  <!-- CATEGORY: SOURCE ENGINE -->
+  <div class="forum-cat">
+    <div class="cat-header">
+      <span class="cat-title"><span></span>Source Engine &amp; Games</span>
+      <div class="cat-stats-head">
+        <div>Threads</div>
+        <div>Posts</div>
+        <div>Last Post</div>
+      </div>
+    </div>
+
+    <div class="forum-row">
+      <div class="forum-icon new-posts">N</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name">Garry's Mod</a>
+        <div class="forum-desc">GMod discussion, addons, gamemodes, and Sandbox. Workshop links welcome.</div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num">7,334</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num">61,220</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <a href="#" class="last-post-title">best Deathrun addons right now?</a>
+        <div class="last-post-meta">by <a href="#">penguinslap</a><br>Dec 30, 2016, 9:04 AM</div>
+      </div>
+    </div>
+    <div class="subforum-row"><span>Subforums:</span> <a href="#">Deathrun</a>, <a href="#">Surf</a>, <a href="#">Prop Hunt</a>, <a href="#">TTT</a>, <a href="#">Zombie Survival</a>, <a href="#">Fretta</a></div>
+
+    <div class="forum-row">
+      <div class="forum-icon new-posts">N</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name">Half-Life 2 &amp; Episodes</a>
+        <div class="forum-desc">HL2, Episode One, Episode Two. Lore, speedruns, mods, and custom campaigns.</div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num">2,105</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num">18,774</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <a href="#" class="last-post-title">ep3 is not happening. accept it.</a>
+        <div class="last-post-meta">by <a href="#">nrrrd</a><br>Jan 07, 2017, 1:33 AM</div>
+      </div>
+    </div>
+
+    <div class="forum-row">
+      <div class="forum-icon">P</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name">Portal &amp; Portal 2</a>
+        <div class="forum-desc">Test chambers, community maps, co-op partners, and lore discussion.</div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num">1,388</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num">11,442</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <a href="#" class="last-post-title">my chamber pack — release v0.4</a>
+        <div class="last-post-meta">by <a href="#">ellievee</a><br>Sep 22, 2015, 7:18 PM</div>
+      </div>
+    </div>
+
+    <div class="forum-row">
+      <div class="forum-icon sub">C</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name">Counter-Strike: Source</a>
+        <div class="forum-desc">CSS strategy, map reviews, server listings, and competitive threads.</div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num">993</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num">8,204</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <a href="#" class="last-post-title">de_dust2 callout guide [2014]</a>
+        <div class="last-post-meta">by <a href="#">walrus_ftw</a><br>Mar 18, 2014, 3:40 PM</div>
+      </div>
+    </div>
+
+    <div class="forum-row">
+      <div class="forum-icon sub">T</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name">Team Fortress 2</a>
+        <div class="forum-desc">Class mains, trading, achievement servers, and community server listings.</div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num">812</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num">6,881</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <a href="#" class="last-post-title">spy main LF unusual trade</a>
+        <div class="last-post-meta">by <a href="#">Foxworth</a><br>Aug 05, 2016, 12:05 PM</div>
+      </div>
+    </div>
+
+    <div class="forum-row">
+      <div class="forum-icon sub">L</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name">Left 4 Dead 1 &amp; 2</a>
+        <div class="forum-desc">Campaign co-op, versus strategy, mutations, and custom map links.</div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num">441</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num">3,307</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <a href="#" class="last-post-title">Expert No Mercy — attempt tonight 9pm</a>
+        <div class="last-post-meta">by <a href="#">sarkasm</a><br>Apr 28, 2013, 9:11 PM</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CATEGORY: MAPPING & MODDING -->
+  <div class="forum-cat">
+    <div class="cat-header">
+      <span class="cat-title"><span></span>Mapping, Modding &amp; Development</span>
+      <div class="cat-stats-head">
+        <div>Threads</div>
+        <div>Posts</div>
+        <div>Last Post</div>
+      </div>
+    </div>
+
+    <div class="forum-row">
+      <div class="forum-icon new-posts">N</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name">Hammer &amp; Map Releases</a>
+        <div class="forum-desc">WIP threads, final releases, feedback requests, and Hammer editor help.</div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num">3,019</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num">22,540</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <a href="#" class="last-post-title">[WIP] dr_facility_v3 — new screenshots</a>
+        <div class="last-post-meta">by <a href="#">robcakes</a><br>Nov 02, 2016, 6:44 AM</div>
+      </div>
+    </div>
+
+    <div class="forum-row">
+      <div class="forum-icon">Lu</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name">Lua Scripting &amp; Addons</a>
+        <div class="forum-desc">Lua help, addon releases, SWEP/SENT/gamemode coding for GMod.</div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num">1,802</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num">14,108</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <a href="#" class="last-post-title">HUD not drawing serverside — help</a>
+        <div class="last-post-meta">by <a href="#">benji404</a><br>Dec 14, 2016, 8:22 PM</div>
+      </div>
+    </div>
+
+    <div class="forum-row weird-row">
+      <div class="forum-icon broken" style="color:#887744; border-color:#ccaa66; background:#faf5dd;">Sk</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name" style="color:#665500;">Skinning &amp; Models</a>
+        <div class="forum-desc weird">VTF/VMT, player model ports, reskins. — <span style="color:#aa8800; font-size:10px;">Last mod action: 214 days ago</span></div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num" style="color:#887744;">720</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num" style="color:#887744;">5,540</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <a href="#" class="last-post-title" style="color:#776600;">combining HL2 ragdolls in blender</a>
+        <div class="last-post-meta" style="color:#aa9960;">by <a href="#" style="color:#775500;">grumblejack</a><br><span class="wrong-date">Feb 28, 2013</span></div>
+      </div>
+    </div>
+
+    <div class="forum-row dead">
+      <div class="forum-icon broken">--</div>
+      <div class="forum-main">
+        <a href="#" class="forum-name broken-title">[board removed]</a>
+        <div class="forum-desc weird" style="font-size:10px;">This section is no longer accessible. Contact an administrator if you believe this is an error.</div>
+      </div>
+      <div class="forum-stats">
+        <div class="stat-cell"><span class="stat-num" style="color:#ccc;">0</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num" style="color:#ccc;">0</span><span class="stat-label">Posts</span></div>
+      </div>
+      <div class="last-post">
+        <span class="last-post-title err">(no data)</span>
+        <div class="last-post-meta">&nbsp;</div>
+      </div>
+    </div>
+    <div class="viewing-notice">1 guest viewing this board. &nbsp;<span class="err">— index rebuild pending (ref: err_0x4f)</span></div>
+  </div>
+
+  <!-- RECENT POSTS -->
+  <div class="section-wrap">
+    <div class="section-head">
+      <span class="section-head-title"><b></b>Recent Posts</span>
+      <a href="#">View All New Posts</a>
+    </div>
+    <table class="post-table" style="background:#fff;">
+      <thead>
+        <tr>
+          <th style="width:60px;"></th>
+          <th>Thread</th>
+          <th style="width:110px;">Author</th>
+          <th style="width:60px; text-align:center;">Replies</th>
+          <th style="width:110px;">Last Post</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="post-flag flag-sticky">Sticky</span></td>
+          <td>
+            <a href="#" class="post-title">TheGMTower is shutting down — please read [Jan 2017]</a>
+            <div class="post-subforum">in Announcements &amp; News</div>
+          </td>
+          <td class="post-author-cell"><a href="#">Pretzels</a></td>
+          <td class="post-num">0</td>
+          <td class="post-date">Jan 09, 2017<br>11:59 PM</td>
+        </tr>
+        <tr>
+          <td><span class="post-flag flag-sticky">Sticky</span></td>
+          <td>
+            <a href="#" class="post-title">READ BEFORE POSTING — Forum Rules &amp; Guidelines [updated June 2014]</a>
+            <div class="post-subforum">in Announcements &amp; News</div>
+          </td>
+          <td class="post-author-cell"><a href="#">Pretzels</a></td>
+          <td class="post-num">0</td>
+          <td class="post-date">Jun 01, 2014<br>10:00 AM</td>
+        </tr>
+        <tr>
+          <td><span class="post-flag flag-hot">Hot</span></td>
+          <td>
+            <a href="#" class="post-title">will Valve ever say anything about Episode 3. serious thread.</a>
+            <div class="post-subforum">in Half-Life 2 &amp; Episodes</div>
+          </td>
+          <td class="post-author-cell"><a href="#">nrrrd</a></td>
+          <td class="post-num">312</td>
+          <td class="post-date">Jan 07, 2017<br>9:55 AM</td>
+        </tr>
+        <tr>
+          <td><span class="post-flag flag-new">New</span></td>
+          <td>
+            <a href="#" class="post-title">[WIP] dr_bunker_final — looking for beta testers</a>
+            <div class="post-subforum">in Hammer &amp; Map Releases</div>
+          </td>
+          <td class="post-author-cell"><a href="#">robcakes</a></td>
+          <td class="post-num">14</td>
+          <td class="post-date">Nov 02, 2016<br>6:44 AM</td>
+        </tr>
+        <tr>
+          <td><span class="post-flag flag-poll">Poll</span></td>
+          <td>
+            <a href="#" class="post-title">what is actually the best Source game [poll, no arguing]</a>
+            <div class="post-subforum">in General Discussion</div>
+          </td>
+          <td class="post-author-cell"><a href="#">Slurpee_King</a></td>
+          <td class="post-num">88</td>
+          <td class="post-date">Aug 14, 2015<br>2:30 AM</td>
+        </tr>
+        <tr>
+          <td><span class="post-flag flag-new">New</span></td>
+          <td>
+            <a href="#" class="post-title">portal 2 co-op partner — i have a mic</a>
+            <div class="post-subforum">in Portal &amp; Portal 2</div>
+          </td>
+          <td class="post-author-cell"><a href="#">ellievee</a></td>
+          <td class="post-num">3</td>
+          <td class="post-date">Sep 21, 2015<br>11:50 PM</td>
+        </tr>
+        <!-- deleted/ghost row -->
+        <tr class="deleted">
+          <td><span class="post-flag flag-locked">Locked</span></td>
+          <td>
+            <span class="post-title broken-title">[content removed by moderator]</span>
+            <div class="post-subforum" style="color:#bbc;">in — </div>
+          </td>
+          <td class="post-author-cell" style="color:#bbc;">[deleted]</td>
+          <td class="post-num" style="color:#ccc;">—</td>
+          <td class="post-date" style="color:#bbc;">—</td>
+        </tr>
+        <tr>
+          <td><span class="post-flag flag-new">New</span></td>
+          <td>
+            <a href="#" class="post-title">surf_utopia_v3 new record run — video in post</a>
+            <div class="post-subforum">in Surf</div>
+          </td>
+          <td class="post-author-cell"><a href="#">Tubacca</a></td>
+          <td class="post-num">27</td>
+          <td class="post-date">Jul 19, 2016<br>9:00 PM</td>
+        </tr>
+        <!-- weird timestamp row -->
+        <tr>
+          <td><span class="post-flag flag-hot">Hot</span></td>
+          <td>
+            <a href="#" class="post-title">does anyone else feel like this server is empty lately</a>
+            <div class="post-subforum">in General Discussion</div>
+          </td>
+          <td class="post-author-cell"><a href="#">fizzle</a></td>
+          <td class="post-num">61</td>
+          <td class="post-date wrong-date">Jun 14, 2009<br>3:02 AM</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+
+  <!-- AUTH BOX -->
+  <div class="sb-box">
+    <div class="sb-head"><b></b>Account</div>
+    <div class="sb-body">
+
+      <!-- LOGIN / REGISTER STATE -->
+      <div id="login-box" style="display:flex; flex-direction:column; gap:6px;">
+
+        <!-- LOGIN FORM -->
+        <div id="form-login" class="auth-form">
+          <input type="email" id="inp-email" placeholder="Email address" autocomplete="email" />
+          <input type="password" id="inp-pass" placeholder="Password" autocomplete="current-password" />
+          <button class="btn-submit" id="btn-login">Log In</button>
+          <div class="auth-links">
+            <a href="#" style="font-size:10px; color:var(--link);">Forgot password?</a>
+            <a href="#" id="show-register" style="font-size:10px; color:var(--blue-dark); font-weight:700;">Register Free →</a>
+          </div>
+        </div>
+
+        <!-- REGISTER FORM (hidden by default) -->
+        <div id="form-register" class="auth-form" style="display:none;">
+          <div style="font-size:10px; color:#556; font-weight:700; margin-bottom:2px; text-transform:uppercase; letter-spacing:0.3px;">Create Account</div>
+          <input type="email" id="inp-reg-email" placeholder="Email address" autocomplete="email" />
+          <input type="password" id="inp-reg-pass" placeholder="Password (min 6 chars)" autocomplete="new-password" />
+          <input type="password" id="inp-reg-confirm" placeholder="Confirm password" autocomplete="new-password" />
+          <button class="btn-submit" id="btn-register">Register</button>
+          <div class="auth-links">
+            <a href="#" id="show-login" style="font-size:10px; color:var(--link);">← Back to login</a>
+          </div>
+        </div>
+
+        <!-- Error / success message -->
+        <div id="auth-msg"></div>
+
+        <div style="padding-top:7px; border-top:1px solid #dde; font-size:10px; color:#889; text-align:center; line-height:1.5;">
+          You must be registered to post, apply for staff, or access private boards.
+        </div>
+      </div>
+
+      <!-- LOGGED IN STATE -->
+      <div id="logged-box" style="display:none; flex-direction:column; align-items:center; gap:8px; text-align:center;">
+        <div class="logged-avatar" id="user-avatar">?</div>
+        <div>
+          <div class="logged-name" id="user-display"></div>
+          <div class="logged-rank">Member</div>
+        </div>
+        <div style="font-size:10px; color:#778; line-height:1.5; border-top:1px solid #dde; padding-top:6px; width:100%;">
+          <a href="#" style="display:block; margin-bottom:3px;">My Profile</a>
+          <a href="#" style="display:block; margin-bottom:6px;">My Posts</a>
+        </div>
+        <button class="btn-submit danger" id="btn-logout" style="font-size:10px; height:24px;">Sign Out</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ONLINE NOW — error state -->
+  <div class="sb-box">
+    <div class="sb-head"><b></b>Online Now</div>
+    <div class="sb-body">
+      <div class="online-error">error.</div>
+      <div style="margin-top:7px; font-size:10px; color:#aab; text-align:center; font-style:italic;">member list temporarily unavailable</div>
+    </div>
+  </div>
+
+  <!-- FORUM STATS -->
+  <div class="sb-box">
+    <div class="sb-head"><b></b>Forum Statistics</div>
+    <div class="sb-body">
+      <div class="stats-grid">
+        <div class="stat-item"><span class="n">24,831</span><span class="l">Threads</span></div>
+        <div class="stat-item"><span class="n">197,043</span><span class="l">Posts</span></div>
+        <div class="stat-item"><span class="n">12,604</span><span class="l">Members</span></div>
+        <div class="stat-item"><span class="n" style="color:#aa7700;">—</span><span class="l">Online</span></div>
+      </div>
+      <div style="margin-top:8px; font-size:10px; color:#889; border-top:1px solid #dde; padding-top:7px;">
+        Newest member: <a href="#" style="font-weight:700; color:var(--link);">tbone_actual</a><br>
+        <span style="color:#aab; font-style:italic; font-size:9px;">Registration closed Jan 2017</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT'S NEW -->
+  <div class="sb-box">
+    <div class="sb-head"><b></b>What's New</div>
+    <div class="sb-body">
+      <div class="news-item" style="background:#111; margin:0 -10px; padding:6px 10px; border-bottom:1px solid #333;">
+        <span class="news-tag removed" style="background:#222; color:#888; border:1px solid #444;">Closed</span>
+        <h4 style="color:#888;">Servers offline Feb 1st, 2017</h4>
+        <p style="color:#555;">Read Connor_T's announcement for full details. Thank you all.</p>
+      </div>
+      <div class="news-item">
+        <span class="news-tag update">Update</span>
+        <h4>Deathrun #1 — dr_facility_b2 added</h4>
+        <p>New map in rotation. 42 traps, three routes. Live now. <span style="color:#aab; font-size:9px;">Jun 2016</span></p>
+      </div>
+      <div class="news-item">
+        <span class="news-tag event">Event</span>
+        <h4>Summer Surf Tournament — July 5th</h4>
+        <p>Sign-up thread is open. 32 slots, bracket format. <span style="color:#aab; font-size:9px;">Jul 2015</span></p>
+      </div>
+      <div class="news-item" style="background:#fdfbee; margin:0 -10px; padding:6px 10px; border-top:1px solid #e8e0a0;">
+        <span class="news-tag removed">Removed</span>
+        <h4 style="color:#665500;">Private Boards access temporarily suspended</h4>
+        <p style="color:#887744;">If you had access before, please wait. No further information at this time.</p>
+      </div>
+      <a href="#" style="display:block; text-align:right; font-size:10px; font-weight:700; color:var(--link); margin-top:8px;">Full news archive</a>
+    </div>
+  </div>
+
+  <!-- QUICK LINKS -->
+  <div class="sb-box">
+    <div class="sb-head"><b></b>Quick Links</div>
+    <div class="sb-body" style="padding:6px 10px;">
+      <ul style="list-style:none; margin:0;">
+        <li style="padding:4px 0; border-bottom:1px solid #e0e8f4;"><a href="#">Server Status</a></li>
+        <li style="padding:4px 0; border-bottom:1px solid #e0e8f4;"><a href="#">Staff List</a></li>
+        <li style="padding:4px 0; border-bottom:1px solid #e0e8f4;"><a href="https://gamebanana.com" target="_blank" rel="noopener">Downloads (GameBanana)</a></li>
+        <li style="padding:4px 0; border-bottom:1px solid #e0e8f4;"><a href="#">Community Rules</a></li>
+        <li style="padding:4px 0; border-bottom:1px solid #e0e8f4;"><a href="#">Map Request Thread</a></li>
+        <li style="padding:4px 0;"><a href="#" style="color:#998877; font-style:italic; font-size:11px;">Report a Bug</a> <span class="err" style="font-size:9px;">(form offline)</span></li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /sidebar -->
+</div><!-- /wrapper -->
+
+<!-- FOOTER -->
+<div id="footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="#">Home</a>
+      <a href="#">Forums</a>
+      <a href="#">Servers</a>
+      <a href="https://gamebanana.com" target="_blank" rel="noopener">Downloads</a>
+    </div>
+    <div class="footer-copy">
+      Copyright &copy; 2009&ndash;2017 <strong>TheGMTower</strong>. All rights reserved.<br>
+      Not affiliated with Valve Corporation or Facepunch Studios.<br>
+      <span style="color:#445; font-size:9px; font-style:italic;">This forum is archived. No new posts or registrations are accepted.</span><br>
+      <span class="powered">Powered by vBulletin 4.x — TheGMTower Custom Theme r11</span>
+    </div>
+  </div>
 </div>
 
 <script>
-const MONTHS = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE',
-                'JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+  document.querySelectorAll('#topnav a').forEach(a => {
+    a.addEventListener('click', function(e) {
+      if (this.getAttribute('target') === '_blank') return;
+      e.preventDefault();
+      document.querySelectorAll('#topnav a').forEach(x => x.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.snav-link').forEach(a => {
+    a.addEventListener('click', function(e) {
+      if (this.getAttribute('target') === '_blank') return;
+      e.preventDefault();
+      document.querySelectorAll('.snav-link').forEach(x => x.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
 
-const now = new Date();
-const THIS_YEAR  = now.getFullYear();
-const THIS_MONTH = now.getMonth();
-const THIS_DAY   = now.getDate();
-
-let viewMonth = THIS_MONTH;
-
-function renderCalendar() {
-    document.getElementById('month-name').textContent = MONTHS[viewMonth];
-
-    const grid = document.getElementById('days-grid');
-    grid.innerHTML = '';
-
-    const firstDay    = new Date(THIS_YEAR, viewMonth, 1).getDay();
-    const daysInMonth = new Date(THIS_YEAR, viewMonth + 1, 0).getDate();
-
-    for (let i = 0; i < firstDay; i++) {
-        const empty = document.createElement('div');
-        empty.className = 'day-cell';
-        grid.appendChild(empty);
-    }
-
-    for (let d = 1; d <= daysInMonth; d++) {
-        const cell = document.createElement('div');
-        cell.className = 'day-cell has-day';
-        cell.textContent = String(d).padStart(2, '0');
-
-        if (viewMonth < THIS_MONTH || (viewMonth === THIS_MONTH && d < THIS_DAY)) {
-            cell.classList.add('past');
-        } else if (viewMonth === THIS_MONTH && d === THIS_DAY) {
-            cell.classList.add('today');
-        } else {
-            cell.classList.add('future');
-        }
-
-        // April 25 special marker
-        if (viewMonth === 3 && d === 25) {
-            cell.classList.remove('past','future','today');
-            cell.classList.add('special');
-        }
-
-        grid.appendChild(cell);
-    }
-}
-
-document.getElementById('prev-btn').addEventListener('click', () => {
-    viewMonth = (viewMonth - 1 + 12) % 12;
-    renderCalendar();
-});
-
-document.getElementById('next-btn').addEventListener('click', () => {
-    viewMonth = (viewMonth + 1) % 12;
-    renderCalendar();
-});
-
-renderCalendar();
-
-// Countdown to midnight
-function updateCountdown() {
-    const n = new Date();
-    const midnight = new Date(n);
-    midnight.setHours(24, 0, 0, 0);
-    const diff = Math.max(0, Math.floor((midnight - n) / 1000));
-    document.getElementById('cd-h').textContent = String(Math.floor(diff / 3600)).padStart(2,'0');
-    document.getElementById('cd-m').textContent = String(Math.floor((diff % 3600) / 60)).padStart(2,'0');
-    document.getElementById('cd-s').textContent = String(diff % 60).padStart(2,'0');
-}
-updateCountdown();
-setInterval(updateCountdown, 1000);
+  // Update avatar letter when username changes
+  const observer = new MutationObserver(() => {
+    const name = document.getElementById('user-display')?.textContent;
+    const avatar = document.getElementById('user-avatar');
+    if (avatar && name) avatar.textContent = name[0]?.toUpperCase() || '?';
+  });
+  const ud = document.getElementById('user-display');
+  if (ud) observer.observe(ud, { childList: true, characterData: true, subtree: true });
 </script>
+
 </body>
 </html>
