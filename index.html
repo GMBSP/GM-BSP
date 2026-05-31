@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TheGMTower</title>
+<title>TheGMTower Forums</title>
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
@@ -24,7 +24,7 @@
   const db = getFirestore(app);
   const storage = getStorage(app);
 
-  const ADMIN_EMAIL = 'admin@gmtower.com';
+  const ADMIN_EMAIL = 'rodbelline@gmail.com';
 
   window._currentUser = null;
   window._userProfile = null;
@@ -135,6 +135,7 @@
         } else {
           av.textContent = (displayName[0] || '?').toUpperCase();
         }
+        av.className = 'logged-avatar ' + (p.avatarColor || 'avatar-blue');
       }
       const dispEl = document.getElementById('user-display');
       if (dispEl) dispEl.textContent = displayName;
@@ -560,7 +561,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
       <span id="notif-badge"></span>
     </div>
-    <div id="admin-btn" onclick="openAdminPanel()">⚙ Admin</div>
+    <div id="admin-btn" onclick="openAdminPanel()">&#9881; Admin</div>
     <span id="topbar-user" onclick="navigate('profile-me')"></span>
   </div>
 </div>
@@ -578,25 +579,25 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
 <div id="admin-panel">
   <div class="admin-modal">
     <div class="admin-modal-head">
-      <h2>⚙ Admin Panel</h2>
-      <button onclick="closeAdminPanel()">✕</button>
+      <h2>&#9881; Admin Panel</h2>
+      <button onclick="closeAdminPanel()">&#10005;</button>
     </div>
     <div class="admin-body">
       <div class="admin-section">
-        <h3>📢 Send Notification to All Users</h3>
+        <h3>&#128226; Send Notification to All Users</h3>
         <input class="admin-input" id="notif-title-inp" placeholder="Notification title..." />
         <textarea class="admin-input" id="notif-body-inp" style="height:70px; resize:vertical;" placeholder="Notification message..."></textarea>
         <button class="admin-btn" onclick="sendNotification()">Send Notification</button>
         <div id="notif-send-msg" class="admin-msg" style="display:none;"></div>
       </div>
       <div class="admin-section">
-        <h3>➕ Create New Forum Category</h3>
+        <h3>&#10133; Create New Forum Category</h3>
         <input class="admin-input" id="new-cat-inp" placeholder="Category name..." />
         <button class="admin-btn" onclick="createForumCategory()">Create Category</button>
         <div id="cat-create-msg" class="admin-msg" style="display:none;"></div>
       </div>
       <div class="admin-section">
-        <h3>📁 Create New Forum Board</h3>
+        <h3>&#128193; Create New Forum Board</h3>
         <input class="admin-input" id="new-forum-name-inp" placeholder="Forum name..." />
         <input class="admin-input" id="new-forum-desc-inp" placeholder="Forum description..." />
         <input class="admin-input" id="new-forum-cat-inp" placeholder="Category (e.g. General Community)..." />
@@ -604,7 +605,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div id="forum-create-msg" class="admin-msg" style="display:none;"></div>
       </div>
       <div class="admin-section">
-        <h3>📋 Dynamic Forums</h3>
+        <h3>&#128203; Dynamic Forums</h3>
         <div id="admin-forum-list" class="admin-forum-list">
           <div class="admin-forum-item" style="color:#556; font-style:italic;">Loading...</div>
         </div>
@@ -636,8 +637,8 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
 <div id="page-home" class="page active">
   <div class="announce closed">
     <div style="display:flex; align-items:center; gap:10px; width:100%;">
-      <span class="announce-badge" style="background:#333; color:#aaa; font-size:9px; letter-spacing:2px;">⚑ OFFICIAL</span>
-      <span style="font-family:'Source Code Pro',monospace; font-size:10px; color:#555;">Posted: Jan 09, 2017 — 11:59 PM</span>
+      <span class="announce-badge" style="background:#333; color:#aaa; font-size:9px; letter-spacing:2px;">&#9873; OFFICIAL</span>
+      <span style="font-family:'Source Code Pro',monospace; font-size:10px; color:#555;">Posted: Jan 09, 2017 &mdash; 11:59 PM</span>
     </div>
     <div class="announce-text" style="width:100%;">
       <h3 style="color:#bbb; font-size:18px; margin-bottom:8px;">TheGMTower is shutting down.</h3>
@@ -645,7 +646,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         After nearly eight years, we are closing the servers and archiving the forums.<br><br>
         The game servers will go offline on <strong style="color:#999;">February 1st, 2017</strong>. The forums will remain in read-only mode for as long as we can keep the hosting paid.<br><br>
         <em style="color:#666;">Thank you. Genuinely. For every surf run, every deathrun attempt, every bug report, every stupid post in General Discussion at 3 AM. It meant something to us.</em><br><br>
-        <em style="color:#555; font-size:10px;">— Pretzels &amp; the TheGMTower staff team</em>
+        <em style="color:#555; font-size:10px;">&mdash; Pretzels &amp; the TheGMTower staff team</em>
       </p>
     </div>
     <div class="announce-meta" style="width:100%;">
@@ -656,8 +657,8 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
   <div class="announce" style="margin-bottom:8px;">
     <span class="announce-badge">Notice</span>
     <div class="announce-text">
-      <h3>TheGMTower v2.1 — Surf Map Rotation Updated</h3>
-      <p>Four new maps added to the surf servers. Check the Surf subforum for the full list. <span style="color:#99a; font-size:10px;">— Jun 2016</span></p>
+      <h3>TheGMTower v2.1 &mdash; Surf Map Rotation Updated</h3>
+      <p>Four new maps added to the surf servers. Check the Surf subforum for the full list. <span style="color:#99a; font-size:10px;">&mdash; Jun 2016</span></p>
     </div>
     <a class="announce-btn" onclick="navigate('forum-surf')">Read More</a>
   </div>
@@ -665,7 +666,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
   <div class="announce off" style="margin-bottom:12px;">
     <span class="announce-badge" style="background:#776600; color:#fff8c0;">Notice</span>
     <div class="announce-text">
-      <h3>Forum Maintenance — Some boards may be temporarily unavailable</h3>
+      <h3>Forum Maintenance &mdash; Some boards may be temporarily unavailable</h3>
       <p>We are aware. Do not report these threads. They will be handled. Please continue using the forums as normal.</p>
     </div>
     <a class="announce-btn" style="background:#776600; cursor:default;">Acknowledged</a>
@@ -730,8 +731,8 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="forum-desc weird">This board has been moved. If you are seeing this, please disregard.</div>
       </div>
       <div class="forum-stats">
-        <div class="stat-cell"><span class="stat-num" style="color:#aab;">—</span><span class="stat-label">Threads</span></div>
-        <div class="stat-cell"><span class="stat-num" style="color:#aab;">—</span><span class="stat-label">Posts</span></div>
+        <div class="stat-cell"><span class="stat-num" style="color:#aab;">&mdash;</span><span class="stat-label">Threads</span></div>
+        <div class="stat-cell"><span class="stat-num" style="color:#aab;">&mdash;</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
         <span class="last-post-title" style="font-style:italic; color:#aab;">(unavailable)</span>
@@ -748,7 +749,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">2,088</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a class="last-post-title" onclick="navigate('thread-ban-cheddar')">appeal — re: permanent ban [CLOSED]</a>
+        <a class="last-post-title" onclick="navigate('thread-ban-cheddar')">appeal &mdash; re: permanent ban [CLOSED]</a>
         <div class="last-post-meta">by <a onclick="navigate('profile-cheddar')">Cheddar</a><br>Oct 04, 2016, 4:30 PM</div>
       </div>
     </div>
@@ -803,7 +804,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">11,442</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a class="last-post-title" onclick="navigate('thread-portal-chambers')">my chamber pack — release v0.4</a>
+        <a class="last-post-title" onclick="navigate('thread-portal-chambers')">my chamber pack &mdash; release v0.4</a>
         <div class="last-post-meta">by <a onclick="navigate('profile-ellievee')">ellievee</a><br>Sep 22, 2015, 7:18 PM</div>
       </div>
     </div>
@@ -856,7 +857,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">22,540</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a class="last-post-title" onclick="navigate('thread-bunker')">[WIP] dr_facility_v3 — new screenshots</a>
+        <a class="last-post-title" onclick="navigate('thread-bunker')">[WIP] dr_facility_v3 &mdash; new screenshots</a>
         <div class="last-post-meta">by <a onclick="navigate('profile-robcakes')">robcakes</a><br>Nov 02, 2016, 6:44 AM</div>
       </div>
     </div>
@@ -871,7 +872,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">14,108</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a class="last-post-title" onclick="navigate('thread-hud-bug')">HUD not drawing serverside — help</a>
+        <a class="last-post-title" onclick="navigate('thread-hud-bug')">HUD not drawing serverside &mdash; help</a>
         <div class="last-post-meta">by <a onclick="navigate('profile-benji404')">benji404</a><br>Dec 14, 2016, 8:22 PM</div>
       </div>
     </div>
@@ -879,7 +880,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
       <div class="forum-icon broken" style="color:#887744; border-color:#ccaa66; background:#faf5dd;">Sk</div>
       <div class="forum-main">
         <a class="forum-name" style="color:#665500;" onclick="navigate('forum-skinning')">Skinning &amp; Models</a>
-        <div class="forum-desc weird">VTF/VMT, player model ports, reskins. — <span style="color:#aa8800; font-size:10px;">Last mod action: 214 days ago</span></div>
+        <div class="forum-desc weird">VTF/VMT, player model ports, reskins. &mdash; <span style="color:#aa8800; font-size:10px;">Last mod action: 214 days ago</span></div>
       </div>
       <div class="forum-stats">
         <div class="stat-cell"><span class="stat-num" style="color:#887744;">720</span><span class="stat-label">Threads</span></div>
@@ -902,7 +903,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
       </div>
       <div class="last-post"><span class="last-post-title err">(no data)</span></div>
     </div>
-    <div class="viewing-notice">1 guest viewing this board. &nbsp;<span class="err">— index rebuild pending (ref: err_0x4f)</span></div>
+    <div class="viewing-notice">1 guest viewing this board. &nbsp;<span class="err">&mdash; index rebuild pending (ref: err_0x4f)</span></div>
   </div>
 
   <!-- Dynamic forums section -->
@@ -927,7 +928,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
       <tbody>
         <tr>
           <td><span class="post-flag flag-sticky">Sticky</span></td>
-          <td><a class="post-title" onclick="navigate('thread-shutdown')">TheGMTower is shutting down — please read [Jan 2017]</a><div class="post-subforum">in Announcements &amp; News</div></td>
+          <td><a class="post-title" onclick="navigate('thread-shutdown')">TheGMTower is shutting down &mdash; please read [Jan 2017]</a><div class="post-subforum">in Announcements &amp; News</div></td>
           <td class="post-author-cell"><a onclick="navigate('profile-pretzels')">Pretzels</a></td>
           <td class="post-num">0</td>
           <td class="post-date">Jan 09, 2017<br>11:59 PM</td>
@@ -941,7 +942,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         </tr>
         <tr>
           <td><span class="post-flag flag-new">New</span></td>
-          <td><a class="post-title" onclick="navigate('thread-bunker')">[WIP] dr_bunker_final — looking for beta testers</a><div class="post-subforum">in Hammer &amp; Map Releases</div></td>
+          <td><a class="post-title" onclick="navigate('thread-bunker')">[WIP] dr_bunker_final &mdash; looking for beta testers</a><div class="post-subforum">in Hammer &amp; Map Releases</div></td>
           <td class="post-author-cell"><a onclick="navigate('profile-robcakes')">robcakes</a></td>
           <td class="post-num">14</td>
           <td class="post-date">Nov 02, 2016<br>6:44 AM</td>
@@ -962,10 +963,10 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         </tr>
         <tr class="deleted">
           <td><span class="post-flag flag-locked">Locked</span></td>
-          <td><span class="post-title broken-title">[content removed by moderator]</span><div class="post-subforum" style="color:#bbc;">in — </div></td>
+          <td><span class="post-title broken-title">[content removed by moderator]</span><div class="post-subforum" style="color:#bbc;">in &mdash; </div></td>
           <td class="post-author-cell" style="color:#bbc;">[deleted]</td>
-          <td class="post-num" style="color:#ccc;">—</td>
-          <td class="post-date" style="color:#bbc;">—</td>
+          <td class="post-num" style="color:#ccc;">&mdash;</td>
+          <td class="post-date" style="color:#bbc;">&mdash;</td>
         </tr>
       </tbody>
     </table>
@@ -1001,7 +1002,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
           <button class="btn-submit" id="btn-login">Log In</button>
           <div class="auth-links">
             <a style="font-size:10px; color:var(--link);">Forgot password?</a>
-            <a id="show-register" style="font-size:10px; color:var(--blue-dark); font-weight:700;">Register Free →</a>
+            <a id="show-register" style="font-size:10px; color:var(--blue-dark); font-weight:700;">Register Free &rarr;</a>
           </div>
         </div>
         <div id="form-register" class="auth-form" style="display:none;">
@@ -1010,13 +1011,13 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
           <input type="password" id="inp-reg-pass" placeholder="Password (min 6 chars)" autocomplete="new-password" />
           <input type="password" id="inp-reg-confirm" placeholder="Confirm password" autocomplete="new-password" />
           <button class="btn-submit" id="btn-register">Register</button>
-          <div class="auth-links"><a id="show-login" style="font-size:10px; color:var(--link);">← Back to login</a></div>
+          <div class="auth-links"><a id="show-login" style="font-size:10px; color:var(--link);">&larr; Back to login</a></div>
         </div>
         <div id="auth-msg"></div>
         <div style="padding-top:7px; border-top:1px solid #dde; font-size:10px; color:#889; text-align:center; line-height:1.5;">You must be registered to post, apply for staff, or access private boards.</div>
       </div>
       <div id="logged-box" style="display:none; flex-direction:column; align-items:center; gap:8px; text-align:center;">
-        <div class="logged-avatar" id="user-avatar">?</div>
+        <div class="logged-avatar avatar-blue" id="user-avatar">?</div>
         <div>
           <div class="logged-name" id="user-display"></div>
           <div class="logged-rank">Member</div>
@@ -1045,7 +1046,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-item"><span class="n">24,831</span><span class="l">Threads</span></div>
         <div class="stat-item"><span class="n">197,043</span><span class="l">Posts</span></div>
         <div class="stat-item"><span class="n">12,604</span><span class="l">Members</span></div>
-        <div class="stat-item"><span class="n" style="color:#aa7700;">—</span><span class="l">Online</span></div>
+        <div class="stat-item"><span class="n" style="color:#aa7700;">&mdash;</span><span class="l">Online</span></div>
       </div>
       <div style="margin-top:8px; font-size:10px; color:#889; border-top:1px solid #dde; padding-top:7px;">
         Newest member: <a style="font-weight:700; color:var(--link);">tbone_actual</a><br>
@@ -1064,12 +1065,12 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
       </div>
       <div class="news-item">
         <span class="news-tag update">Update</span>
-        <h4>Deathrun #1 — dr_facility_b2 added</h4>
+        <h4>Deathrun #1 &mdash; dr_facility_b2 added</h4>
         <p>New map in rotation. 42 traps, three routes. <span style="color:#aab; font-size:9px;">Jun 2016</span></p>
       </div>
       <div class="news-item">
         <span class="news-tag event">Event</span>
-        <h4>Summer Surf Tournament — July 5th</h4>
+        <h4>Summer Surf Tournament &mdash; July 5th</h4>
         <p>Sign-up thread is open. 32 slots, bracket format. <span style="color:#aab; font-size:9px;">Jul 2015</span></p>
       </div>
       <div class="news-item" style="background:#fdfbee; margin:0 -10px; padding:6px 10px; border-top:1px solid #e8e0a0;">
@@ -1106,7 +1107,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
       Copyright &copy; 2009&ndash;2017 <strong>TheGMTower</strong>. All rights reserved.<br>
       Not affiliated with Valve Corporation or Facepunch Studios.<br>
       <span style="color:#445; font-size:9px; font-style:italic;">This forum is archived. No new posts or registrations are accepted.</span><br>
-      <span class="powered">Powered by vBulletin 4.x — TheGMTower Custom Theme r11</span>
+      <span class="powered">Powered by vBulletin 4.x &mdash; TheGMTower Custom Theme r11</span>
     </div>
   </div>
 </div>
@@ -1410,7 +1411,7 @@ const threadLists = {
   ],
   portal: [
     { flag:'new', title:'my chamber pack — release v0.4', target:'thread-portal-chambers', author:'ellievee', replies:1, date:'Sep 22, 2015' },
-    { flag:'poll', title:'hardest Portal 2 community chamber you\'ve played [poll]', target:'thread-ep3', author:'ellievee', replies:28, date:'May 14, 2015' },
+    { flag:'poll', title:"hardest Portal 2 community chamber you've played [poll]", target:'thread-ep3', author:'ellievee', replies:28, date:'May 14, 2015' },
     { flag:'new', title:'portal 2 co-op partner — i have a mic', target:'thread-portal-chambers', author:'ellievee', replies:3, date:'Sep 21, 2015' },
   ],
   css: [
@@ -1455,7 +1456,7 @@ const staticProfiles = {
   'robcakes': { name:'robcakes', color:'avatar-green', rank:'Veteran Mapper', joined:'February 2012', postCount:'1,887', location:'Hammer editor, probably', about:'Mapper. Working on DR maps since 2012. dr_bunker_final is almost done, I promise.', recentPosts:['[WIP] dr_bunker_final — looking for beta testers','[WIP] dr_facility_v3 — new screenshots'], badges:['Veteran','Mapper','Map Council','Beta Tester'], gold:false },
   'slurpee_king': { name:'Slurpee_King', color:'avatar-blue', rank:'Veteran', joined:'January 2010', postCount:'5,008', location:'—', about:'been here since basically the start. watched this community grow up. proud of what it became.', recentPosts:['what is actually the best Source game [poll]','[WIP] dr_bunker_final — looking for beta testers'], badges:['Veteran','Survivor 2012','Fretta Regular'], gold:false },
   'ellievee': { name:'ellievee', color:'avatar-green', rank:'Member', joined:'June 2014', postCount:'413', location:'—', about:'portal 2 co-op partner available. serious runners only. i have a mic.', recentPosts:['portal 2 co-op partner — i have a mic','top 5 surf maps — community vote'], badges:['Member','Portal Regular'], gold:false },
-  'tbone_actual': { name:'tbone_actual', color:'avatar-orange', rank:'New Member', joined:'November 2016', postCount:'37', location:'found this from google', about:'just found this place from a google search. seems cool. sad it\'s ending.', recentPosts:['hi, i found this from a google search','will Valve ever say anything about Episode 3'], badges:['New Member'], gold:false },
+  'tbone_actual': { name:'tbone_actual', color:'avatar-orange', rank:'New Member', joined:'November 2016', postCount:'37', location:'found this from google', about:"just found this place from a google search. seems cool. sad it's ending.", recentPosts:['hi, i found this from a google search','will Valve ever say anything about Episode 3'], badges:['New Member'], gold:false },
   'penguinslap': { name:'penguinslap', color:'avatar-blue', rank:'Member', joined:'May 2013', postCount:'622', location:'—', about:'GMod player. Deathrun mostly. Sometimes surf. bad at both.', recentPosts:['best Deathrun addons right now?','[WIP] dr_bunker_final — looking for beta testers'], badges:['Member'], gold:false },
   'benji404': { name:'benji404', color:'avatar-dark', rank:'Member / Scripter', joined:'July 2014', postCount:'291', location:'—', about:'lua scripter. made a scoreboard addon. mostly lurk now.', recentPosts:['HUD not drawing serverside — help','best Deathrun addons right now?'], badges:['Member','Scripter'], gold:false },
   'grumblejack': { name:'grumblejack', color:'avatar-dark', rank:'Member', joined:'January 2011', postCount:'304', location:'—', about:'models and skins. blender guy. mostly inactive.', recentPosts:['combining HL2 ragdolls in blender'], badges:['Member'], gold:false },
@@ -1718,7 +1719,7 @@ function buildForumPage(target) {
     <div style="margin-bottom:10px;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
         <div><div style="font-family:'Oswald',sans-serif; font-size:18px; color:#223; font-weight:500;">${data.title}</div><div style="font-size:11px; color:#778;">${data.subtitle}</div></div>
-        <a onclick="navigate('home')" style="font-size:11px; color:var(--link); cursor:pointer;">← Back to Index</a>
+        <a onclick="navigate('home')" style="font-size:11px; color:var(--link); cursor:pointer;">&larr; Back to Index</a>
       </div>
     </div>
     <div class="forum-cat">
@@ -1739,7 +1740,6 @@ async function buildDynamicForumPage(target) {
     if (!d.exists()) { document.getElementById('forum-list-content').innerHTML = '<div style="padding:20px; color:#778; font-style:italic;">Forum not found.</div>'; return; }
     const forum = d.data();
     document.getElementById('bc-content').innerHTML = `<a onclick="navigate('home')">TheGMTower Forums</a> &rsaquo; ${forum.name}`;
-    // Load threads from Firestore
     const tsnap = await window._getDocs(window._query(window._collection(window._db, 'dynamic_forums', forumId, 'threads'), window._orderBy('createdAt', 'desc')));
     let rows = '';
     if (tsnap.empty) {
@@ -1763,7 +1763,7 @@ async function buildDynamicForumPage(target) {
     document.getElementById('forum-list-content').innerHTML = `
       <div style="margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;">
         <div><div style="font-family:'Oswald',sans-serif; font-size:18px; color:#223; font-weight:500;">${forum.name}</div><div style="font-size:11px; color:#778;">${forum.desc}</div></div>
-        <a onclick="navigate('home')" style="font-size:11px; color:var(--link); cursor:pointer;">← Back to Index</a>
+        <a onclick="navigate('home')" style="font-size:11px; color:var(--link); cursor:pointer;">&larr; Back to Index</a>
       </div>
       <div class="forum-cat">
         <div class="thread-list-header" style="display:flex; align-items:center; justify-content:space-between;">
@@ -1833,22 +1833,17 @@ function buildThreadPage(target) {
         <div class="post-actions"><a>Quote</a><a>Report</a></div>
       </div>
     </div>`).join('');
-  const lockedNotice = t.locked ? `<div style="background:#1a1a1a; border:1px solid #444; border-radius:3px; padding:10px 14px; margin-top:12px; font-size:11px; color:#777; font-style:italic;">🔒 This thread is locked. No further replies.</div>` :
+  const lockedNotice = t.locked ? `<div style="background:#1a1a1a; border:1px solid #444; border-radius:3px; padding:10px 14px; margin-top:12px; font-size:11px; color:#777; font-style:italic;">&#128274; This thread is locked. No further replies.</div>` :
     `<div class="reply-box"><h4>Post Reply</h4><textarea placeholder="Write your reply... (archive mode — posts will not be saved)"></textarea><div class="reply-box-meta">Archive mode active. New posts are not accepted.</div></div>`;
   document.getElementById('thread-content').innerHTML = `
-    <div class="thread-nav"><a onclick="navigate('${t.forumTarget}')">← Back to ${t.forum}</a><span style="font-size:11px; color:#778;">${t.posts.length} post${t.posts.length!==1?'s':''} &nbsp;|&nbsp; <span class="post-flag ${flagColors[t.flag]||'flag-new'}">${t.flag}</span></span></div>
+    <div class="thread-nav"><a onclick="navigate('${t.forumTarget}')">&larr; Back to ${t.forum}</a><span style="font-size:11px; color:#778;">${t.posts.length} post${t.posts.length!==1?'s':''} &nbsp;|&nbsp; <span class="post-flag ${flagColors[t.flag]||'flag-new'}">${t.flag}</span></span></div>
     <div class="thread-header"><div class="thread-title">${t.title}</div><div class="thread-meta">in <a onclick="navigate('${t.forumTarget}')">${t.forum}</a> &nbsp;|&nbsp; Started by <a onclick="navigate('profile-${t.posts[0].user.toLowerCase()}')">${t.posts[0].user}</a> &nbsp;|&nbsp; ${t.posts[0].date}</div></div>
     ${postsHTML}${lockedNotice}`;
 }
 
 async function buildDynamicThreadPage(target) {
-  const parts = target.replace('dynthread-','').split('-');
-  // format: forumId-threadId  (both could have dashes, so we need to store them differently)
-  // We stored as dynthread-FORUMID-THREADID; split on first and second occurrence
   const raw = target.replace('dynthread-','');
   const firstDash = raw.indexOf('-');
-  // Actually forumId is auto-id (no dash), threadId is auto-id (no dash)
-  // So raw = forumId + '-' + threadId
   const forumId = raw.substring(0, firstDash);
   const threadId = raw.substring(firstDash + 1);
   document.getElementById('bc-content').innerHTML = `<a onclick="navigate('home')">TheGMTower Forums</a> &rsaquo; Loading...`;
@@ -1857,7 +1852,6 @@ async function buildDynamicThreadPage(target) {
     if (!tDoc.exists()) { document.getElementById('thread-content').innerHTML = '<div style="padding:20px; color:#778; font-style:italic;">Thread not found.</div>'; return; }
     const thread = tDoc.data();
     document.getElementById('bc-content').innerHTML = `<a onclick="navigate('home')">TheGMTower Forums</a> &rsaquo; <a onclick="navigate('dynamic-${forumId}')">Forum</a> &rsaquo; ${thread.title}`;
-    // Load replies
     const rSnap = await window._getDocs(window._query(window._collection(window._db, 'dynamic_forums', forumId, 'threads', threadId, 'replies'), window._orderBy('createdAt', 'asc')));
     const op = `<div class="post-wrap">
       <div class="post-sidebar">
@@ -1897,7 +1891,7 @@ async function buildDynamicThreadPage(target) {
       <div id="reply-msg-dyn" style="font-size:10px; color:#883300; margin-top:4px; display:none;"></div>
     </div>` : `<div class="reply-box" style="font-size:11px; color:#99a; font-style:italic; text-align:center;">You must be logged in to reply.</div>`;
     document.getElementById('thread-content').innerHTML = `
-      <div class="thread-nav"><a onclick="navigate('dynamic-${forumId}')">← Back to Forum</a></div>
+      <div class="thread-nav"><a onclick="navigate('dynamic-${forumId}')">&larr; Back to Forum</a></div>
       <div class="thread-header"><div class="thread-title">${thread.title}</div><div class="thread-meta">Posted by ${thread.authorName || 'Unknown'}</div></div>
       ${op}${replies}${replyBox}`;
   } catch(e) {
@@ -1952,7 +1946,7 @@ async function buildProfilePage(target) {
   document.getElementById('profile-content').innerHTML = `
     <div style="margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;">
       <div style="font-family:'Oswald',sans-serif; font-size:18px; color:#223; font-weight:500;">Member Profile: ${p.name}</div>
-      <a onclick="navigate('home')" style="font-size:11px; color:var(--link); cursor:pointer;">← Forum Index</a>
+      <a onclick="navigate('home')" style="font-size:11px; color:var(--link); cursor:pointer;">&larr; Forum Index</a>
     </div>
     <div class="profile-wrap">
       <div class="profile-left">
@@ -1994,7 +1988,7 @@ function renderMyProfile(user, p) {
   document.getElementById('profile-content').innerHTML = `
     <div style="margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;">
       <div style="font-family:'Oswald',sans-serif; font-size:18px; color:#223; font-weight:500;">My Profile</div>
-      <a onclick="navigate('home')" style="font-size:11px; color:var(--link); cursor:pointer;">← Forum Index</a>
+      <a onclick="navigate('home')" style="font-size:11px; color:var(--link); cursor:pointer;">&larr; Forum Index</a>
     </div>
     <div class="profile-wrap">
       <div class="profile-left">
@@ -2002,7 +1996,7 @@ function renderMyProfile(user, p) {
           <div class="profile-card-head">Profile</div>
           <div class="profile-card-body" style="text-align:center; padding-top:14px;">
             <div class="profile-avatar-big ${p.avatarColor||'avatar-blue'}" id="profile-avatar-preview">${avatarContent}</div>
-            <div style="font-family:'Oswald',sans-serif; font-size:16px; color:#223; margin-bottom:2px;">${displayName}</div>
+            <div style="font-family:'Oswald',sans-serif; font-size:16px; color:#223; margin-bottom:2px;" id="profile-display-name-preview">${displayName}</div>
             <div style="font-size:11px; color:#99a; margin-bottom:4px;">${p.rank||'Member'}</div>
             <div style="font-size:10px; color:#aab;">${user.email}</div>
           </div>
@@ -2052,7 +2046,10 @@ function selectAvatarColor(color, el) {
   if (preview) {
     preview.className = 'profile-avatar-big ' + color;
     const urlVal = document.getElementById('edit-avatar-url')?.value;
-    if (!urlVal) { const name = window._userProfile?.displayName || window._currentUser?.email?.split('@')[0] || '?'; preview.textContent = name[0].toUpperCase(); }
+    if (!urlVal) {
+      const name = document.getElementById('edit-displayname')?.value || window._userProfile?.displayName || window._currentUser?.email?.split('@')[0] || '?';
+      preview.textContent = name[0].toUpperCase();
+    }
   }
 }
 
@@ -2070,8 +2067,10 @@ document.addEventListener('input', e => {
   }
   if (e.target.id === 'edit-displayname') {
     const preview = document.getElementById('profile-avatar-preview');
+    const namePreview = document.getElementById('profile-display-name-preview');
     const urlVal = document.getElementById('edit-avatar-url')?.value;
     if (preview && !urlVal) preview.textContent = (e.target.value||'?')[0].toUpperCase();
+    if (namePreview) namePreview.textContent = e.target.value || '';
   }
 });
 
@@ -2083,16 +2082,47 @@ async function saveProfile() {
   const avatarUrl = document.getElementById('edit-avatar-url')?.value.trim();
   const avatarColor = window._selectedAvatarColor || 'avatar-blue';
   const msgEl = document.getElementById('profile-save-msg');
-  if (!displayName) { msgEl.textContent = 'Display name cannot be empty.'; msgEl.style.color='#883300'; msgEl.style.display='block'; return; }
+  if (!displayName) {
+    msgEl.textContent = 'Display name cannot be empty.';
+    msgEl.style.color = '#883300';
+    msgEl.style.display = 'block';
+    return;
+  }
+  // Disable button while saving
+  const btn = document.querySelector('.save-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving...'; }
   try {
-    const updated = { displayName, bio, avatarUrl, avatarColor, rank: window._userProfile?.rank||'Member', joined: window._userProfile?.joined||'', postCount: window._userProfile?.postCount||0 };
+    const updated = {
+      displayName, bio, avatarUrl, avatarColor,
+      rank: window._userProfile?.rank || 'Member',
+      joined: window._userProfile?.joined || '',
+      postCount: window._userProfile?.postCount || 0
+    };
     await window._setDoc(window._doc(window._db, 'profiles', user.uid), updated);
+    // Update global profile state
     window._userProfile = updated;
+    // Update topbar
     window._updateUI(user);
-    msgEl.textContent = '✓ Profile saved.'; msgEl.style.color='#226622'; msgEl.style.display='block';
-    setTimeout(() => { if(msgEl) msgEl.style.display='none'; }, 3000);
+    // Re-render the profile page with the new data so all fields refresh
+    renderMyProfile(user, updated);
+    // Show success message (element was just re-created by renderMyProfile)
+    const msg = document.getElementById('profile-save-msg');
+    if (msg) {
+      msg.textContent = '✓ Profile saved successfully.';
+      msg.style.color = '#226622';
+      msg.style.display = 'block';
+      setTimeout(() => { if (msg) msg.style.display = 'none'; }, 3000);
+    }
   } catch(e) {
-    msgEl.textContent = 'Error: ' + e.message; msgEl.style.color='#883300'; msgEl.style.display='block';
+    // If re-render already happened this msgEl reference is stale, get fresh one
+    const msg = document.getElementById('profile-save-msg') || msgEl;
+    if (msg) {
+      msg.textContent = 'Error: ' + e.message;
+      msg.style.color = '#883300';
+      msg.style.display = 'block';
+    }
+    const b = document.querySelector('.save-btn');
+    if (b) { b.disabled = false; b.textContent = 'Save Changes'; }
   }
 }
 
