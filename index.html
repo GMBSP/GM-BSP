@@ -3,20 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TheGMTower</title>
-
-<!-- ============================================================
-     FIREBASE SETUP — see FIREBASE_SETUP.md for full instructions
-     ============================================================
-
-  STEP 1: Go to https://console.firebase.google.com
-  STEP 2: Create a project (or open an existing one)
-  STEP 3: Project Settings → Your apps → Add app → Web (</>)
-  STEP 4: Copy the firebaseConfig values into the block below
-  STEP 5: In Firebase Console → Authentication → Sign-in method
-          → Enable "Email/Password"
-
-  ============================================================ -->
+<title>TheGMTower Forums</title>
 <script type="module">
   import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
@@ -35,6 +22,7 @@
 
   function showAuthMsg(msg, isError) {
     const el = document.getElementById('auth-msg');
+    if (!el) return;
     el.textContent = msg;
     el.style.color = isError ? '#cc4400' : '#226622';
     el.style.display = 'block';
@@ -45,7 +33,10 @@
     if (el) { el.textContent = ''; el.style.display = 'none'; }
   }
 
+  window._currentUser = null;
+
   function updateUI(user) {
+    window._currentUser = user;
     const loginBox  = document.getElementById('login-box');
     const loggedBox = document.getElementById('logged-box');
     const usernameDisplay = document.getElementById('user-display');
@@ -55,6 +46,9 @@
       if (loggedBox) loggedBox.style.display = 'flex';
       if (usernameDisplay) usernameDisplay.textContent = user.email.split('@')[0];
       if (topbarUser) topbarUser.textContent = user.email.split('@')[0];
+      // update avatar letter
+      const av = document.getElementById('user-avatar');
+      if (av) av.textContent = (user.email[0] || '?').toUpperCase();
     } else {
       if (loginBox)  loginBox.style.display  = 'flex';
       if (loggedBox) loggedBox.style.display = 'none';
@@ -65,52 +59,26 @@
   window.addEventListener('DOMContentLoaded', () => {
     onAuthStateChanged(auth, updateUI);
 
-    // Toggle between login & register forms
-    document.getElementById('show-register').addEventListener('click', (e) => {
-      e.preventDefault();
-      document.getElementById('form-login').style.display = 'none';
-      document.getElementById('form-register').style.display = 'flex';
-      clearAuthMsg();
-    });
-    document.getElementById('show-login').addEventListener('click', (e) => {
-      e.preventDefault();
-      document.getElementById('form-register').style.display = 'none';
-      document.getElementById('form-login').style.display = 'flex';
-      clearAuthMsg();
-    });
-
-    // LOGIN
-    document.getElementById('btn-login').addEventListener('click', async () => {
-      const email    = document.getElementById('inp-email').value.trim();
-      const password = document.getElementById('inp-pass').value;
-      if (!email || !password) { showAuthMsg('Please fill in all fields.', true); return; }
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        clearAuthMsg();
-      } catch (err) {
-        showAuthMsg(err.message, true);
+    document.addEventListener('click', e => {
+      const t = e.target;
+      if (t.id === 'show-register') { e.preventDefault(); document.getElementById('form-login').style.display='none'; document.getElementById('form-register').style.display='flex'; clearAuthMsg(); }
+      if (t.id === 'show-login')    { e.preventDefault(); document.getElementById('form-register').style.display='none'; document.getElementById('form-login').style.display='flex'; clearAuthMsg(); }
+      if (t.id === 'btn-login') {
+        const email = document.getElementById('inp-email')?.value.trim();
+        const password = document.getElementById('inp-pass')?.value;
+        if (!email || !password) { showAuthMsg('Please fill in all fields.', true); return; }
+        signInWithEmailAndPassword(auth, email, password).then(() => clearAuthMsg()).catch(err => showAuthMsg(err.message, true));
       }
-    });
-
-    // REGISTER
-    document.getElementById('btn-register').addEventListener('click', async () => {
-      const email    = document.getElementById('inp-reg-email').value.trim();
-      const password = document.getElementById('inp-reg-pass').value;
-      const confirm  = document.getElementById('inp-reg-confirm').value;
-      if (!email || !password) { showAuthMsg('Please fill in all fields.', true); return; }
-      if (password !== confirm) { showAuthMsg('Passwords do not match.', true); return; }
-      if (password.length < 6)  { showAuthMsg('Password must be at least 6 characters.', true); return; }
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        clearAuthMsg();
-      } catch (err) {
-        showAuthMsg(err.message, true);
+      if (t.id === 'btn-register') {
+        const email = document.getElementById('inp-reg-email')?.value.trim();
+        const password = document.getElementById('inp-reg-pass')?.value;
+        const confirm  = document.getElementById('inp-reg-confirm')?.value;
+        if (!email || !password) { showAuthMsg('Please fill in all fields.', true); return; }
+        if (password !== confirm) { showAuthMsg('Passwords do not match.', true); return; }
+        if (password.length < 6)  { showAuthMsg('Password must be at least 6 characters.', true); return; }
+        createUserWithEmailAndPassword(auth, email, password).then(() => clearAuthMsg()).catch(err => showAuthMsg(err.message, true));
       }
-    });
-
-    // LOGOUT
-    document.getElementById('btn-logout').addEventListener('click', async () => {
-      await signOut(auth);
+      if (t.id === 'btn-logout') signOut(auth);
     });
   });
 </script>
@@ -144,11 +112,13 @@
 }
 
 body { font-family: Tahoma,'Trebuchet MS',sans-serif; font-size:12px; background:var(--bg); color:var(--text); min-height:100vh; }
-a { color:var(--link); text-decoration:none; }
+a { color:var(--link); text-decoration:none; cursor:pointer; }
 a:hover { color:var(--link-hover); text-decoration:underline; }
+.page { display:none; }
+.page.active { display:block; }
 
 /* TOPBAR */
-#topbar { background:var(--header-bg); border-bottom:3px solid var(--blue-mid); height:46px; display:flex; align-items:center; padding:0 14px; }
+#topbar { background:var(--header-bg); border-bottom:3px solid var(--blue-mid); height:46px; display:flex; align-items:center; padding:0 14px; position:sticky; top:0; z-index:100; }
 #logo { display:flex; align-items:baseline; text-decoration:none; flex-shrink:0; }
 #logo .l-main { font-family:'Oswald',sans-serif; font-size:22px; font-weight:700; color:#fff; letter-spacing:-0.5px; padding:4px 9px; background:var(--blue); border-radius:3px 0 0 3px; }
 #logo .l-sub  { font-family:'Oswald',sans-serif; font-size:22px; font-weight:400; color:#bbc; padding:4px 8px; background:#283a58; border-radius:0 3px 3px 0; border:1px solid #384a68; border-left:none; }
@@ -156,58 +126,41 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
 #topnav a { color:#aab; font-size:11px; font-weight:700; padding:5px 11px; text-transform:uppercase; letter-spacing:0.4px; border-radius:3px; text-decoration:none; }
 #topnav a:hover, #topnav a.active { color:#fff; background:rgba(255,255,255,0.1); text-decoration:none; }
 #topbar-right { margin-left:auto; display:flex; align-items:center; gap:10px; }
-#topbar-right a { color:#99a; font-size:11px; font-weight:700; text-transform:uppercase; }
-#topbar-user { color:#fff; font-size:11px; font-weight:700; }
-.btn-register { background:var(--blue); color:#fff !important; padding:5px 12px; border-radius:3px; font-size:11px; }
-.btn-register:hover { background:var(--blue-dark); text-decoration:none !important; }
-.btn-login { background:#2a3a54; color:#ccd !important; padding:5px 12px; border-radius:3px; border:1px solid #445566; }
-.btn-login:hover { background:#334468; text-decoration:none !important; }
+#topbar-user { color:#fff; font-size:11px; font-weight:700; cursor:pointer; }
+#topbar-user:hover { text-decoration:underline; }
 
 /* SUBNAV */
 #subnav { background:var(--panel); border-bottom:1px solid var(--border); height:30px; display:flex; align-items:center; padding:0 14px; }
-.snav-link { font-size:11px; font-weight:700; color:#556; padding:0 10px; height:100%; display:flex; align-items:center; border-bottom:3px solid transparent; margin-bottom:-1px; text-transform:uppercase; letter-spacing:0.3px; }
+.snav-link { font-size:11px; font-weight:700; color:#556; padding:0 10px; height:100%; display:flex; align-items:center; border-bottom:3px solid transparent; margin-bottom:-1px; text-transform:uppercase; letter-spacing:0.3px; cursor:pointer; }
 .snav-link:hover { color:var(--blue); text-decoration:none; border-bottom-color:var(--blue); }
 .snav-link.active { color:var(--blue); border-bottom-color:var(--blue); }
 .snav-sep { color:var(--border); padding:0 2px; }
 
 /* BREADCRUMB */
 #breadcrumb { padding:6px 14px; font-size:11px; color:#778; background:var(--bg); border-bottom:1px solid #b0becc; }
-#breadcrumb a { color:#557; }
+#breadcrumb a { color:#557; cursor:pointer; }
+#breadcrumb a:hover { color:var(--link-hover); }
 
 /* WRAPPER */
 #wrapper { max-width:1060px; margin:0 auto; padding:12px 10px; display:flex; gap:12px; }
 #main { flex:1; min-width:0; }
 #sidebar { width:220px; flex-shrink:0; }
 
-/* ANNOUNCE BANNERS */
+/* ANNOUNCE */
 .announce { background:var(--yellow); border:1px solid var(--yellow-border); border-radius:3px; padding:10px 14px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:14px; }
 .announce-badge { background:var(--blue); color:white; font-family:'Oswald',sans-serif; font-size:10px; font-weight:700; padding:2px 7px; border-radius:2px; text-transform:uppercase; letter-spacing:1px; white-space:nowrap; flex-shrink:0; }
 .announce-text h3 { color:#223; font-family:'Oswald',sans-serif; font-size:15px; font-weight:500; margin-bottom:3px; }
 .announce-text p { color:#667; font-size:11px; }
-.announce-btn { background:var(--blue); color:white; font-weight:700; font-size:11px; padding:6px 12px; border-radius:3px; white-space:nowrap; flex-shrink:0; text-decoration:none; }
+.announce-btn { background:var(--blue); color:white; font-weight:700; font-size:11px; padding:6px 12px; border-radius:3px; white-space:nowrap; flex-shrink:0; text-decoration:none; cursor:pointer; }
 .announce-btn:hover { background:var(--blue-dark); color:white; text-decoration:none; }
-.announce.warn { background:#fff8c0; border-color:#c8b840; }
 .announce.off { background:var(--yellow); border-color:#b8aa60; }
 .announce.off .announce-text h3 { color:#443300; }
 .announce.off .announce-text p { color:#887755; font-style:italic; }
-
-/* CLOSURE ANNOUNCEMENT — somber dark banner */
-.announce.closed {
-  background: #1a1a1a;
-  border: 2px solid #555;
-  border-radius: 3px;
-  padding: 14px 16px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  flex-direction: column;
-}
-.announce.closed .announce-badge { background: #444; color: #bbb; letter-spacing: 2px; font-size: 9px; }
-.announce.closed .announce-text h3 { color: #ccc; font-family:'Oswald',sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 6px; }
-.announce.closed .announce-text p { color: #888; font-size: 11px; line-height: 1.65; }
-.announce.closed .announce-text p em { color: #666; font-style: italic; }
-.announce.closed .announce-meta { font-size: 10px; color: #555; font-family:'Source Code Pro',monospace; margin-top: 8px; border-top: 1px solid #333; padding-top: 7px; }
+.announce.closed { background:#1a1a1a; border:2px solid #555; border-radius:3px; padding:14px 16px; margin-bottom:16px; display:flex; align-items:flex-start; gap:14px; flex-direction:column; }
+.announce.closed .announce-badge { background:#444; color:#bbb; letter-spacing:2px; font-size:9px; }
+.announce.closed .announce-text h3 { color:#ccc; font-family:'Oswald',sans-serif; font-size:17px; font-weight:600; margin-bottom:6px; }
+.announce.closed .announce-text p { color:#888; font-size:11px; line-height:1.65; }
+.announce.closed .announce-meta { font-size:10px; color:#555; font-family:'Source Code Pro',monospace; margin-top:8px; border-top:1px solid #333; padding-top:7px; }
 
 /* FORUM TABLE */
 .forum-cat { border:1px solid var(--border); border-radius:3px; margin-bottom:14px; overflow:hidden; }
@@ -227,7 +180,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
 .forum-icon.sub { background:#e4eef4; border-color:#aabbcc; color:#336688; }
 .forum-icon.broken { background:#f8f8f4; border-color:#ccbbaa; color:#998877; font-size:10px; letter-spacing:-1px; }
 .forum-main { flex:1; min-width:0; }
-.forum-name { font-size:13px; font-weight:700; color:var(--link); margin-bottom:2px; display:block; }
+.forum-name { font-size:13px; font-weight:700; color:var(--link); margin-bottom:2px; display:block; cursor:pointer; }
 .forum-name:hover { color:var(--link-hover); }
 .forum-desc { font-size:11px; color:var(--text-muted); line-height:1.4; }
 .forum-desc.weird { color:#887766; font-style:italic; }
@@ -236,21 +189,21 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
 .stat-num { font-size:13px; font-weight:700; color:#334; display:block; }
 .stat-label { font-size:10px; color:#99a; text-transform:uppercase; letter-spacing:0.3px; }
 .last-post { width:160px; flex-shrink:0; padding-left:8px; border-left:1px solid var(--border-light); }
-.last-post-title { font-size:11px; font-weight:700; color:#334; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px; }
+.last-post-title { font-size:11px; font-weight:700; color:#334; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px; cursor:pointer; }
 .last-post-title:hover { color:var(--link-hover); }
 .last-post-meta { font-size:10px; color:#99a; }
-.last-post-meta a { color:var(--link); font-size:10px; }
+.last-post-meta a { color:var(--link); font-size:10px; cursor:pointer; }
 
 .subforum-row { background:#f0f4fc; border-bottom:1px dashed #ccd; padding:5px 12px 5px 56px; font-size:11px; display:flex; gap:6px; flex-wrap:wrap; }
 .subforum-row span { color:#889; }
-.subforum-row a { color:var(--link); font-weight:700; }
+.subforum-row a { color:var(--link); font-weight:700; cursor:pointer; }
 
 /* RECENT POSTS */
 .section-wrap { border:1px solid var(--border); border-radius:3px; margin-bottom:14px; overflow:hidden; }
 .section-head { background:#2a3a58; padding:7px 12px; display:flex; align-items:center; justify-content:space-between; }
 .section-head-title { font-family:'Oswald',sans-serif; font-size:14px; font-weight:500; color:#ccd; letter-spacing:0.3px; }
 .section-head-title b { display:inline-block; width:8px; height:8px; background:var(--blue-mid); border-radius:2px; margin-right:7px; vertical-align:middle; position:relative; top:-1px; }
-.section-head a { font-size:10px; color:#99a; font-weight:700; text-transform:uppercase; }
+.section-head a { font-size:10px; color:#99a; font-weight:700; text-transform:uppercase; cursor:pointer; }
 .section-head a:hover { color:#fff; text-decoration:none; }
 
 .post-table { width:100%; border-collapse:collapse; }
@@ -264,11 +217,11 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
 .flag-hot    { background:#7a4a00; color:#ffe8c8; }
 .flag-poll   { background:#8a7a00; color:#fff5c0; }
 .flag-locked { background:#5a5a6a; color:#ddddee; }
-.post-title { font-size:12px; font-weight:700; color:var(--link); }
+.post-title { font-size:12px; font-weight:700; color:var(--link); cursor:pointer; }
 .post-title:hover { color:var(--link-hover); }
 .post-subforum { font-size:10px; color:#99a; margin-top:1px; }
 .post-author-cell { font-size:11px; color:#556; white-space:nowrap; }
-.post-author-cell a { color:var(--link); font-weight:700; }
+.post-author-cell a { color:var(--link); font-weight:700; cursor:pointer; }
 .post-num { font-size:12px; font-weight:700; color:#445; text-align:center; }
 .post-date { font-size:10px; color:#889; white-space:nowrap; }
 
@@ -281,7 +234,6 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
 /* Auth panel */
 #login-box  { flex-direction:column; gap:6px; }
 #logged-box { flex-direction:column; gap:8px; display:none; align-items:center; text-align:center; }
-
 .auth-form { display:flex; flex-direction:column; gap:6px; }
 .auth-form input { width:100%; height:26px; border:1px solid var(--border); background:#fff; padding:0 8px; font-size:11px; font-family:Tahoma,sans-serif; border-radius:2px; color:#222; outline:none; }
 .auth-form input:focus { border-color:var(--blue); }
@@ -291,9 +243,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
 .btn-submit.danger { background:#7a2200; }
 .btn-submit.danger:hover { background:#5a1a00; }
 .auth-links { display:flex; justify-content:space-between; font-size:10px; }
-
 #auth-msg { display:none; font-size:10px; padding:4px 6px; border-radius:2px; background:#fff3f0; border:1px solid #e8b8a8; margin-top:2px; line-height:1.4; }
-
 .logged-avatar { width:44px; height:44px; background:var(--blue); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-family:'Oswald',sans-serif; font-size:20px; font-weight:700; margin:4px auto 0; }
 .logged-name { font-weight:700; font-size:12px; color:#223; }
 .logged-rank { font-size:10px; color:#99a; }
@@ -317,7 +267,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
 #footer { background:var(--header-bg); border-top:3px solid var(--blue-mid); padding:14px 0 12px; margin-top:6px; }
 .footer-inner { max-width:1060px; margin:0 auto; padding:0 10px; }
 .footer-links { display:flex; justify-content:center; gap:16px; margin-bottom:8px; flex-wrap:wrap; }
-.footer-links a { color:#778; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; }
+.footer-links a { color:#778; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; cursor:pointer; }
 .footer-links a:hover { color:#aab; text-decoration:none; }
 .footer-copy { text-align:center; color:#556; font-size:10px; line-height:1.6; }
 .footer-copy strong { color:var(--blue-mid); }
@@ -340,49 +290,146 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
 .viewing-notice { font-size:10px; color:#778; padding:5px 12px; background:#eef2fa; border-top:1px dashed var(--border-light); font-style:italic; }
 .broken-title { font-family:'Source Code Pro',monospace; font-size:10px; color:#aab; letter-spacing:-0.5px; }
 .err { color:#883300; font-family:'Source Code Pro',monospace; font-size:10px; }
+
+/* ========== THREAD PAGE ========== */
+.thread-header { background:var(--panel); border:1px solid var(--border); border-radius:3px; padding:10px 14px; margin-bottom:12px; }
+.thread-title { font-family:'Oswald',sans-serif; font-size:20px; font-weight:500; color:#223; margin-bottom:4px; }
+.thread-meta { font-size:11px; color:#778; }
+.thread-meta a { color:var(--link); cursor:pointer; }
+
+.post-wrap { border:1px solid var(--border); border-radius:3px; margin-bottom:10px; overflow:hidden; display:flex; }
+.post-sidebar { width:130px; flex-shrink:0; background:#e8edf8; border-right:1px solid var(--border); padding:12px 10px; text-align:center; }
+.post-avatar { width:52px; height:52px; border-radius:50%; background:var(--blue); color:#fff; font-family:'Oswald',sans-serif; font-size:22px; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto 6px; }
+.post-username { font-weight:700; font-size:12px; color:#223; margin-bottom:2px; cursor:pointer; }
+.post-username:hover { color:var(--link-hover); }
+.post-rank { font-size:10px; color:#99a; margin-bottom:4px; }
+.post-join { font-size:9px; color:#aab; }
+.post-postcount { font-size:9px; color:#aab; margin-top:2px; }
+.post-body-wrap { flex:1; min-width:0; }
+.post-head { background:#2a3a58; padding:6px 12px; display:flex; align-items:center; justify-content:space-between; }
+.post-head-date { font-size:10px; color:#99a; font-family:'Source Code Pro',monospace; }
+.post-head-num { font-size:10px; color:#667; }
+.post-content { padding:12px; line-height:1.6; font-size:12px; color:#223; background:var(--panel); }
+.post-content p { margin-bottom:8px; }
+.post-content p:last-child { margin-bottom:0; }
+.post-content .quote-block { background:#e8ecf8; border-left:3px solid var(--blue-mid); padding:8px 10px; margin:8px 0; font-style:italic; color:#445; font-size:11px; border-radius:0 3px 3px 0; }
+.post-content .quote-block strong { font-style:normal; color:#334; display:block; margin-bottom:4px; font-size:10px; text-transform:uppercase; letter-spacing:0.3px; color:#667; }
+.post-sig { border-top:1px dashed var(--border-light); padding:8px 12px; font-size:10px; color:#aab; background:var(--panel); font-style:italic; }
+.post-actions { padding:4px 12px 6px; background:var(--panel); border-top:1px solid var(--border-light); display:flex; gap:8px; }
+.post-actions a { font-size:10px; color:#778; cursor:pointer; }
+.post-actions a:hover { color:var(--link); }
+
+.avatar-blue   { background: #2255aa; }
+.avatar-green  { background: #2a6a3a; }
+.avatar-red    { background: #882222; }
+.avatar-purple { background: #5a2a7a; }
+.avatar-teal   { background: #1a6a6a; }
+.avatar-orange { background: #8a5500; }
+.avatar-dark   { background: #2a2a3a; }
+
+.thread-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; font-size:11px; }
+.thread-nav a { color:var(--link); cursor:pointer; font-weight:700; }
+.thread-nav a:hover { color:var(--link-hover); }
+
+.reply-box { background:var(--panel); border:1px solid var(--border); border-radius:3px; padding:12px 14px; margin-top:10px; }
+.reply-box h4 { font-family:'Oswald',sans-serif; font-size:14px; color:#334; margin-bottom:8px; }
+.reply-box textarea { width:100%; height:90px; border:1px solid var(--border); padding:8px; font-size:11px; font-family:Tahoma,sans-serif; background:#fff; color:#223; border-radius:2px; resize:vertical; }
+.reply-box textarea:focus { outline:none; border-color:var(--blue); }
+.reply-box-meta { font-size:10px; color:#99a; margin-top:6px; font-style:italic; }
+
+/* ========== FORUM INDEX PAGE (subforum list) ========== */
+.thread-list-header { background:#2a3a58; padding:8px 12px; display:flex; align-items:center; gap:8px; }
+.thread-list-header span { font-family:'Oswald',sans-serif; font-size:14px; color:#ccd; }
+.thread-list-row { display:flex; align-items:center; padding:8px 12px; background:var(--panel); border-bottom:1px solid var(--border-light); gap:10px; }
+.thread-list-row:nth-child(even) { background:var(--panel-alt); }
+.thread-list-row:hover { background:var(--blue-light); }
+.thread-list-icon { font-size:9px; font-weight:700; padding:2px 5px; border-radius:2px; color:white; background:var(--blue); text-transform:uppercase; white-space:nowrap; }
+.thread-list-icon.hot { background:#7a4a00; }
+.thread-list-icon.sticky { background:#2a4a7a; }
+.thread-list-icon.locked { background:#5a5a6a; }
+.thread-list-icon.new { background:#3a5a2a; }
+.thread-list-icon.poll { background:#8a7a00; }
+.thread-list-main { flex:1; }
+.thread-list-title { font-size:13px; font-weight:700; color:var(--link); cursor:pointer; display:block; }
+.thread-list-title:hover { color:var(--link-hover); }
+.thread-list-sub { font-size:10px; color:#99a; margin-top:2px; }
+.thread-list-stats { font-size:11px; color:#556; text-align:center; width:80px; flex-shrink:0; }
+.thread-list-lastpost { width:160px; flex-shrink:0; font-size:10px; color:#99a; }
+.thread-list-lastpost a { color:var(--link); cursor:pointer; }
+
+/* ========== PROFILE PAGE ========== */
+.profile-wrap { display:flex; gap:14px; }
+.profile-left { width:200px; flex-shrink:0; }
+.profile-right { flex:1; min-width:0; }
+.profile-avatar-big { width:100px; height:100px; border-radius:4px; background:var(--blue); color:#fff; font-family:'Oswald',sans-serif; font-size:44px; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; border:3px solid var(--border); }
+.profile-card { background:var(--panel); border:1px solid var(--border); border-radius:3px; overflow:hidden; margin-bottom:12px; }
+.profile-card-head { background:#2a3a58; padding:6px 10px; font-family:'Oswald',sans-serif; font-size:13px; color:#ccd; }
+.profile-card-body { padding:10px 12px; }
+.profile-stat-row { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #dde; font-size:11px; }
+.profile-stat-row:last-child { border-bottom:none; }
+.profile-stat-row .label { color:#778; }
+.profile-stat-row .val { font-weight:700; color:#334; }
+.profile-section { background:var(--panel); border:1px solid var(--border); border-radius:3px; overflow:hidden; margin-bottom:12px; }
+.profile-section-head { background:#2a3a58; padding:7px 12px; font-family:'Oswald',sans-serif; font-size:14px; color:#ccd; }
+.profile-section-body { padding:12px; }
+.profile-about { font-size:12px; color:#334; line-height:1.65; }
+.profile-posts-mini { list-style:none; }
+.profile-posts-mini li { padding:5px 0; border-bottom:1px solid #dde; font-size:11px; }
+.profile-posts-mini li:last-child { border-bottom:none; }
+.profile-posts-mini a { color:var(--link); font-weight:700; cursor:pointer; }
+.profile-posts-mini a:hover { color:var(--link-hover); }
+.profile-posts-mini .mini-meta { font-size:10px; color:#99a; margin-top:2px; }
+.badge-list { display:flex; flex-wrap:wrap; gap:6px; padding:10px 12px; }
+.badge { background:var(--yellow); border:1px solid var(--yellow-border); border-radius:3px; padding:4px 8px; font-size:10px; color:#445; font-weight:700; }
+.badge.blue { background:#dde8f8; border-color:#99bbd4; color:#224; }
+.badge.green { background:#ddf0dd; border-color:#88bb88; color:#224; }
+.badge.gold { background:#fff0c0; border-color:#ccaa44; color:#443300; }
 </style>
 </head>
 <body>
 
 <!-- TOPBAR -->
 <div id="topbar">
-  <a href="#" id="logo">
+  <a id="logo" onclick="navigate('home')">
     <span class="l-main">TheGMTower</span>
     <span class="l-sub">Forums</span>
   </a>
   <div id="topnav">
-    <a href="#" class="active">Home</a>
-    <a href="#">Forums</a>
-    <a href="#">Servers</a>
+    <a class="active" onclick="navigate('home')">Home</a>
+    <a onclick="navigate('forums')">Forums</a>
     <a href="https://gamebanana.com" target="_blank" rel="noopener">Downloads</a>
   </div>
   <div id="topbar-right">
-    <span id="topbar-user"></span>
+    <span id="topbar-user" onclick="navigate('profile-me')"></span>
   </div>
 </div>
 
 <!-- SUBNAV -->
 <div id="subnav">
-  <a href="#" class="snav-link active">Forum Index</a>
-  <a href="#" class="snav-link">New Posts</a>
+  <span class="snav-link active" onclick="navigate('home')">Forum Index</span>
+  <span class="snav-link" onclick="navigate('forums')">New Posts</span>
   <span class="snav-sep">|</span>
-  <a href="#" class="snav-link">Search</a>
+  <span class="snav-link">Search</span>
   <span class="snav-sep">|</span>
-  <a href="#" class="snav-link">Leaderboard</a>
-  <a href="https://gamebanana.com" target="_blank" rel="noopener" class="snav-link">Downloads</a>
+  <span class="snav-link">Leaderboard</span>
+  <span class="snav-link" onclick="navigate('profile-me')">My Profile</span>
 </div>
 
 <!-- BREADCRUMB -->
 <div id="breadcrumb">
-  <a href="#">TheGMTower Forums</a> &rsaquo; Forum Index
+  <a onclick="navigate('home')">TheGMTower Forums</a> &rsaquo; <span id="bc-content">Forum Index</span>
   &nbsp;&nbsp;<span style="color:#aab; font-size:10px;">— 112 users currently browsing</span>
 </div>
 
-<!-- WRAPPER -->
+<!-- =========================================================
+     PAGES
+     ========================================================= -->
 <div id="wrapper">
 <div id="main">
 
-  <!-- ★ SERVER CLOSURE ANNOUNCEMENT (2017) ★ -->
+<!-- ===== PAGE: HOME ===== -->
+<div id="page-home" class="page active">
+
   <div class="announce closed">
     <div style="display:flex; align-items:center; gap:10px; width:100%;">
       <span class="announce-badge" style="background:#333; color:#aaa; font-size:9px; letter-spacing:2px;">⚑ OFFICIAL</span>
@@ -391,8 +438,8 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
     <div class="announce-text" style="width:100%;">
       <h3 style="color:#bbb; font-size:18px; margin-bottom:8px;">TheGMTower is shutting down.</h3>
       <p style="color:#888; line-height:1.75; max-width:680px;">
-        After nearly eight years, we are closing the servers and archiving the forums. It has been an honor running this community alongside so many of you.<br><br>
-        The game servers will go offline on <strong style="color:#999;">February 1st, 2017</strong>. The forums will remain in read-only mode for as long as we can keep the hosting paid. Downloads on GameBanana will stay up indefinitely.<br><br>
+        After nearly eight years, we are closing the servers and archiving the forums.<br><br>
+        The game servers will go offline on <strong style="color:#999;">February 1st, 2017</strong>. The forums will remain in read-only mode for as long as we can keep the hosting paid.<br><br>
         <em style="color:#666;">Thank you. Genuinely. For every surf run, every deathrun attempt, every bug report, every stupid post in General Discussion at 3 AM. It meant something to us.</em><br><br>
         <em style="color:#555; font-size:10px;">— Pretzels &amp; the TheGMTower staff team</em>
       </p>
@@ -402,41 +449,35 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
     </div>
   </div>
 
-  <!-- Normal notice (from active era) -->
   <div class="announce" style="margin-bottom:8px;">
     <span class="announce-badge">Notice</span>
     <div class="announce-text">
       <h3>TheGMTower v2.1 — Surf Map Rotation Updated</h3>
-      <p>Four new maps added to the surf servers. Check the Surf subforum for the full list and map download links. <span style="color:#99a; font-size:10px;">— Jun 2016</span></p>
+      <p>Four new maps added to the surf servers. Check the Surf subforum for the full list. <span style="color:#99a; font-size:10px;">— Jun 2016</span></p>
     </div>
-    <a href="#" class="announce-btn">Read More</a>
+    <a class="announce-btn" onclick="navigate('forum-surf')">Read More</a>
   </div>
 
-  <!-- Slightly off notice -->
   <div class="announce off" style="margin-bottom:12px;">
     <span class="announce-badge" style="background:#776600; color:#fff8c0;">Notice</span>
     <div class="announce-text">
       <h3>Forum Maintenance — Some boards may be temporarily unavailable</h3>
       <p>We are aware. Do not report these threads. They will be handled. Please continue using the forums as normal.</p>
     </div>
-    <a href="#" class="announce-btn" style="background:#776600;">Acknowledged</a>
+    <a class="announce-btn" style="background:#776600; cursor:default;">Acknowledged</a>
   </div>
 
   <!-- CATEGORY: GENERAL COMMUNITY -->
   <div class="forum-cat">
     <div class="cat-header">
       <span class="cat-title"><span></span>General Community</span>
-      <div class="cat-stats-head">
-        <div>Threads</div>
-        <div>Posts</div>
-        <div>Last Post</div>
-      </div>
+      <div class="cat-stats-head"><div>Threads</div><div>Posts</div><div>Last Post</div></div>
     </div>
 
     <div class="forum-row">
       <div class="forum-icon new-posts">!</div>
       <div class="forum-main">
-        <a href="#" class="forum-name">Announcements &amp; News</a>
+        <a class="forum-name" onclick="navigate('forum-announcements')">Announcements &amp; News</a>
         <div class="forum-desc">Official announcements, rule updates, and server news from the staff team.</div>
       </div>
       <div class="forum-stats">
@@ -444,16 +485,16 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">1,203</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a href="#" class="last-post-title">TheGMTower is shutting down [read]</a>
-        <div class="last-post-meta">by <a href="#">Pretzels</a><br>Jan 09, 2017, 11:59 PM</div>
+        <a class="last-post-title" onclick="navigate('thread-shutdown')">TheGMTower is shutting down [read]</a>
+        <div class="last-post-meta">by <a onclick="navigate('profile-pretzels')">Pretzels</a><br>Jan 09, 2017, 11:59 PM</div>
       </div>
     </div>
-    <div class="subforum-row"><span>Subforums:</span> <a href="#">Staff Applications</a>, <a href="#">Accepted Applications</a>, <a href="#">Denied Applications</a></div>
+    <div class="subforum-row"><span>Subforums:</span> <a onclick="navigate('forum-applications')">Staff Applications</a>, <a>Accepted Applications</a>, <a>Denied Applications</a></div>
 
     <div class="forum-row">
       <div class="forum-icon new-posts">N</div>
       <div class="forum-main">
-        <a href="#" class="forum-name">General Discussion</a>
+        <a class="forum-name" onclick="navigate('forum-general')">General Discussion</a>
         <div class="forum-desc">Anything goes. Introduce yourself, share stories, off-topic chat.</div>
       </div>
       <div class="forum-stats">
@@ -461,15 +502,15 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">38,114</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a href="#" class="last-post-title">does anyone remember the old lobby</a>
-        <div class="last-post-meta">by <a href="#">fizzle</a><br>Jan 08, 2017, 2:17 AM</div>
+        <a class="last-post-title" onclick="navigate('thread-ep3')">does anyone remember the old lobby</a>
+        <div class="last-post-meta">by <a onclick="navigate('profile-fizzle')">fizzle</a><br>Jan 08, 2017, 2:17 AM</div>
       </div>
     </div>
 
     <div class="forum-row">
       <div class="forum-icon">I</div>
       <div class="forum-main">
-        <a href="#" class="forum-name">Introductions</a>
+        <a class="forum-name" onclick="navigate('forum-general')">Introductions</a>
         <div class="forum-desc">New to the community? Post here first.</div>
       </div>
       <div class="forum-stats">
@@ -477,15 +518,15 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">9,602</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a href="#" class="last-post-title">hi, i found this from a google search</a>
-        <div class="last-post-meta">by <a href="#">tbone_actual</a><br>Nov 14, 2016, 8:55 AM</div>
+        <a class="last-post-title">hi, i found this from a google search</a>
+        <div class="last-post-meta">by <a>tbone_actual</a><br>Nov 14, 2016, 8:55 AM</div>
       </div>
     </div>
 
     <div class="forum-row dead">
       <div class="forum-icon broken">???</div>
       <div class="forum-main">
-        <a href="#" class="forum-name" style="color:#667788;">Off-Topic</a>
+        <a class="forum-name" style="color:#667788;">Off-Topic</a>
         <div class="forum-desc weird">This board has been moved. If you are seeing this, please disregard.</div>
       </div>
       <div class="forum-stats">
@@ -494,14 +535,13 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
       </div>
       <div class="last-post">
         <span class="last-post-title" style="font-style:italic; color:#aab;">(unavailable)</span>
-        <div class="last-post-meta">&nbsp;</div>
       </div>
     </div>
 
     <div class="forum-row">
       <div class="forum-icon locked">L</div>
       <div class="forum-main">
-        <a href="#" class="forum-name">Ban Appeals</a>
+        <a class="forum-name" onclick="navigate('forum-general')">Ban Appeals</a>
         <div class="forum-desc">Read the instructions before posting. Do not reply to others' threads.</div>
       </div>
       <div class="forum-stats">
@@ -509,8 +549,8 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">2,088</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a href="#" class="last-post-title">appeal — re: permanent ban [CLOSED]</a>
-        <div class="last-post-meta">by <a href="#">Cheddar</a><br>Oct 04, 2016, 4:30 PM</div>
+        <a class="last-post-title">appeal — re: permanent ban [CLOSED]</a>
+        <div class="last-post-meta">by <a>Cheddar</a><br>Oct 04, 2016, 4:30 PM</div>
       </div>
     </div>
     <div class="viewing-notice">3 guests viewing this board.</div>
@@ -520,17 +560,13 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
   <div class="forum-cat">
     <div class="cat-header">
       <span class="cat-title"><span></span>Source Engine &amp; Games</span>
-      <div class="cat-stats-head">
-        <div>Threads</div>
-        <div>Posts</div>
-        <div>Last Post</div>
-      </div>
+      <div class="cat-stats-head"><div>Threads</div><div>Posts</div><div>Last Post</div></div>
     </div>
 
     <div class="forum-row">
       <div class="forum-icon new-posts">N</div>
       <div class="forum-main">
-        <a href="#" class="forum-name">Garry's Mod</a>
+        <a class="forum-name" onclick="navigate('forum-gmod')">Garry's Mod</a>
         <div class="forum-desc">GMod discussion, addons, gamemodes, and Sandbox. Workshop links welcome.</div>
       </div>
       <div class="forum-stats">
@@ -538,16 +574,16 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">61,220</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a href="#" class="last-post-title">best Deathrun addons right now?</a>
-        <div class="last-post-meta">by <a href="#">penguinslap</a><br>Dec 30, 2016, 9:04 AM</div>
+        <a class="last-post-title" onclick="navigate('thread-deathrun')">best Deathrun addons right now?</a>
+        <div class="last-post-meta">by <a>penguinslap</a><br>Dec 30, 2016, 9:04 AM</div>
       </div>
     </div>
-    <div class="subforum-row"><span>Subforums:</span> <a href="#">Deathrun</a>, <a href="#">Surf</a>, <a href="#">Prop Hunt</a>, <a href="#">TTT</a>, <a href="#">Zombie Survival</a>, <a href="#">Fretta</a></div>
+    <div class="subforum-row"><span>Subforums:</span> <a onclick="navigate('forum-deathrun')">Deathrun</a>, <a onclick="navigate('forum-surf')">Surf</a>, <a>Prop Hunt</a>, <a>TTT</a>, <a>Zombie Survival</a>, <a>Fretta</a></div>
 
     <div class="forum-row">
       <div class="forum-icon new-posts">N</div>
       <div class="forum-main">
-        <a href="#" class="forum-name">Half-Life 2 &amp; Episodes</a>
+        <a class="forum-name" onclick="navigate('forum-hl2')">Half-Life 2 &amp; Episodes</a>
         <div class="forum-desc">HL2, Episode One, Episode Two. Lore, speedruns, mods, and custom campaigns.</div>
       </div>
       <div class="forum-stats">
@@ -555,15 +591,15 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">18,774</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a href="#" class="last-post-title">ep3 is not happening. accept it.</a>
-        <div class="last-post-meta">by <a href="#">nrrrd</a><br>Jan 07, 2017, 1:33 AM</div>
+        <a class="last-post-title" onclick="navigate('thread-ep3')">ep3 is not happening. accept it.</a>
+        <div class="last-post-meta">by <a onclick="navigate('profile-nrrrd')">nrrrd</a><br>Jan 07, 2017, 1:33 AM</div>
       </div>
     </div>
 
     <div class="forum-row">
       <div class="forum-icon">P</div>
       <div class="forum-main">
-        <a href="#" class="forum-name">Portal &amp; Portal 2</a>
+        <a class="forum-name" onclick="navigate('forum-general')">Portal &amp; Portal 2</a>
         <div class="forum-desc">Test chambers, community maps, co-op partners, and lore discussion.</div>
       </div>
       <div class="forum-stats">
@@ -571,15 +607,15 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">11,442</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a href="#" class="last-post-title">my chamber pack — release v0.4</a>
-        <div class="last-post-meta">by <a href="#">ellievee</a><br>Sep 22, 2015, 7:18 PM</div>
+        <a class="last-post-title">my chamber pack — release v0.4</a>
+        <div class="last-post-meta">by <a onclick="navigate('profile-ellievee')">ellievee</a><br>Sep 22, 2015, 7:18 PM</div>
       </div>
     </div>
 
     <div class="forum-row">
       <div class="forum-icon sub">C</div>
       <div class="forum-main">
-        <a href="#" class="forum-name">Counter-Strike: Source</a>
+        <a class="forum-name" onclick="navigate('forum-general')">Counter-Strike: Source</a>
         <div class="forum-desc">CSS strategy, map reviews, server listings, and competitive threads.</div>
       </div>
       <div class="forum-stats">
@@ -587,15 +623,15 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">8,204</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a href="#" class="last-post-title">de_dust2 callout guide [2014]</a>
-        <div class="last-post-meta">by <a href="#">walrus_ftw</a><br>Mar 18, 2014, 3:40 PM</div>
+        <a class="last-post-title">de_dust2 callout guide [2014]</a>
+        <div class="last-post-meta">by <a>walrus_ftw</a><br>Mar 18, 2014, 3:40 PM</div>
       </div>
     </div>
 
     <div class="forum-row">
       <div class="forum-icon sub">T</div>
       <div class="forum-main">
-        <a href="#" class="forum-name">Team Fortress 2</a>
+        <a class="forum-name" onclick="navigate('forum-general')">Team Fortress 2</a>
         <div class="forum-desc">Class mains, trading, achievement servers, and community server listings.</div>
       </div>
       <div class="forum-stats">
@@ -603,43 +639,23 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">6,881</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a href="#" class="last-post-title">spy main LF unusual trade</a>
-        <div class="last-post-meta">by <a href="#">Foxworth</a><br>Aug 05, 2016, 12:05 PM</div>
-      </div>
-    </div>
-
-    <div class="forum-row">
-      <div class="forum-icon sub">L</div>
-      <div class="forum-main">
-        <a href="#" class="forum-name">Left 4 Dead 1 &amp; 2</a>
-        <div class="forum-desc">Campaign co-op, versus strategy, mutations, and custom map links.</div>
-      </div>
-      <div class="forum-stats">
-        <div class="stat-cell"><span class="stat-num">441</span><span class="stat-label">Threads</span></div>
-        <div class="stat-cell"><span class="stat-num">3,307</span><span class="stat-label">Posts</span></div>
-      </div>
-      <div class="last-post">
-        <a href="#" class="last-post-title">Expert No Mercy — attempt tonight 9pm</a>
-        <div class="last-post-meta">by <a href="#">sarkasm</a><br>Apr 28, 2013, 9:11 PM</div>
+        <a class="last-post-title">spy main LF unusual trade</a>
+        <div class="last-post-meta">by <a>Foxworth</a><br>Aug 05, 2016, 12:05 PM</div>
       </div>
     </div>
   </div>
 
-  <!-- CATEGORY: MAPPING & MODDING -->
+  <!-- CATEGORY: MAPPING -->
   <div class="forum-cat">
     <div class="cat-header">
       <span class="cat-title"><span></span>Mapping, Modding &amp; Development</span>
-      <div class="cat-stats-head">
-        <div>Threads</div>
-        <div>Posts</div>
-        <div>Last Post</div>
-      </div>
+      <div class="cat-stats-head"><div>Threads</div><div>Posts</div><div>Last Post</div></div>
     </div>
 
     <div class="forum-row">
       <div class="forum-icon new-posts">N</div>
       <div class="forum-main">
-        <a href="#" class="forum-name">Hammer &amp; Map Releases</a>
+        <a class="forum-name" onclick="navigate('forum-hammer')">Hammer &amp; Map Releases</a>
         <div class="forum-desc">WIP threads, final releases, feedback requests, and Hammer editor help.</div>
       </div>
       <div class="forum-stats">
@@ -647,15 +663,15 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">22,540</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a href="#" class="last-post-title">[WIP] dr_facility_v3 — new screenshots</a>
-        <div class="last-post-meta">by <a href="#">robcakes</a><br>Nov 02, 2016, 6:44 AM</div>
+        <a class="last-post-title" onclick="navigate('thread-bunker')">[WIP] dr_facility_v3 — new screenshots</a>
+        <div class="last-post-meta">by <a onclick="navigate('profile-robcakes')">robcakes</a><br>Nov 02, 2016, 6:44 AM</div>
       </div>
     </div>
 
     <div class="forum-row">
       <div class="forum-icon">Lu</div>
       <div class="forum-main">
-        <a href="#" class="forum-name">Lua Scripting &amp; Addons</a>
+        <a class="forum-name" onclick="navigate('forum-general')">Lua Scripting &amp; Addons</a>
         <div class="forum-desc">Lua help, addon releases, SWEP/SENT/gamemode coding for GMod.</div>
       </div>
       <div class="forum-stats">
@@ -663,15 +679,15 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num">14,108</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a href="#" class="last-post-title">HUD not drawing serverside — help</a>
-        <div class="last-post-meta">by <a href="#">benji404</a><br>Dec 14, 2016, 8:22 PM</div>
+        <a class="last-post-title">HUD not drawing serverside — help</a>
+        <div class="last-post-meta">by <a>benji404</a><br>Dec 14, 2016, 8:22 PM</div>
       </div>
     </div>
 
     <div class="forum-row weird-row">
       <div class="forum-icon broken" style="color:#887744; border-color:#ccaa66; background:#faf5dd;">Sk</div>
       <div class="forum-main">
-        <a href="#" class="forum-name" style="color:#665500;">Skinning &amp; Models</a>
+        <a class="forum-name" style="color:#665500;">Skinning &amp; Models</a>
         <div class="forum-desc weird">VTF/VMT, player model ports, reskins. — <span style="color:#aa8800; font-size:10px;">Last mod action: 214 days ago</span></div>
       </div>
       <div class="forum-stats">
@@ -679,16 +695,16 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-cell"><span class="stat-num" style="color:#887744;">5,540</span><span class="stat-label">Posts</span></div>
       </div>
       <div class="last-post">
-        <a href="#" class="last-post-title" style="color:#776600;">combining HL2 ragdolls in blender</a>
-        <div class="last-post-meta" style="color:#aa9960;">by <a href="#" style="color:#775500;">grumblejack</a><br><span class="wrong-date">Feb 28, 2013</span></div>
+        <a class="last-post-title" style="color:#776600;">combining HL2 ragdolls in blender</a>
+        <div class="last-post-meta" style="color:#aa9960;">by <a style="color:#775500;">grumblejack</a><br><span class="wrong-date">Feb 28, 2013</span></div>
       </div>
     </div>
 
     <div class="forum-row dead">
       <div class="forum-icon broken">--</div>
       <div class="forum-main">
-        <a href="#" class="forum-name broken-title">[board removed]</a>
-        <div class="forum-desc weird" style="font-size:10px;">This section is no longer accessible. Contact an administrator if you believe this is an error.</div>
+        <a class="forum-name broken-title">[board removed]</a>
+        <div class="forum-desc weird" style="font-size:10px;">This section is no longer accessible.</div>
       </div>
       <div class="forum-stats">
         <div class="stat-cell"><span class="stat-num" style="color:#ccc;">0</span><span class="stat-label">Threads</span></div>
@@ -696,7 +712,6 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
       </div>
       <div class="last-post">
         <span class="last-post-title err">(no data)</span>
-        <div class="last-post-meta">&nbsp;</div>
       </div>
     </div>
     <div class="viewing-notice">1 guest viewing this board. &nbsp;<span class="err">— index rebuild pending (ref: err_0x4f)</span></div>
@@ -706,7 +721,7 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
   <div class="section-wrap">
     <div class="section-head">
       <span class="section-head-title"><b></b>Recent Posts</span>
-      <a href="#">View All New Posts</a>
+      <a onclick="navigate('forums')">View All New Posts</a>
     </div>
     <table class="post-table" style="background:#fff;">
       <thead>
@@ -722,64 +737,43 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <tr>
           <td><span class="post-flag flag-sticky">Sticky</span></td>
           <td>
-            <a href="#" class="post-title">TheGMTower is shutting down — please read [Jan 2017]</a>
+            <a class="post-title" onclick="navigate('thread-shutdown')">TheGMTower is shutting down — please read [Jan 2017]</a>
             <div class="post-subforum">in Announcements &amp; News</div>
           </td>
-          <td class="post-author-cell"><a href="#">Pretzels</a></td>
+          <td class="post-author-cell"><a onclick="navigate('profile-pretzels')">Pretzels</a></td>
           <td class="post-num">0</td>
           <td class="post-date">Jan 09, 2017<br>11:59 PM</td>
         </tr>
         <tr>
-          <td><span class="post-flag flag-sticky">Sticky</span></td>
-          <td>
-            <a href="#" class="post-title">READ BEFORE POSTING — Forum Rules &amp; Guidelines [updated June 2014]</a>
-            <div class="post-subforum">in Announcements &amp; News</div>
-          </td>
-          <td class="post-author-cell"><a href="#">Pretzels</a></td>
-          <td class="post-num">0</td>
-          <td class="post-date">Jun 01, 2014<br>10:00 AM</td>
-        </tr>
-        <tr>
           <td><span class="post-flag flag-hot">Hot</span></td>
           <td>
-            <a href="#" class="post-title">will Valve ever say anything about Episode 3. serious thread.</a>
+            <a class="post-title" onclick="navigate('thread-ep3')">will Valve ever say anything about Episode 3. serious thread.</a>
             <div class="post-subforum">in Half-Life 2 &amp; Episodes</div>
           </td>
-          <td class="post-author-cell"><a href="#">nrrrd</a></td>
+          <td class="post-author-cell"><a onclick="navigate('profile-nrrrd')">nrrrd</a></td>
           <td class="post-num">312</td>
           <td class="post-date">Jan 07, 2017<br>9:55 AM</td>
         </tr>
         <tr>
           <td><span class="post-flag flag-new">New</span></td>
           <td>
-            <a href="#" class="post-title">[WIP] dr_bunker_final — looking for beta testers</a>
+            <a class="post-title" onclick="navigate('thread-bunker')">[WIP] dr_bunker_final — looking for beta testers</a>
             <div class="post-subforum">in Hammer &amp; Map Releases</div>
           </td>
-          <td class="post-author-cell"><a href="#">robcakes</a></td>
+          <td class="post-author-cell"><a onclick="navigate('profile-robcakes')">robcakes</a></td>
           <td class="post-num">14</td>
           <td class="post-date">Nov 02, 2016<br>6:44 AM</td>
         </tr>
         <tr>
-          <td><span class="post-flag flag-poll">Poll</span></td>
-          <td>
-            <a href="#" class="post-title">what is actually the best Source game [poll, no arguing]</a>
-            <div class="post-subforum">in General Discussion</div>
-          </td>
-          <td class="post-author-cell"><a href="#">Slurpee_King</a></td>
-          <td class="post-num">88</td>
-          <td class="post-date">Aug 14, 2015<br>2:30 AM</td>
-        </tr>
-        <tr>
           <td><span class="post-flag flag-new">New</span></td>
           <td>
-            <a href="#" class="post-title">portal 2 co-op partner — i have a mic</a>
-            <div class="post-subforum">in Portal &amp; Portal 2</div>
+            <a class="post-title" onclick="navigate('thread-deathrun')">best Deathrun addons right now?</a>
+            <div class="post-subforum">in Garry's Mod</div>
           </td>
-          <td class="post-author-cell"><a href="#">ellievee</a></td>
-          <td class="post-num">3</td>
-          <td class="post-date">Sep 21, 2015<br>11:50 PM</td>
+          <td class="post-author-cell"><a>penguinslap</a></td>
+          <td class="post-num">22</td>
+          <td class="post-date">Dec 30, 2016<br>9:04 AM</td>
         </tr>
-        <!-- deleted/ghost row -->
         <tr class="deleted">
           <td><span class="post-flag flag-locked">Locked</span></td>
           <td>
@@ -791,23 +785,12 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
           <td class="post-date" style="color:#bbc;">—</td>
         </tr>
         <tr>
-          <td><span class="post-flag flag-new">New</span></td>
-          <td>
-            <a href="#" class="post-title">surf_utopia_v3 new record run — video in post</a>
-            <div class="post-subforum">in Surf</div>
-          </td>
-          <td class="post-author-cell"><a href="#">Tubacca</a></td>
-          <td class="post-num">27</td>
-          <td class="post-date">Jul 19, 2016<br>9:00 PM</td>
-        </tr>
-        <!-- weird timestamp row -->
-        <tr>
           <td><span class="post-flag flag-hot">Hot</span></td>
           <td>
-            <a href="#" class="post-title">does anyone else feel like this server is empty lately</a>
+            <a class="post-title">does anyone else feel like this server is empty lately</a>
             <div class="post-subforum">in General Discussion</div>
           </td>
-          <td class="post-author-cell"><a href="#">fizzle</a></td>
+          <td class="post-author-cell"><a onclick="navigate('profile-fizzle')">fizzle</a></td>
           <td class="post-num">61</td>
           <td class="post-date wrong-date">Jun 14, 2009<br>3:02 AM</td>
         </tr>
@@ -815,31 +798,41 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
     </table>
   </div>
 
+</div><!-- /page-home -->
+
+<!-- ===== PAGE: FORUM LIST (generic) ===== -->
+<div id="page-forums" class="page">
+  <div id="forum-list-content"></div>
 </div>
+
+<!-- ===== PAGE: THREAD ===== -->
+<div id="page-thread" class="page">
+  <div id="thread-content"></div>
+</div>
+
+<!-- ===== PAGE: PROFILE ===== -->
+<div id="page-profile" class="page">
+  <div id="profile-content"></div>
+</div>
+
+</div><!-- /main -->
 
 <!-- SIDEBAR -->
 <div id="sidebar">
 
-  <!-- AUTH BOX -->
   <div class="sb-box">
     <div class="sb-head"><b></b>Account</div>
     <div class="sb-body">
-
-      <!-- LOGIN / REGISTER STATE -->
       <div id="login-box" style="display:flex; flex-direction:column; gap:6px;">
-
-        <!-- LOGIN FORM -->
         <div id="form-login" class="auth-form">
           <input type="email" id="inp-email" placeholder="Email address" autocomplete="email" />
           <input type="password" id="inp-pass" placeholder="Password" autocomplete="current-password" />
           <button class="btn-submit" id="btn-login">Log In</button>
           <div class="auth-links">
-            <a href="#" style="font-size:10px; color:var(--link);">Forgot password?</a>
-            <a href="#" id="show-register" style="font-size:10px; color:var(--blue-dark); font-weight:700;">Register Free →</a>
+            <a style="font-size:10px; color:var(--link);">Forgot password?</a>
+            <a id="show-register" style="font-size:10px; color:var(--blue-dark); font-weight:700;">Register Free →</a>
           </div>
         </div>
-
-        <!-- REGISTER FORM (hidden by default) -->
         <div id="form-register" class="auth-form" style="display:none;">
           <div style="font-size:10px; color:#556; font-weight:700; margin-bottom:2px; text-transform:uppercase; letter-spacing:0.3px;">Create Account</div>
           <input type="email" id="inp-reg-email" placeholder="Email address" autocomplete="email" />
@@ -847,19 +840,14 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
           <input type="password" id="inp-reg-confirm" placeholder="Confirm password" autocomplete="new-password" />
           <button class="btn-submit" id="btn-register">Register</button>
           <div class="auth-links">
-            <a href="#" id="show-login" style="font-size:10px; color:var(--link);">← Back to login</a>
+            <a id="show-login" style="font-size:10px; color:var(--link);">← Back to login</a>
           </div>
         </div>
-
-        <!-- Error / success message -->
         <div id="auth-msg"></div>
-
         <div style="padding-top:7px; border-top:1px solid #dde; font-size:10px; color:#889; text-align:center; line-height:1.5;">
           You must be registered to post, apply for staff, or access private boards.
         </div>
       </div>
-
-      <!-- LOGGED IN STATE -->
       <div id="logged-box" style="display:none; flex-direction:column; align-items:center; gap:8px; text-align:center;">
         <div class="logged-avatar" id="user-avatar">?</div>
         <div>
@@ -867,16 +855,14 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
           <div class="logged-rank">Member</div>
         </div>
         <div style="font-size:10px; color:#778; line-height:1.5; border-top:1px solid #dde; padding-top:6px; width:100%;">
-          <a href="#" style="display:block; margin-bottom:3px;">My Profile</a>
-          <a href="#" style="display:block; margin-bottom:6px;">My Posts</a>
+          <a onclick="navigate('profile-me')" style="display:block; margin-bottom:3px; cursor:pointer;">My Profile</a>
+          <a style="display:block; margin-bottom:6px;">My Posts</a>
         </div>
         <button class="btn-submit danger" id="btn-logout" style="font-size:10px; height:24px;">Sign Out</button>
       </div>
-
     </div>
   </div>
 
-  <!-- ONLINE NOW — error state -->
   <div class="sb-box">
     <div class="sb-head"><b></b>Online Now</div>
     <div class="sb-body">
@@ -885,7 +871,6 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
     </div>
   </div>
 
-  <!-- FORUM STATS -->
   <div class="sb-box">
     <div class="sb-head"><b></b>Forum Statistics</div>
     <div class="sb-body">
@@ -896,25 +881,24 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
         <div class="stat-item"><span class="n" style="color:#aa7700;">—</span><span class="l">Online</span></div>
       </div>
       <div style="margin-top:8px; font-size:10px; color:#889; border-top:1px solid #dde; padding-top:7px;">
-        Newest member: <a href="#" style="font-weight:700; color:var(--link);">tbone_actual</a><br>
+        Newest member: <a style="font-weight:700; color:var(--link);">tbone_actual</a><br>
         <span style="color:#aab; font-style:italic; font-size:9px;">Registration closed Jan 2017</span>
       </div>
     </div>
   </div>
 
-  <!-- WHAT'S NEW -->
   <div class="sb-box">
     <div class="sb-head"><b></b>What's New</div>
     <div class="sb-body">
       <div class="news-item" style="background:#111; margin:0 -10px; padding:6px 10px; border-bottom:1px solid #333;">
         <span class="news-tag removed" style="background:#222; color:#888; border:1px solid #444;">Closed</span>
         <h4 style="color:#888;">Servers offline Feb 1st, 2017</h4>
-        <p style="color:#555;">Read Connor_T's announcement for full details. Thank you all.</p>
+        <p style="color:#555;">Read the announcement for full details. Thank you all.</p>
       </div>
       <div class="news-item">
         <span class="news-tag update">Update</span>
         <h4>Deathrun #1 — dr_facility_b2 added</h4>
-        <p>New map in rotation. 42 traps, three routes. Live now. <span style="color:#aab; font-size:9px;">Jun 2016</span></p>
+        <p>New map in rotation. 42 traps, three routes. <span style="color:#aab; font-size:9px;">Jun 2016</span></p>
       </div>
       <div class="news-item">
         <span class="news-tag event">Event</span>
@@ -924,23 +908,20 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
       <div class="news-item" style="background:#fdfbee; margin:0 -10px; padding:6px 10px; border-top:1px solid #e8e0a0;">
         <span class="news-tag removed">Removed</span>
         <h4 style="color:#665500;">Private Boards access temporarily suspended</h4>
-        <p style="color:#887744;">If you had access before, please wait. No further information at this time.</p>
+        <p style="color:#887744;">If you had access before, please wait.</p>
       </div>
-      <a href="#" style="display:block; text-align:right; font-size:10px; font-weight:700; color:var(--link); margin-top:8px;">Full news archive</a>
     </div>
   </div>
 
-  <!-- QUICK LINKS -->
   <div class="sb-box">
     <div class="sb-head"><b></b>Quick Links</div>
     <div class="sb-body" style="padding:6px 10px;">
       <ul style="list-style:none; margin:0;">
-        <li style="padding:4px 0; border-bottom:1px solid #e0e8f4;"><a href="#">Server Status</a></li>
-        <li style="padding:4px 0; border-bottom:1px solid #e0e8f4;"><a href="#">Staff List</a></li>
+        <li style="padding:4px 0; border-bottom:1px solid #e0e8f4;"><a>Server Status</a></li>
+        <li style="padding:4px 0; border-bottom:1px solid #e0e8f4;"><a>Staff List</a></li>
         <li style="padding:4px 0; border-bottom:1px solid #e0e8f4;"><a href="https://gamebanana.com" target="_blank" rel="noopener">Downloads (GameBanana)</a></li>
-        <li style="padding:4px 0; border-bottom:1px solid #e0e8f4;"><a href="#">Community Rules</a></li>
-        <li style="padding:4px 0; border-bottom:1px solid #e0e8f4;"><a href="#">Map Request Thread</a></li>
-        <li style="padding:4px 0;"><a href="#" style="color:#998877; font-style:italic; font-size:11px;">Report a Bug</a> <span class="err" style="font-size:9px;">(form offline)</span></li>
+        <li style="padding:4px 0; border-bottom:1px solid #e0e8f4;"><a>Community Rules</a></li>
+        <li style="padding:4px 0;"><a style="color:#998877; font-style:italic;">Report a Bug</a> <span class="err" style="font-size:9px;">(form offline)</span></li>
       </ul>
     </div>
   </div>
@@ -952,9 +933,8 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
 <div id="footer">
   <div class="footer-inner">
     <div class="footer-links">
-      <a href="#">Home</a>
-      <a href="#">Forums</a>
-      <a href="#">Servers</a>
+      <a onclick="navigate('home')">Home</a>
+      <a onclick="navigate('forums')">Forums</a>
       <a href="https://gamebanana.com" target="_blank" rel="noopener">Downloads</a>
     </div>
     <div class="footer-copy">
@@ -967,32 +947,542 @@ a:hover { color:var(--link-hover); text-decoration:underline; }
 </div>
 
 <script>
-  document.querySelectorAll('#topnav a').forEach(a => {
-    a.addEventListener('click', function(e) {
-      if (this.getAttribute('target') === '_blank') return;
-      e.preventDefault();
-      document.querySelectorAll('#topnav a').forEach(x => x.classList.remove('active'));
-      this.classList.add('active');
-    });
-  });
-  document.querySelectorAll('.snav-link').forEach(a => {
-    a.addEventListener('click', function(e) {
-      if (this.getAttribute('target') === '_blank') return;
-      e.preventDefault();
-      document.querySelectorAll('.snav-link').forEach(x => x.classList.remove('active'));
-      this.classList.add('active');
-    });
+// ========== ROUTING ==========
+const pages = ['home','forums','thread','profile'];
+
+function navigate(target) {
+  // Update hash
+  window.location.hash = target;
+  renderPage(target);
+  window.scrollTo(0,0);
+}
+
+function renderPage(target) {
+  // Hide all pages
+  pages.forEach(p => {
+    const el = document.getElementById('page-' + p);
+    if (el) el.classList.remove('active');
   });
 
-  // Update avatar letter when username changes
-  const observer = new MutationObserver(() => {
-    const name = document.getElementById('user-display')?.textContent;
-    const avatar = document.getElementById('user-avatar');
-    if (avatar && name) avatar.textContent = name[0]?.toUpperCase() || '?';
+  // Update subnav
+  document.querySelectorAll('.snav-link').forEach(a => a.classList.remove('active'));
+
+  if (target === 'home') {
+    document.getElementById('page-home').classList.add('active');
+    document.querySelectorAll('.snav-link')[0].classList.add('active');
+    document.getElementById('bc-content').innerHTML = 'Forum Index';
+  } else if (target === 'forums' || target.startsWith('forum-')) {
+    document.getElementById('page-forums').classList.add('active');
+    document.querySelectorAll('.snav-link')[1].classList.add('active');
+    buildForumPage(target);
+  } else if (target.startsWith('thread-')) {
+    document.getElementById('page-thread').classList.add('active');
+    buildThreadPage(target);
+  } else if (target.startsWith('profile-')) {
+    document.getElementById('page-profile').classList.add('active');
+    buildProfilePage(target);
+  } else {
+    document.getElementById('page-home').classList.add('active');
+    document.getElementById('bc-content').innerHTML = 'Forum Index';
+  }
+}
+
+// ========== FORUM LIST PAGE ==========
+const forumData = {
+  'forums': { title: 'New Posts', subtitle: 'All recently active threads', threads: 'recentAll' },
+  'forum-gmod': { title: "Garry's Mod", subtitle: 'GMod discussion, addons, gamemodes, and Sandbox.', threads: 'gmod' },
+  'forum-deathrun': { title: 'Deathrun', subtitle: 'Strategies, server talk, and deathrun map discussion.', threads: 'deathrun' },
+  'forum-surf': { title: 'Surf', subtitle: 'Surf map talk, records, and server news.', threads: 'surf' },
+  'forum-hl2': { title: 'Half-Life 2 & Episodes', subtitle: 'HL2, EP1, EP2 — lore, speedruns, and mods.', threads: 'hl2' },
+  'forum-hammer': { title: 'Hammer & Map Releases', subtitle: 'WIP threads, releases, and Hammer help.', threads: 'hammer' },
+  'forum-general': { title: 'General Discussion', subtitle: 'Anything goes.', threads: 'general' },
+  'forum-announcements': { title: 'Announcements & News', subtitle: 'Official staff posts only.', threads: 'announcements' },
+  'forum-applications': { title: 'Staff Applications', subtitle: 'Apply for a moderator or admin position.', threads: 'applications' },
+};
+
+const threadList = {
+  gmod: [
+    { flag:'hot', title:'best Deathrun addons right now?', target:'thread-deathrun', author:'penguinslap', replies:22, date:'Dec 30, 2016' },
+    { flag:'new', title:'Prop Hunt server keeps crashing on ph_lila_panic', target:'thread-ep3', author:'c00lguy99', replies:8, date:'Dec 24, 2016' },
+    { flag:'sticky', title:'[RULES] GMod subforum posting guidelines', target:'thread-ep3', author:'Pretzels', replies:0, date:'Mar 12, 2014' },
+    { flag:'new', title:'TTT server — report for mass RDM', target:'thread-ep3', author:'SquidWard7', replies:3, date:'Dec 19, 2016' },
+    { flag:'poll', title:'which gamemode do you play the most [poll]', target:'thread-ep3', author:'Slurpee_King', replies:45, date:'Nov 01, 2016' },
+    { flag:'new', title:'Zombie Survival tips for newer players', target:'thread-ep3', author:'robcakes', replies:17, date:'Oct 08, 2016' },
+  ],
+  deathrun: [
+    { flag:'hot', title:'[WIP] dr_bunker_final — looking for beta testers', target:'thread-bunker', author:'robcakes', replies:14, date:'Nov 02, 2016' },
+    { flag:'new', title:'dr_facility_b2 is live — traps breakdown', target:'thread-bunker', author:'penguinslap', replies:9, date:'Jun 18, 2016' },
+    { flag:'sticky', title:'[LIST] All active deathrun maps — last updated Jun 2016', target:'thread-bunker', author:'Pretzels', replies:0, date:'Jun 01, 2016' },
+    { flag:'locked', title:'dr_castleraid — broken trap on route 2 [FIXED]', target:'thread-bunker', author:'fizzle', replies:6, date:'Apr 10, 2016' },
+    { flag:'new', title:'anyone remember dr_office_final? bring it back pls', target:'thread-bunker', author:'tbone_actual', replies:11, date:'Mar 03, 2016' },
+  ],
+  surf: [
+    { flag:'hot', title:'surf_utopia_v3 new record run — video in post', target:'thread-ep3', author:'Tubacca', replies:27, date:'Jul 19, 2016' },
+    { flag:'new', title:'surf_mesa_b4 — anyone else getting frame drops?', target:'thread-ep3', author:'nrrrd', replies:5, date:'Jun 22, 2016' },
+    { flag:'sticky', title:'Surf Server Rules & Map Request Thread', target:'thread-ep3', author:'Pretzels', replies:0, date:'Jan 14, 2013' },
+    { flag:'poll', title:'top 5 surf maps — community vote', target:'thread-ep3', author:'ellievee', replies:88, date:'May 02, 2015' },
+  ],
+  hl2: [
+    { flag:'hot', title:'will Valve ever say anything about Episode 3. serious thread.', target:'thread-ep3', author:'nrrrd', replies:312, date:'Jan 07, 2017' },
+    { flag:'new', title:'ep3 is not happening. accept it.', target:'thread-ep3', author:'nrrrd', replies:88, date:'Jan 07, 2017' },
+    { flag:'new', title:'HL2 speedrun — any% world record just dropped', target:'thread-ep3', author:'Tubacca', replies:14, date:'Dec 12, 2016' },
+    { flag:'poll', title:'what is actually the best Source game [poll, no arguing]', target:'thread-ep3', author:'Slurpee_King', replies:88, date:'Aug 14, 2015' },
+    { flag:'locked', title:'[LORE] G-Man theories megathread', target:'thread-ep3', author:'c00lguy99', replies:204, date:'Feb 08, 2014' },
+  ],
+  hammer: [
+    { flag:'new', title:'[WIP] dr_bunker_final — looking for beta testers', target:'thread-bunker', author:'robcakes', replies:14, date:'Nov 02, 2016' },
+    { flag:'new', title:'[WIP] dr_facility_v3 — new screenshots', target:'thread-bunker', author:'robcakes', replies:31, date:'Nov 02, 2016' },
+    { flag:'hot', title:'How do I make working buttons in Hammer? [tutorial]', target:'thread-ep3', author:'benji404', replies:56, date:'Sep 14, 2016' },
+    { flag:'new', title:'surf_aurora RELEASE — download link in OP', target:'thread-ep3', author:'grumblejack', replies:22, date:'Jul 30, 2016' },
+    { flag:'locked', title:'[REQUEST] Deathrun map with an underwater section', target:'thread-ep3', author:'SquidWard7', replies:3, date:'Apr 04, 2015' },
+  ],
+  general: [
+    { flag:'hot', title:'does anyone remember the old lobby', target:'thread-ep3', author:'fizzle', replies:61, date:'Jan 08, 2017' },
+    { flag:'new', title:'portal 2 co-op partner — i have a mic', target:'thread-ep3', author:'ellievee', replies:3, date:'Sep 21, 2015' },
+    { flag:'poll', title:'what is actually the best Source game [poll, no arguing]', target:'thread-ep3', author:'Slurpee_King', replies:88, date:'Aug 14, 2015' },
+    { flag:'new', title:'post your desktop [2016 edition]', target:'thread-ep3', author:'Foxworth', replies:44, date:'Jan 03, 2016' },
+    { flag:'new', title:'anyone else playing games to forget GMTower is shutting down', target:'thread-ep3', author:'tbone_actual', replies:19, date:'Jan 09, 2017' },
+    { flag:'locked', title:'FIGHT THREAD: scout vs spy [no mods allowed]', target:'thread-ep3', author:'walrus_ftw', replies:130, date:'Oct 31, 2013' },
+  ],
+  announcements: [
+    { flag:'sticky', title:'TheGMTower is shutting down — please read [Jan 2017]', target:'thread-shutdown', author:'Pretzels', replies:0, date:'Jan 09, 2017' },
+    { flag:'sticky', title:'READ BEFORE POSTING — Forum Rules & Guidelines [updated June 2014]', target:'thread-shutdown', author:'Pretzels', replies:0, date:'Jun 01, 2014' },
+    { flag:'sticky', title:'Server Status thread — updated weekly', target:'thread-shutdown', author:'Pretzels', replies:0, date:'Mar 01, 2013' },
+    { flag:'locked', title:'Surf Map Rotation — Updated Jun 2016', target:'thread-shutdown', author:'Pretzels', replies:2, date:'Jun 10, 2016' },
+  ],
+  applications: [
+    { flag:'locked', title:'[ACCEPTED] Staff Application — benji404', target:'thread-ep3', author:'benji404', replies:3, date:'Aug 22, 2015' },
+    { flag:'locked', title:'[DENIED] Staff Application — SquidWard7', target:'thread-ep3', author:'SquidWard7', replies:2, date:'Jul 14, 2016' },
+    { flag:'locked', title:'[ACCEPTED] Staff Application — Cheddar', target:'thread-ep3', author:'Cheddar', replies:4, date:'Mar 07, 2014' },
+    { flag:'new', title:'Staff Application — tbone_actual', target:'thread-ep3', author:'tbone_actual', replies:0, date:'Nov 14, 2016' },
+  ],
+  recentAll: [
+    { flag:'sticky', title:'TheGMTower is shutting down — please read [Jan 2017]', target:'thread-shutdown', author:'Pretzels', replies:0, date:'Jan 09, 2017' },
+    { flag:'hot', title:'will Valve ever say anything about Episode 3. serious thread.', target:'thread-ep3', author:'nrrrd', replies:312, date:'Jan 07, 2017' },
+    { flag:'hot', title:'does anyone remember the old lobby', target:'thread-ep3', author:'fizzle', replies:61, date:'Jan 08, 2017' },
+    { flag:'new', title:'[WIP] dr_bunker_final — looking for beta testers', target:'thread-bunker', author:'robcakes', replies:14, date:'Nov 02, 2016' },
+    { flag:'new', title:'best Deathrun addons right now?', target:'thread-deathrun', author:'penguinslap', replies:22, date:'Dec 30, 2016' },
+    { flag:'new', title:'surf_utopia_v3 new record run — video in post', target:'thread-ep3', author:'Tubacca', replies:27, date:'Jul 19, 2016' },
+    { flag:'poll', title:'what is actually the best Source game [poll, no arguing]', target:'thread-ep3', author:'Slurpee_King', replies:88, date:'Aug 14, 2015' },
+    { flag:'new', title:'portal 2 co-op partner — i have a mic', target:'thread-ep3', author:'ellievee', replies:3, date:'Sep 21, 2015' },
+    { flag:'hot', title:'does anyone else feel like this server is empty lately', target:'thread-ep3', author:'fizzle', replies:61, date:'Jan 09, 2017' },
+  ],
+};
+
+const flagColors = { sticky:'flag-sticky', new:'flag-new', hot:'flag-hot', poll:'flag-poll', locked:'flag-locked' };
+
+function buildForumPage(target) {
+  const data = forumData[target] || forumData['forums'];
+  const tlist = threadList[data.threads] || [];
+  const forumName = data.title;
+
+  let bc = `<a onclick="navigate('home')">TheGMTower Forums</a> &rsaquo; ${forumName}`;
+  document.getElementById('bc-content').innerHTML = bc;
+
+  let rows = tlist.map((t,i) => `
+    <div class="thread-list-row">
+      <span class="thread-list-icon ${t.flag}">${t.flag}</span>
+      <div class="thread-list-main">
+        <a class="thread-list-title" onclick="navigate('${t.target}')">${t.title}</a>
+        <div class="thread-list-sub">by <a onclick="navigate('profile-${t.author.toLowerCase()}')">${t.author}</a></div>
+      </div>
+      <div class="thread-list-stats">${t.replies}<br><span style="font-size:9px; color:#99a;">replies</span></div>
+      <div class="thread-list-lastpost">${t.date}<br>by <a onclick="navigate('profile-${t.author.toLowerCase()}')">${t.author}</a></div>
+    </div>
+  `).join('');
+
+  document.getElementById('forum-list-content').innerHTML = `
+    <div style="margin-bottom:10px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+        <div>
+          <div style="font-family:'Oswald',sans-serif; font-size:18px; color:#223; font-weight:500;">${forumName}</div>
+          <div style="font-size:11px; color:#778;">${data.subtitle}</div>
+        </div>
+        <a onclick="navigate('home')" style="font-size:11px; color:var(--link); cursor:pointer;">← Back to Index</a>
+      </div>
+    </div>
+    <div class="forum-cat">
+      <div class="thread-list-header" style="display:flex; align-items:center; justify-content:space-between;">
+        <span>Threads</span>
+        <div style="display:flex; gap:60px; font-size:10px; color:#778; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding-right:4px;">
+          <span>Replies</span><span>Last Post</span>
+        </div>
+      </div>
+      ${rows}
+    </div>
+    <div style="font-size:10px; color:#99a; padding:4px 0; font-style:italic;">Showing ${tlist.length} thread${tlist.length !== 1 ? 's' : ''}. Archive mode — no new posts.</div>
+  `;
+}
+
+// ========== THREAD DATA ==========
+const threads = {
+  'thread-ep3': {
+    title: 'will Valve ever say anything about Episode 3. serious thread.',
+    forum: 'Half-Life 2 & Episodes',
+    forumTarget: 'forum-hl2',
+    flag: 'hot',
+    posts: [
+      {
+        user:'nrrrd', color:'avatar-purple', rank:'Senior Member', joined:'Apr 2011', postCount:'2,144', num:1,
+        date:'Jan 07, 2017, 1:33 AM',
+        body:`<p>i'm not even joking this time. Valve has not said a single word about HL3 or Episode 3 in years. The last real hint was the Ep2 ending back in 2007. That's almost TEN years ago.</p>
+<p>I know people joke about it constantly. I know. But I'm asking seriously — do you think Valve will ever actually say something official? Or is this just going to be one of those things that dies quietly.</p>
+<p>Because we are literally shutting down right now and I still have not gotten closure on the Borealis. That genuinely upsets me more than the servers going offline.</p>`,
+        sig:'nrrrd | surf_mesa pb: 1:42.3 | "i still believe"'
+      },
+      {
+        user:'fizzle', color:'avatar-teal', rank:'Member', joined:'Sep 2013', postCount:'876', num:2,
+        date:'Jan 07, 2017, 1:58 AM',
+        body:`<p>bro. BRO. i have been waiting since i was literally 12 years old.</p>
+<p>i'm 22 now.</p>
+<p>at this point i've accepted it's never coming out. Valve makes too much money on Steam and TF2 hats to bother making actual games anymore. Sad but true.</p>
+<p>also RIP GMTower. the timing of this thread is sending me</p>`,
+        sig:''
+      },
+      {
+        user:'Slurpee_King', color:'avatar-blue', rank:'Veteran', joined:'Jan 2010', postCount:'5,008', num:3,
+        date:'Jan 07, 2017, 2:14 AM',
+        body:`<p>The real answer is that Valve basically became a platform company. Gabe himself said they don't count games internally anymore. When your revenue is billions from a digital storefront, why risk the expectations of a Half-Life sequel.</p>
+<div class="quote-block"><strong>nrrrd wrote:</strong>Because we are literally shutting down right now and I still have not gotten closure on the Borealis. That genuinely upsets me more than the servers going offline.</div>
+<p>okay THAT is a sentence. solidarity man.</p>`,
+        sig:'Slurpee_King | veteran of the 2012 zombie survival incident | pls bring back fretta'
+      },
+      {
+        user:'ellievee', color:'avatar-green', rank:'Member', joined:'Jun 2014', postCount:'413', num:4,
+        date:'Jan 07, 2017, 4:01 AM',
+        body:`<p>honestly the Epistle 3 leak (if it ever happens) would be more satisfying at this point than an actual game. just give me the story. i don't even need to play it.</p>
+<p>also slightly off topic but i'm glad this thread exists because it means at least one corner of the internet is still talking about HL properly. most discourse has moved to youtube essay guys and i can't stand that format</p>`,
+        sig:'ellievee | portal enthusiast | contact me for co-op'
+      },
+      {
+        user:'tbone_actual', color:'avatar-orange', rank:'New Member', joined:'Nov 2016', postCount:'37', num:5,
+        date:'Jan 07, 2017, 9:22 AM',
+        body:`<p>hi i'm new here, found this forum from a google search. this is actually the first thread i've read and now i feel sad about everything</p>
+<p>also ep3 is never coming don't get your hopes up. i made peace with this</p>`,
+        sig:''
+      },
+      {
+        user:'nrrrd', color:'avatar-purple', rank:'Senior Member', joined:'Apr 2011', postCount:'2,144', num:6,
+        date:'Jan 07, 2017, 9:55 AM',
+        body:`<div class="quote-block"><strong>tbone_actual wrote:</strong>i made peace with this</div>
+<p>teach me your ways. actually don't, the grief is all i have left.</p>
+<p>anyway thanks for the replies everyone. feels right that one of the last threads on here is about the other thing that never got an ending</p>`,
+        sig:'nrrrd | surf_mesa pb: 1:42.3 | "i still believe"'
+      }
+    ]
+  },
+  'thread-bunker': {
+    title: '[WIP] dr_bunker_final — looking for beta testers',
+    forum: 'Hammer & Map Releases',
+    forumTarget: 'forum-hammer',
+    flag: 'new',
+    posts: [
+      {
+        user:'robcakes', color:'avatar-green', rank:'Veteran Mapper', joined:'Feb 2012', postCount:'1,887', num:1,
+        date:'Oct 18, 2016, 11:44 AM',
+        body:`<p>Hey everyone. Been working on dr_bunker_final for about six months now. This is the third major revision of the map — b1 and b2 had some serious routing issues that I've (hopefully) fixed.</p>
+<p><strong>What's new in this version:</strong></p>
+<p>— Three distinct routes (fast / normal / secret)<br>— 38 traps total, up from 24 in b2<br>— Completely reworked death activator zone<br>— New skybox (night industrial, not the placeholder blue one from b2)<br>— Optimized so it doesn't die on older rigs</p>
+<p>Looking for 4-6 people to run through it with me on a local server sometime this week. Reply here or add me on Steam. All feedback welcome, especially on trap timing — some of the later ones might be too punishing.</p>`,
+        sig:'robcakes | mapper | current project: dr_bunker_final'
+      },
+      {
+        user:'penguinslap', color:'avatar-blue', rank:'Member', joined:'May 2013', postCount:'622', num:2,
+        date:'Oct 18, 2016, 2:11 PM',
+        body:`<p>I'm in. b2 was genuinely one of my favourite maps on the server so I'm glad you're still working on this. The timing on trap #7 in b2 was brutal — if that's been adjusted I'll be happy.</p>
+<p>Added you on Steam.</p>`,
+        sig:''
+      },
+      {
+        user:'fizzle', color:'avatar-teal', rank:'Member', joined:'Sep 2013', postCount:'876', num:3,
+        date:'Oct 18, 2016, 3:47 PM',
+        body:`<p>three routes is ambitious for a DR map. most people can barely finish one route let alone three lol. excited to see the secret one especially</p>
+<p>i can probably test thursday evening if you're running a session then</p>`,
+        sig:''
+      },
+      {
+        user:'robcakes', color:'avatar-green', rank:'Veteran Mapper', joined:'Feb 2012', postCount:'1,887', num:4,
+        date:'Oct 19, 2016, 9:08 AM',
+        body:`<div class="quote-block"><strong>penguinslap wrote:</strong>The timing on trap #7 in b2 was brutal — if that's been adjusted I'll be happy.</div>
+<p>Trap #7 has been completely replaced actually. The swinging blade thing was a nightmare to get right and I gave up and built a pressure plate room instead. Much more readable.</p>
+<div class="quote-block"><strong>fizzle wrote:</strong>three routes is ambitious for a DR map</div>
+<p>The secret route is only accessible if the activator opens a hidden panel at the start. It's shorter but has a couple of traps that are... lets say they're for experienced players.</p>
+<p>Thursday works, I'll post the server IP in this thread.</p>`,
+        sig:'robcakes | mapper | current project: dr_bunker_final'
+      },
+      {
+        user:'Slurpee_King', color:'avatar-blue', rank:'Veteran', joined:'Jan 2010', postCount:'5,008', num:5,
+        date:'Oct 22, 2016, 6:30 PM',
+        body:`<p>Just played the Thursday session — really solid map. Route 2 needs a tiny bit more breathing room between trap 14 and 15 but honestly it's almost ready. The skybox looks incredible.</p>
+<p>Shame about the timing with the server shutting down, this deserves to be in proper rotation. Maybe submit it to GameBanana so it's preserved at least.</p>`,
+        sig:'Slurpee_King | veteran of the 2012 zombie survival incident | pls bring back fretta'
+      },
+      {
+        user:'robcakes', color:'avatar-green', rank:'Veteran Mapper', joined:'Feb 2012', postCount:'1,887', num:6,
+        date:'Nov 02, 2016, 6:44 AM',
+        body:`<p>Updated screenshots in the OP (well, would be if this thread had image embeds working — forum bug). Adjusted trap 14/15 timing based on Slurpee's feedback. I think this is close to final.</p>
+<p>Will upload to GameBanana when it's done. Might as well — it's not going anywhere.</p>
+<p>Thanks everyone who tested. This community made me a better mapper.</p>`,
+        sig:'robcakes | mapper | current project: dr_bunker_final'
+      }
+    ]
+  },
+  'thread-deathrun': {
+    title: 'best Deathrun addons right now?',
+    forum: "Garry's Mod",
+    forumTarget: 'forum-gmod',
+    flag: 'new',
+    posts: [
+      {
+        user:'penguinslap', color:'avatar-blue', rank:'Member', joined:'May 2013', postCount:'622', num:1,
+        date:'Dec 30, 2016, 9:04 AM',
+        body:`<p>trying to set up a private DR server with some friends. what addons are actually worth installing in 2016? I know the gamemode itself but I mean quality of life stuff, scoreboard replacements, etc.</p>
+<p>also any good map packs that are still being maintained?</p>`,
+        sig:''
+      },
+      {
+        user:'benji404', color:'avatar-dark', rank:'Member / Scripter', joined:'Jul 2014', postCount:'291', num:2,
+        date:'Dec 30, 2016, 11:33 AM',
+        body:`<p>For the gamemode, make sure you're running the updated fork — the original has some timer bugs on longer maps. Can't link directly but search the Workshop for "Deathrun Fixed" and it'll come up.</p>
+<p>For QoL: a custom scoreboard is basically mandatory (the default one is broken for more than 8 players). I wrote one a while back that's on the Workshop, just search "benji404 scoreboard" — it's not fancy but it works.</p>`,
+        sig:'benji404 | lua | "HUD not drawing serverside" is still the funniest bug I ever had'
+      },
+      {
+        user:'robcakes', color:'avatar-green', rank:'Veteran Mapper', joined:'Feb 2012', postCount:'1,887', num:3,
+        date:'Dec 30, 2016, 2:18 PM',
+        body:`<p>For maps: dr_facility_b2, dr_office_final, dr_amazon, and surf_utopia (yes it works as a DR map don't ask). All on GameBanana.</p>
+<p>shameless plug but dr_bunker_final is nearly done and will be on GameBanana soon</p>`,
+        sig:'robcakes | mapper | current project: dr_bunker_final'
+      },
+      {
+        user:'penguinslap', color:'avatar-blue', rank:'Member', joined:'May 2013', postCount:'622', num:4,
+        date:'Dec 30, 2016, 4:55 PM',
+        body:`<div class="quote-block"><strong>benji404 wrote:</strong>search "benji404 scoreboard"</div>
+<p>found it, thanks. subscribing now.</p>
+<div class="quote-block"><strong>robcakes wrote:</strong>surf_utopia works as a DR map don't ask</div>
+<p>i am asking. i am absolutely asking. how.</p>`,
+        sig:''
+      }
+    ]
+  },
+  'thread-shutdown': {
+    title: 'TheGMTower is shutting down — please read [Jan 2017]',
+    forum: 'Announcements & News',
+    forumTarget: 'forum-announcements',
+    flag: 'sticky',
+    locked: true,
+    posts: [
+      {
+        user:'Pretzels', color:'avatar-red', rank:'Administrator', joined:'Mar 2009', postCount:'8,441', num:1,
+        date:'Jan 09, 2017, 11:59 PM',
+        body:`<p>After nearly eight years, we are closing the servers and archiving the forums.</p>
+<p>The game servers will go offline on <strong>February 1st, 2017</strong>. The forums will remain in read-only mode for as long as we can keep the hosting paid. All downloads on GameBanana will stay up indefinitely — we've made sure of that.</p>
+<p>I want to be clear that this isn't a decision we made lightly. Running this community has been one of the most meaningful things I've done. Watching it grow from a small Garry's Mod server into something with over twelve thousand registered members, hundreds of maps, and years of memories — that's not nothing. That's everything.</p>
+<p>Thank you. Genuinely. For every surf run, every deathrun attempt, every bug report, every stupid post in General Discussion at 3 AM. It meant something to us.</p>
+<p>Replies to this thread are locked. If you want to say something, General Discussion is still open.</p>
+<p><em>— Pretzels &amp; the TheGMTower staff team</em></p>`,
+        sig:'Pretzels | Administrator | TheGMTower 2009–2017'
+      }
+    ]
+  }
+};
+
+function buildThreadPage(target) {
+  const t = threads[target];
+  if (!t) {
+    document.getElementById('thread-content').innerHTML = `<div style="padding:20px; color:#778; font-style:italic;">Thread not found or has been removed.</div>`;
+    document.getElementById('bc-content').innerHTML = `<a onclick="navigate('home')">Forum Index</a> &rsaquo; (unknown)`;
+    return;
+  }
+
+  document.getElementById('bc-content').innerHTML = `<a onclick="navigate('home')">TheGMTower Forums</a> &rsaquo; <a onclick="navigate('${t.forumTarget}')">${t.forum}</a> &rsaquo; ${t.title}`;
+
+  const postsHTML = t.posts.map(p => `
+    <div class="post-wrap">
+      <div class="post-sidebar">
+        <div class="post-avatar ${p.color}">${p.user[0].toUpperCase()}</div>
+        <div class="post-username" onclick="navigate('profile-${p.user.toLowerCase()}')">${p.user}</div>
+        <div class="post-rank">${p.rank}</div>
+        <div class="post-join">Joined: ${p.joined}</div>
+        <div class="post-postcount">Posts: ${p.postCount}</div>
+      </div>
+      <div class="post-body-wrap">
+        <div class="post-head">
+          <span class="post-head-date">${p.date}</span>
+          <span class="post-head-num">#${p.num}</span>
+        </div>
+        <div class="post-content">${p.body}</div>
+        ${p.sig ? `<div class="post-sig">${p.sig}</div>` : ''}
+        <div class="post-actions">
+          <a>Quote</a>
+          <a>Report</a>
+          ${p.rank.includes('Admin') || p.rank.includes('Veteran') ? '<a>Edit</a>' : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  const lockedNotice = t.locked ? `<div style="background:#1a1a1a; border:1px solid #444; border-radius:3px; padding:10px 14px; margin-top:12px; font-size:11px; color:#777; font-style:italic;">🔒 This thread is locked. No further replies.</div>` : `
+    <div class="reply-box">
+      <h4>Post Reply</h4>
+      <textarea placeholder="Write your reply... (archive mode — posts will not be saved)"></textarea>
+      <div class="reply-box-meta">Archive mode active. New posts are not accepted.</div>
+    </div>`;
+
+  document.getElementById('thread-content').innerHTML = `
+    <div class="thread-nav">
+      <a onclick="navigate('${t.forumTarget}')">← Back to ${t.forum}</a>
+      <span style="font-size:11px; color:#778;">${t.posts.length} post${t.posts.length !== 1 ? 's' : ''} &nbsp;|&nbsp; <span class="post-flag ${flagColors[t.flag] || 'flag-new'}">${t.flag}</span></span>
+    </div>
+    <div class="thread-header">
+      <div class="thread-title">${t.title}</div>
+      <div class="thread-meta">in <a onclick="navigate('${t.forumTarget}')">${t.forum}</a> &nbsp;|&nbsp; Started by <a onclick="navigate('profile-${t.posts[0].user.toLowerCase()}')">${t.posts[0].user}</a> &nbsp;|&nbsp; ${t.posts[0].date}</div>
+    </div>
+    ${postsHTML}
+    ${lockedNotice}
+  `;
+}
+
+// ========== PROFILE DATA ==========
+const profiles = {
+  'pretzels': { name:'Pretzels', color:'avatar-red', rank:'Administrator', joined:'March 2009', postCount:'8,441', location:'—', about:'Running this place since 2009. Surf addict. Probably asleep.', recentPosts:['TheGMTower is shutting down — please read','READ BEFORE POSTING — Forum Rules','Surf Map Rotation — Updated Jun 2016'], badges:['Admin','Veteran','Founder','Map Council'], gold:true },
+  'nrrrd': { name:'nrrrd', color:'avatar-purple', rank:'Senior Member', joined:'April 2011', postCount:'2,144', location:'somewhere with bad ping', about:'i surf. i post about ep3. i surf some more. pb on surf_mesa is 1:42.3 which i will never beat.', recentPosts:['will Valve ever say anything about Episode 3','ep3 is not happening. accept it.','surf_mesa best practices thread'], badges:['Senior Member','Surf Regular'], gold:false },
+  'fizzle': { name:'fizzle', color:'avatar-teal', rank:'Member', joined:'September 2013', postCount:'876', location:'—', about:'been here since 2013. general discussion regular. somehow still around at the end.', recentPosts:['does anyone remember the old lobby','[WIP] dr_bunker_final — looking for beta testers','ep3 is not happening. accept it.'], badges:['Member','Veteran'], gold:false },
+  'robcakes': { name:'robcakes', color:'avatar-green', rank:'Veteran Mapper', joined:'February 2012', postCount:'1,887', location:'Hammer editor, probably', about:'Mapper. Working on DR maps since 2012. dr_bunker_final is almost done, I promise.', recentPosts:['[WIP] dr_bunker_final — looking for beta testers','[WIP] dr_facility_v3 — new screenshots','How do I make working buttons in Hammer?'], badges:['Veteran','Mapper','Map Council','Beta Tester'], gold:false },
+  'slurpee_king': { name:'Slurpee_King', color:'avatar-blue', rank:'Veteran', joined:'January 2010', postCount:'5,008', location:'—', about:'been here since basically the start. watched this community grow up. proud of what it became.', recentPosts:['what is actually the best Source game [poll]','[WIP] dr_bunker_final — looking for beta testers','does anyone remember the old lobby'], badges:['Veteran','Survivor 2012','Fretta Regular'], gold:false },
+  'ellievee': { name:'ellievee', color:'avatar-green', rank:'Member', joined:'June 2014', postCount:'413', location:'—', about:'portal 2 co-op partner available. serious runners only. i have a mic.', recentPosts:['portal 2 co-op partner — i have a mic','top 5 surf maps — community vote','my chamber pack — release v0.4'], badges:['Member','Portal Regular'], gold:false },
+  'tbone_actual': { name:'tbone_actual', color:'avatar-orange', rank:'New Member', joined:'November 2016', postCount:'37', location:'found this from google', about:'just found this place from a google search. seems cool. sad it\'s ending.', recentPosts:['hi, i found this from a google search','will Valve ever say anything about Episode 3'], badges:['New Member'], gold:false },
+  'penguinslap': { name:'penguinslap', color:'avatar-blue', rank:'Member', joined:'May 2013', postCount:'622', location:'—', about:'GMod player. Deathrun mostly. Sometimes surf. bad at both.', recentPosts:['best Deathrun addons right now?','[WIP] dr_bunker_final — looking for beta testers'], badges:['Member'], gold:false },
+};
+
+function buildProfilePage(target) {
+  const key = target.replace('profile-', '').toLowerCase();
+  let p;
+  
+  // Check if viewing own profile
+  if (key === 'me' && window._currentUser) {
+    const username = window._currentUser.email.split('@')[0].toLowerCase();
+    p = profiles[username] || {
+      name: window._currentUser.email.split('@')[0],
+      color: 'avatar-blue',
+      rank: 'Member',
+      joined: 'Recently',
+      postCount: '0',
+      location: '—',
+      about: 'No bio set.',
+      recentPosts: [],
+      badges: ['Member'],
+      gold: false,
+      isMe: true
+    };
+    p.isMe = true;
+  } else if (key === 'me') {
+    document.getElementById('profile-content').innerHTML = `<div style="padding:20px; color:#778; font-style:italic;">You must be logged in to view your profile.</div>`;
+    document.getElementById('bc-content').innerHTML = `<a onclick="navigate('home')">TheGMTower Forums</a> &rsaquo; Profile`;
+    return;
+  } else {
+    p = profiles[key];
+  }
+
+  if (!p) {
+    document.getElementById('profile-content').innerHTML = `<div style="padding:20px; color:#778; font-style:italic;">Member not found or account has been deleted.</div>`;
+    document.getElementById('bc-content').innerHTML = `<a onclick="navigate('home')">TheGMTower Forums</a> &rsaquo; Profile`;
+    return;
+  }
+
+  document.getElementById('bc-content').innerHTML = `<a onclick="navigate('home')">TheGMTower Forums</a> &rsaquo; Member Profile &rsaquo; ${p.name}`;
+
+  const recentPostsHTML = p.recentPosts.length > 0 ? p.recentPosts.map(t => `
+    <li>
+      <a class="post-title" onclick="navigate('thread-ep3')" style="font-size:12px;">${t}</a>
+      <div class="mini-meta">in General Discussion</div>
+    </li>
+  `).join('') : '<li style="color:#99a; font-style:italic; font-size:11px;">No recent posts.</li>';
+
+  const badgesHTML = p.badges.map(b => {
+    let cls = 'badge';
+    if (['Admin','Founder','Map Council'].includes(b)) cls += ' blue';
+    else if (['Veteran','Senior Member','Survivor 2012'].includes(b)) cls += ' green';
+    else if (p.gold) cls += ' gold';
+    return `<span class="${cls}">${b}</span>`;
+  }).join('');
+
+  document.getElementById('profile-content').innerHTML = `
+    <div style="margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;">
+      <div style="font-family:'Oswald',sans-serif; font-size:18px; color:#223; font-weight:500;">Member Profile: ${p.name}</div>
+      <a onclick="navigate('home')" style="font-size:11px; color:var(--link); cursor:pointer;">← Forum Index</a>
+    </div>
+    <div class="profile-wrap">
+      <div class="profile-left">
+        <div class="profile-card">
+          <div class="profile-card-head">Profile</div>
+          <div class="profile-card-body" style="text-align:center; padding-top:14px;">
+            <div class="profile-avatar-big ${p.color}">${p.name[0].toUpperCase()}</div>
+            <div style="font-family:'Oswald',sans-serif; font-size:16px; color:#223; margin-bottom:2px;">${p.name}</div>
+            <div style="font-size:11px; color:#99a; margin-bottom:10px;">${p.rank}</div>
+          </div>
+          <div class="profile-card-body" style="border-top:1px solid #dde; padding-top:8px;">
+            <div class="profile-stat-row"><span class="label">Posts</span><span class="val">${p.postCount}</span></div>
+            <div class="profile-stat-row"><span class="label">Joined</span><span class="val">${p.joined}</span></div>
+            <div class="profile-stat-row"><span class="label">Location</span><span class="val">${p.location}</span></div>
+          </div>
+        </div>
+        <div class="profile-card">
+          <div class="profile-card-head">Badges</div>
+          <div class="badge-list">${badgesHTML}</div>
+        </div>
+        ${p.isMe ? `<div class="profile-card"><div class="profile-card-body" style="text-align:center;"><div style="font-size:10px; color:#99a; font-style:italic;">Archive mode — profile editing disabled.</div></div></div>` : ''}
+      </div>
+      <div class="profile-right">
+        <div class="profile-section">
+          <div class="profile-section-head">About</div>
+          <div class="profile-section-body">
+            <div class="profile-about">${p.about}</div>
+          </div>
+        </div>
+        <div class="profile-section">
+          <div class="profile-section-head">Recent Posts</div>
+          <div class="profile-section-body" style="padding:0 12px;">
+            <ul class="profile-posts-mini" style="padding:8px 0;">${recentPostsHTML}</ul>
+          </div>
+        </div>
+        <div class="profile-section">
+          <div class="profile-section-head">Forum Activity</div>
+          <div class="profile-section-body">
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+              <div class="stat-item"><span class="n">${p.postCount}</span><span class="l">Posts</span></div>
+              <div class="stat-item"><span class="n">${p.badges.length}</span><span class="l">Badges</span></div>
+              <div class="stat-item"><span class="n">${p.recentPosts.length}</span><span class="l">Threads</span></div>
+            </div>
+            <div style="margin-top:10px; font-size:10px; color:#99a; font-style:italic;">Full post history is unavailable in archive mode.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ========== INIT ==========
+function init() {
+  const hash = window.location.hash.replace('#','') || 'home';
+  renderPage(hash);
+}
+
+window.addEventListener('hashchange', () => {
+  const hash = window.location.hash.replace('#','') || 'home';
+  renderPage(hash);
+});
+
+window.addEventListener('DOMContentLoaded', init);
+
+// Nav highlighting
+document.querySelectorAll('#topnav a').forEach(a => {
+  a.addEventListener('click', function(e) {
+    if (this.getAttribute('target') === '_blank') return;
+    document.querySelectorAll('#topnav a').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
   });
-  const ud = document.getElementById('user-display');
-  if (ud) observer.observe(ud, { childList: true, characterData: true, subtree: true });
+});
 </script>
-
 </body>
 </html>
